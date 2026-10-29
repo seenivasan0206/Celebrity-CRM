@@ -1,4 +1,4 @@
-package com.celebritycrm.campaigns;
+﻿package com.celebritycrm.campaigns;
 
 import com.celebritycrm.campaigns.dto.CampaignRequest;
 import com.celebritycrm.campaigns.dto.CampaignResponse;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +37,9 @@ public class CampaignService {
         campaign.setDescription(request.getDescription());
 
         if (request.getManagerId() != null) {
-            Manager manager = managerRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + request.getManagerId()));
+            Long managerId = Objects.requireNonNull(request.getManagerId());
+            Manager manager = managerRepository.findById(managerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + managerId));
             campaign.setManager(manager);
         }
 
@@ -88,8 +90,9 @@ public class CampaignService {
         campaign.setDescription(request.getDescription());
 
         if (request.getManagerId() != null) {
-            Manager manager = managerRepository.findById(request.getManagerId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + request.getManagerId()));
+            Long managerId = Objects.requireNonNull(request.getManagerId());
+            Manager manager = managerRepository.findById(managerId)
+                    .orElseThrow(() -> new ResourceNotFoundException("Manager not found with ID: " + managerId));
             campaign.setManager(manager);
         } else {
             campaign.setManager(null);
@@ -115,23 +118,21 @@ public class CampaignService {
     }
 
     public CampaignResponse mapToResponse(Campaign campaign) {
-        Long managerId = campaign.getManager() != null ? campaign.getManager().getId() : null;
-        String managerName = campaign.getManager() != null ? campaign.getManager().getName() : null;
-
-        return new CampaignResponse(
-                campaign.getId(),
-                campaign.getName(),
-                campaign.getBrand(),
-                campaign.getBudget(),
-                campaign.getStartDate(),
-                campaign.getEndDate(),
-                campaign.getStatus(),
-                campaign.getDescription(),
-                managerId,
-                managerName,
-                campaign.getCreatedAt(),
-                campaign.getUpdatedAt()
-        );
+        CampaignResponse response = new CampaignResponse();
+        response.setId(campaign.getId());
+        response.setName(campaign.getName());
+        response.setBrand(campaign.getBrand());
+        response.setBudget(campaign.getBudget());
+        response.setStartDate(campaign.getStartDate());
+        response.setEndDate(campaign.getEndDate());
+        response.setStatus(campaign.getStatus());
+        response.setDescription(campaign.getDescription());
+        if (campaign.getManager() != null) {
+            response.setManagerId(campaign.getManager().getId());
+            response.setManagerName(campaign.getManager().getName());
+        }
+        response.setCreatedAt(campaign.getCreatedAt());
+        response.setUpdatedAt(campaign.getUpdatedAt());
+        return response;
     }
 }
-

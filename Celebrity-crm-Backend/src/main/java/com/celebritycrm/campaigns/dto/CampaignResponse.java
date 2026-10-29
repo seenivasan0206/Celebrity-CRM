@@ -1,4 +1,4 @@
-package com.celebritycrm.campaigns.dto;
+﻿package com.celebritycrm.campaigns.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

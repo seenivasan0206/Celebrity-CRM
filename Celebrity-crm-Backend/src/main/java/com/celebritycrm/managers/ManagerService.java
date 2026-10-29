@@ -1,4 +1,4 @@
-package com.celebritycrm.managers;
+﻿package com.celebritycrm.managers;
 
 import com.celebritycrm.common.ResourceNotFoundException;
 import com.celebritycrm.managers.dto.ManagerRequest;
@@ -79,16 +79,16 @@ public class ManagerService {
     }
 
     public ManagerResponse mapToResponse(Manager manager) {
-        return new ManagerResponse(
-                manager.getId(),
-                manager.getName(),
-                manager.getEmail(),
-                manager.getPhone(),
-                manager.getAgency(),
-                manager.getStatus(),
-                manager.getCreatedAt(),
-                manager.getUpdatedAt()
-        );
+        ManagerResponse response = new ManagerResponse();
+        response.setId(manager.getId());
+        response.setName(manager.getName());
+        response.setEmail(manager.getEmail());
+        response.setPhone(manager.getPhone());
+        response.setAgency(manager.getAgency());
+        response.setStatus(manager.getStatus());
+        response.setCreatedAt(manager.getCreatedAt());
+        response.setUpdatedAt(manager.getUpdatedAt());
+        return response;
     }
 }
 

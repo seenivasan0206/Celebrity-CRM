@@ -1,4 +1,4 @@
-package com.celebritycrm.common;
+﻿package com.celebritycrm.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
