@@ -1,0 +1,333 @@
+{
+  "info": {
+    "_postman_id": "c1f78a2e-4d56-4c91-912f-98ab98e9b62c",
+    "name": "Celebrity CRM - Campaigns & Managers API",
+    "description": "API collection for Celebrity CRM modules: Campaigns and Managers.\nBase URL: http://localhost:8080",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Managers",
+      "item": [
+        {
+          "name": "1. Create Manager",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@celebrityagency.com\",\n  \"phone\": \"+1-555-0199\",\n  \"agency\": \"Elite Talent Management\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/managers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "managers"
+              ]
+            },
+            "description": "Creates a new talent manager profile."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Managers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/managers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "managers"
+              ]
+            },
+            "description": "Retrieves the list of all registered managers."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Manager By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/managers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "managers",
+                "1"
+              ]
+            },
+            "description": "Retrieves manager details by their primary ID."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Update Manager",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe (Senior VP)\",\n  \"email\": \"john.doe@celebrityagency.com\",\n  \"phone\": \"+1-555-0999\",\n  \"agency\": \"Global Talent & Media\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/managers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "managers",
+                "1"
+              ]
+            },
+            "description": "Updates the manager's profile details."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Delete Manager",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/managers/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "managers",
+                "1"
+              ]
+            },
+            "description": "Deletes a manager by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Campaigns",
+      "item": [
+        {
+          "name": "1. Create Campaign",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Fashion Brand Launch 2026\",\n  \"brand\": \"Nike International\",\n  \"budget\": 250000.00,\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-12-15\",\n  \"status\": \"PLANNING\",\n  \"description\": \"Global digital advertisement campaign featuring top sports and film celebrities.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            },
+            "description": "Creates a new campaign. Optional field managerId connects this campaign directly to a manager."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Campaigns",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            },
+            "description": "Retrieves all campaigns."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Campaigns Filtered By Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns?status=PLANNING",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PLANNING"
+                }
+              ]
+            },
+            "description": "Filter campaigns by status: PLANNING, ACTIVE, COMPLETED, CANCELLED."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Campaign By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "1"
+              ]
+            },
+            "description": "Retrieves specific campaign details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Campaigns By Manager ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/manager/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "manager",
+                "1"
+              ]
+            },
+            "description": "Retrieves all campaigns managed by a specific manager."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Campaign",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Fashion Brand Launch 2026 - Extended\",\n  \"brand\": \"Nike International\",\n  \"budget\": 320000.00,\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-12-31\",\n  \"status\": \"ACTIVE\",\n  \"description\": \"Extended nationwide digital roll-out across OTT and social media channels.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "1"
+              ]
+            },
+            "description": "Updates full details of a campaign."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Quick Update Campaign Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/1/status?status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "1",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Quickly transitions the status of a campaign (e.g. PLANNING -> ACTIVE -> COMPLETED)."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Campaign",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/campaigns/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "1"
+              ]
+            },
+            "description": "Deletes a campaign by ID."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
+
