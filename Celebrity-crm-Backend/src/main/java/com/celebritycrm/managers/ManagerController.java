@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.managers;
+package com.celebritycrm.managers;
 
 import com.celebritycrm.managers.dto.ManagerRequest;
 import com.celebritycrm.managers.dto.ManagerResponse;

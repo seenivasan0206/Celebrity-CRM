@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.managers;
+package com.celebritycrm.managers;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;

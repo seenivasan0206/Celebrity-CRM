@@ -1,4 +1,4 @@
-﻿package com.celebritycrm;
+package com.celebritycrm;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
