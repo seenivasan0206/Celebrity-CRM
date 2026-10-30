@@ -1,16 +1,16 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+import App from './App';
 
-function App() {
-  return (
-    <div>
-      <h1>Celebrity CRM</h1>
-      <p>Manage celebrity profiles, contacts, and campaigns.</p>
-    </div>
-  );
-}
+import './styles/index.css';
+import './styles/layout.css';
+import './styles/dashboard.css';
+import './styles/auth.css';
+import './styles/modules.css';
+import './styles/modals.css';
 
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root');
+createRoot(rootElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
