@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.campaigns.dto;
+package com.celebritycrm.campaigns.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

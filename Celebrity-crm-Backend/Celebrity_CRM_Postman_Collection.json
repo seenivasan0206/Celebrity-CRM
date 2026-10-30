@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "c1f78a2e-4d56-4c91-912f-98ab98e9b62c",
-    "name": "Celebrity CRM - Campaigns & Managers API",
-    "description": "API collection for Celebrity CRM modules: Campaigns and Managers.\nBase URL: http://localhost:8080",
+    "name": "Celebrity CRM API",
+    "description": "API collection for Celebrity CRM modules: Authentication, Celebrities, Managers, and Campaigns.\nBase URL: http://localhost:8080",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -10,9 +10,328 @@
       "key": "baseUrl",
       "value": "http://localhost:8080",
       "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
     }
   ],
   "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "1. Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "    console.log(\"Saved JWT token to collectionVariables: \" + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Logs in the default admin user and saves the JWT token into {{token}} collection variable."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Register New User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set(\"token\", jsonData.token);",
+                  "    console.log(\"Saved JWT token to collectionVariables: \" + jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"manager_sarah\",\n  \"email\": \"sarah@celebrityagency.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Sarah Jenkins\",\n  \"role\": \"ROLE_MANAGER\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registers a new user and returns JWT access token."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get Current User Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Retrieves the authenticated user's profile details using Bearer token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Celebrities",
+      "item": [
+        {
+          "name": "1. Create Celebrity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Leonardo DiCaprio\",\n  \"stageName\": \"Leo\",\n  \"category\": \"ACTOR\",\n  \"email\": \"leo@appianway.com\",\n  \"phone\": \"+1-310-555-0188\",\n  \"gender\": \"Male\",\n  \"bio\": \"Academy Award-winning actor and prominent environmental activist.\",\n  \"socialMediaHandle\": \"@leonardodicaprio\",\n  \"followersCount\": 62000000,\n  \"standardFee\": 1500000.00,\n  \"status\": \"ACTIVE\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities"]
+            },
+            "description": "Registers a new celebrity profile. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Celebrities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities"]
+            },
+            "description": "Retrieves all celebrities. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Filter Celebrities by Category & Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities?category=ACTOR&status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "ACTOR"
+                },
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Filter celebrities by category (ACTOR, SINGER, ATHLETE, INFLUENCER) and status."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Search Celebrities by Name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities?search=Leo",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Leo"
+                }
+              ]
+            },
+            "description": "Searches celebrities by partial name or stage name."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Celebrity By ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities", "1"]
+            },
+            "description": "Retrieves celebrity details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Get Celebrities By Manager ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities/manager/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities", "manager", "1"]
+            },
+            "description": "Retrieves all celebrities associated with a specific manager."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Update Celebrity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Leonardo DiCaprio\",\n  \"stageName\": \"Leo DiCaprio\",\n  \"category\": \"ACTOR\",\n  \"email\": \"leo@appianway.com\",\n  \"phone\": \"+1-310-555-0188\",\n  \"gender\": \"Male\",\n  \"bio\": \"Academy Award-winning actor, producer, and environmental philanthropist.\",\n  \"socialMediaHandle\": \"@leonardodicaprio\",\n  \"followersCount\": 65000000,\n  \"standardFee\": 1750000.00,\n  \"status\": \"ACTIVE\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities", "1"]
+            },
+            "description": "Updates full profile of a celebrity."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Update Celebrity Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities/1/status?status=BUSY",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities", "1", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "BUSY"
+                }
+              ]
+            },
+            "description": "Updates status of celebrity (ACTIVE, BUSY, INACTIVE)."
+          },
+          "response": []
+        },
+        {
+          "name": "9. Delete Celebrity",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/celebrities/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "celebrities", "1"]
+            },
+            "description": "Deletes a celebrity record by ID."
+          },
+          "response": []
+        }
+      ]
+    },
     {
       "name": "Managers",
       "item": [
@@ -24,6 +343,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
@@ -32,13 +355,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/managers",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "managers"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managers"]
             },
             "description": "Creates a new talent manager profile."
           },
@@ -48,16 +366,16 @@
           "name": "2. Get All Managers",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/managers",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "managers"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managers"]
             },
             "description": "Retrieves the list of all registered managers."
           },
@@ -67,17 +385,16 @@
           "name": "3. Get Manager By ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/managers/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "managers",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managers", "1"]
             },
             "description": "Retrieves manager details by their primary ID."
           },
@@ -91,6 +408,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
@@ -99,14 +420,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/managers/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "managers",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managers", "1"]
             },
             "description": "Updates the manager's profile details."
           },
@@ -116,17 +431,16 @@
           "name": "5. Delete Manager",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/managers/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "managers",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "managers", "1"]
             },
             "description": "Deletes a manager by ID."
           },
@@ -145,6 +459,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
@@ -153,13 +471,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/campaigns",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns"]
             },
             "description": "Creates a new campaign. Optional field managerId connects this campaign directly to a manager."
           },
@@ -169,16 +482,16 @@
           "name": "2. Get All Campaigns",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns"]
             },
             "description": "Retrieves all campaigns."
           },
@@ -188,16 +501,16 @@
           "name": "3. Get Campaigns Filtered By Status",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns?status=PLANNING",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns"],
               "query": [
                 {
                   "key": "status",
@@ -213,17 +526,16 @@
           "name": "4. Get Campaign By ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", "1"]
             },
             "description": "Retrieves specific campaign details by ID."
           },
@@ -233,18 +545,16 @@
           "name": "5. Get Campaigns By Manager ID",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns/manager/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns",
-                "manager",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", "manager", "1"]
             },
             "description": "Retrieves all campaigns managed by a specific manager."
           },
@@ -258,6 +568,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
             ],
             "body": {
@@ -266,14 +580,8 @@
             },
             "url": {
               "raw": "{{baseUrl}}/api/campaigns/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", "1"]
             },
             "description": "Updates full details of a campaign."
           },
@@ -283,18 +591,16 @@
           "name": "7. Quick Update Campaign Status",
           "request": {
             "method": "PATCH",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns/1/status?status=ACTIVE",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns",
-                "1",
-                "status"
-              ],
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", "1", "status"],
               "query": [
                 {
                   "key": "status",
@@ -310,19 +616,463 @@
           "name": "8. Delete Campaign",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/campaigns/1",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "campaigns",
-                "1"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "campaigns", "1"]
             },
             "description": "Deletes a campaign by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agencies",
+      "item": [
+        {
+          "name": "1. Create Agency",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creative Artists Agency (CAA)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2000\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 10.00,\n  \"description\": \"Global talent and sports agency representing leading actors, musicians, and athletes.\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"]
+            },
+            "description": "Registers a new talent agency. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Agencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"]
+            },
+            "description": "Retrieves all talent agencies (public read-only)."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Search Agencies by Name or Country",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies?search=Creative",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Creative"
+                }
+              ]
+            },
+            "description": "Searches agencies by name or country."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Filter Agencies by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies?status=ACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Filters agencies by status (ACTIVE, INACTIVE)."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Agency By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies", "1"]
+            },
+            "description": "Retrieves specific agency details by primary ID."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Agency",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creative Artists Agency (CAA Worldwide)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2999\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 12.50,\n  \"description\": \"Expanded worldwide global talent and sports representation agency.\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies", "1"]
+            },
+            "description": "Updates agency details. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Update Agency Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1/status?status=INACTIVE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies", "1", "status"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE"
+                }
+              ]
+            },
+            "description": "Quickly updates the status of an agency."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Agency",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "agencies", "1"]
+            },
+            "description": "Deletes an agency by ID. Requires Bearer authentication."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Shoots",
+      "item": [
+        {
+          "name": "1. Create Shoot",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vogue India Cover Shoot 2026\",\n  \"shootType\": \"PHOTOSHOOT\",\n  \"location\": \"Film City Studio 3, Mumbai\",\n  \"shootDate\": \"2026-11-15\",\n  \"startTime\": \"09:00:00\",\n  \"endTime\": \"17:00:00\",\n  \"budget\": 75000.00,\n  \"status\": \"SCHEDULED\",\n  \"notes\": \"High fashion editorial photoshoot featuring custom designer outfits.\",\n  \"celebrityId\": 1,\n  \"campaignId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots"]
+            },
+            "description": "Creates a new shoot. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Shoots",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots"]
+            },
+            "description": "Retrieves all shoots (public read-only)."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Filter Shoots by Type and Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots?shootType=PHOTOSHOOT&status=SCHEDULED",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots"],
+              "query": [
+                {
+                  "key": "shootType",
+                  "value": "PHOTOSHOOT"
+                },
+                {
+                  "key": "status",
+                  "value": "SCHEDULED"
+                }
+              ]
+            },
+            "description": "Filters shoots by type (PHOTOSHOOT, COMMERCIAL, MOVIE, OTT) and status."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Shoot By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots", "1"]
+            },
+            "description": "Retrieves shoot details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Shoots By Celebrity ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/celebrity/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots", "celebrity", "1"]
+            },
+            "description": "Retrieves all shoots for a specific celebrity."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Shoot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vogue India Cover Shoot 2026 - Extended\",\n  \"shootType\": \"PHOTOSHOOT\",\n  \"location\": \"Film City Studio 3 & Outdoor Garden, Mumbai\",\n  \"shootDate\": \"2026-11-15\",\n  \"startTime\": \"08:30:00\",\n  \"endTime\": \"19:00:00\",\n  \"budget\": 95000.00,\n  \"status\": \"SCHEDULED\",\n  \"notes\": \"Extended full day shoot including cover and inside spreads.\",\n  \"celebrityId\": 1,\n  \"campaignId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots", "1"]
+            },
+            "description": "Updates full details of a shoot. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Update Shoot Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots", "1", "status"]
+            },
+            "description": "Updates shoot status (SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED). Can also pass ?status=COMPLETED in query string."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Shoot",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "shoots", "1"]
+            },
+            "description": "Deletes a shoot by ID. Requires Bearer authentication."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "1. Dashboard Overview Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "dashboard"]
+            },
+            "description": "Provides unified dashboard analytics: total counts, active entities, budgets, upcoming shoots."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Celebrity Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/celebrities",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "celebrities"]
+            },
+            "description": "Celebrity statistics: category breakdown, status breakdown, total followers, average fee."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Agency Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/agencies",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "agencies"]
+            },
+            "description": "Agency statistics: active counts, country breakdown, average commission rate."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Campaign Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/campaigns",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "campaigns"]
+            },
+            "description": "Campaign statistics: status breakdown, total budget, average budget."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Shoot Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/shoots",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "shoots"]
+            },
+            "description": "Shoot statistics: status breakdown, shoot type breakdown, total budget."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Contract Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/contracts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "contracts"]
+            },
+            "description": "Contract and commercial agreements statistics: total value, status breakdown."
+          },
+          "response": []
+        },
+        {
+          "name": "7. OTT Projects Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/ott-projects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "reports", "ott-projects"]
+            },
+            "description": "OTT media and streaming projects report: platform breakdown, status, budget."
           },
           "response": []
         }
@@ -330,4 +1080,3 @@
     }
   ]
 }
-
