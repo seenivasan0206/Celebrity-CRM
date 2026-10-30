@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.config;
+package com.celebritycrm.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;

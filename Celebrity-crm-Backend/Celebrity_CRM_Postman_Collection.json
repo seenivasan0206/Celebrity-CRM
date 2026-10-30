@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "c1f78a2e-4d56-4c91-912f-98ab98e9b62c",
-    "name": "Celebrity CRM - Campaigns & Managers API",
-    "description": "API collection for Celebrity CRM modules: Campaigns and Managers.\nBase URL: http://localhost:8080",
+    "name": "Celebrity CRM API Collection",
+    "description": "API collection for Celebrity CRM backend modules: Campaigns, Managers, Contracts, and Files.\nBase URL: http://localhost:8080",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -327,7 +327,367 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Contracts",
+      "item": [
+        {
+          "name": "1. Create Contract",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2027-10-31\",\n  \"totalValue\": 15000000.00,\n  \"status\": \"DRAFT\",\n  \"terms\": \"Exclusive sports and lifestyle footwear endorsement agreement for 12 months with TVC, OTT, and print rights.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ]
+            },
+            "description": "Creates a new contract. If contractNumber is omitted, a unique one is auto-generated."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Contracts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ]
+            },
+            "description": "Retrieves all contracts."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Filter Contracts By Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts?status=DRAFT",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "DRAFT"
+                }
+              ]
+            },
+            "description": "Filter contracts by status: DRAFT, PENDING, ACTIVE, COMPLETED, TERMINATED."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Contract By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1"
+              ]
+            },
+            "description": "Retrieves a specific contract by primary ID."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Contracts By Celebrity ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/celebrity/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "celebrity",
+                "1"
+              ]
+            },
+            "description": "Retrieves all contracts associated with a specific celebrity ID."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Contract",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement (Renewed)\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2028-10-31\",\n  \"totalValue\": 28000000.00,\n  \"status\": \"ACTIVE\",\n  \"terms\": \"Extended endorsement term for 24 months covering global multi-media rights.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1"
+              ]
+            },
+            "description": "Updates full contract details."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Quick Update Contract Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1/status?status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Updates the contract status (e.g. DRAFT -> ACTIVE -> COMPLETED)."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Contract",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1"
+              ]
+            },
+            "description": "Deletes a contract by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Files",
+      "item": [
+        {
+          "name": "1. Upload Single File",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/files/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "upload"
+              ]
+            },
+            "description": "Uploads a single file (image, PDF, contract, headshot, document). In Postman, select 'form-data', key 'file' of type File, and choose a file from your computer."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/files/upload-multiple",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "upload-multiple"
+              ]
+            },
+            "description": "Uploads multiple files at once. Key is 'files' of type File."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get All Files List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files"
+              ]
+            },
+            "description": "Retrieves the list of all uploaded files with their download URIs and sizes."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Download File",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/download/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "download",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "your-file-name-here.pdf",
+                  "description": "The unique fileName returned from upload response"
+                }
+              ]
+            },
+            "description": "Downloads the specified file as an attachment."
+          },
+          "response": []
+        },
+        {
+          "name": "5. View File Inline",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/view/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "view",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "your-file-name-here.jpg",
+                  "description": "The unique fileName returned from upload response"
+                }
+              ]
+            },
+            "description": "Views/streams the file inline (ideal for rendering images, avatars, or PDF previews in frontend)."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Delete File",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "your-file-name-here.pdf",
+                  "description": "The unique fileName to delete"
+                }
+              ]
+            },
+            "description": "Permanently deletes the file from the uploads directory."
+          },
+          "response": []
+        }
+      ]
     }
   ]
 }
-
