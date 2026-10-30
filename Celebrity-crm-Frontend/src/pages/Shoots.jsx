@@ -1,18 +1,22 @@
 import React from 'react';
 import { useCrm } from '../context/CrmContext';
-import { Camera, Plus, MapPin, Clock, CheckCircle2, User } from 'lucide-react';
+import { Camera, Plus, MapPin, Clock, CheckCircle2, User, RefreshCw, Trash2 } from 'lucide-react';
 
 export default function Shoots() {
-  const { shoots, updateShootStatus, deleteShoot, setActiveModal } = useCrm();
+  const { shoots, updateShootStatus, deleteShoot, openModal } = useCrm();
 
   return (
     <div>
       <div className="page-header-row">
         <div>
-          <h2>Production Shoots Schedule</h2>
+          <h2>Production Shoots Schedule ({shoots.length})</h2>
           <p>Real-time location, talent call times, and director assignments</p>
         </div>
-        <button className="btn-primary" onClick={() => setActiveModal('scheduleShoot')}>
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={() => openModal('scheduleShoot')}
+        >
           <Plus size={16} /> Schedule New Shoot
         </button>
       </div>
@@ -71,21 +75,35 @@ export default function Shoots() {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                      {shoot.status !== 'Confirmed' && (
+                      {shoot.status !== 'Confirmed' ? (
                         <button
+                          type="button"
                           className="btn-secondary"
                           style={{ padding: '4px 10px', fontSize: '0.74rem' }}
+                          title="Confirm shoot"
                           onClick={() => updateShootStatus(shoot.id, 'Confirmed')}
                         >
                           <CheckCircle2 size={13} color="#10B981" /> Confirm
                         </button>
+                      ) : (
+                        <button
+                          type="button"
+                          className="btn-secondary"
+                          style={{ padding: '4px 10px', fontSize: '0.74rem' }}
+                          title="Revert to scheduled"
+                          onClick={() => updateShootStatus(shoot.id, 'Scheduled')}
+                        >
+                          <RefreshCw size={13} color="#6366F1" /> Reschedule
+                        </button>
                       )}
                       <button
+                        type="button"
                         className="btn-secondary"
                         style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--accent-rose)' }}
+                        title="Cancel shoot"
                         onClick={() => deleteShoot(shoot.id)}
                       >
-                        Cancel
+                        <Trash2 size={13} />
                       </button>
                     </div>
                   </td>
@@ -98,4 +116,3 @@ export default function Shoots() {
     </div>
   );
 }
-

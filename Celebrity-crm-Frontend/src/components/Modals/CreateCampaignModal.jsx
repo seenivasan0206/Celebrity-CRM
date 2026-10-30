@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCrm } from '../../context/CrmContext';
 import { X, Megaphone, Sparkles } from 'lucide-react';
 
 export default function CreateCampaignModal() {
-  const { activeModal, setActiveModal, addCampaign, celebrities } = useCrm();
+  const { activeModal, closeModal, addCampaign, celebrities, modalPayload } = useCrm();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -13,17 +13,31 @@ export default function CreateCampaignModal() {
     deadline: '2026-03-31'
   });
 
+  useEffect(() => {
+    if (modalPayload?.celebrity) {
+      setFormData((prev) => ({ ...prev, celebrity: modalPayload.celebrity }));
+    }
+  }, [modalPayload]);
+
   if (activeModal !== 'createCampaign') return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.brand.trim()) return;
     addCampaign(formData);
-    setActiveModal(null);
+    // Reset form
+    setFormData({
+      title: '',
+      brand: '',
+      celebrity: celebrities[0]?.name || 'Vijay',
+      budget: '$150,000',
+      deadline: '2026-03-31'
+    });
+    closeModal();
   };
 
   return (
-    <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+    <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
@@ -35,7 +49,7 @@ export default function CreateCampaignModal() {
               <p>Launch an advertising or endorsement initiative</p>
             </div>
           </div>
-          <button className="modal-close-btn" onClick={() => setActiveModal(null)}>
+          <button type="button" className="modal-close-btn" onClick={closeModal}>
             <X size={18} />
           </button>
         </div>
@@ -108,7 +122,7 @@ export default function CreateCampaignModal() {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={() => setActiveModal(null)}>
+            <button type="button" className="btn-secondary" onClick={closeModal}>
               Cancel
             </button>
             <button type="submit" className="btn-primary">
@@ -120,4 +134,3 @@ export default function CreateCampaignModal() {
     </div>
   );
 }
-

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCrm } from '../../context/CrmContext';
 import { X, Camera, Sparkles } from 'lucide-react';
 
 export default function ScheduleShootModal() {
-  const { activeModal, setActiveModal, addShoot, celebrities } = useCrm();
+  const { activeModal, closeModal, addShoot, celebrities, modalPayload } = useCrm();
 
   const [formData, setFormData] = useState({
     title: '',
@@ -14,17 +14,33 @@ export default function ScheduleShootModal() {
     director: 'Gautham Menon'
   });
 
+  // Pre-fill celebrity if provided in modalPayload
+  useEffect(() => {
+    if (modalPayload?.celebrity) {
+      setFormData((prev) => ({ ...prev, celebrity: modalPayload.celebrity }));
+    }
+  }, [modalPayload]);
+
   if (activeModal !== 'scheduleShoot') return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.location.trim()) return;
     addShoot(formData);
-    setActiveModal(null);
+    // Reset form
+    setFormData({
+      title: '',
+      celebrity: celebrities[0]?.name || 'Vijay',
+      location: 'Chennai Studio 4',
+      date: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      time: '09:00 AM - 05:00 PM',
+      director: 'Gautham Menon'
+    });
+    closeModal();
   };
 
   return (
-    <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+    <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
@@ -36,7 +52,7 @@ export default function ScheduleShootModal() {
               <p>Book location, crew, and talent call time</p>
             </div>
           </div>
-          <button className="modal-close-btn" onClick={() => setActiveModal(null)}>
+          <button type="button" className="modal-close-btn" onClick={closeModal}>
             <X size={18} />
           </button>
         </div>
@@ -121,7 +137,7 @@ export default function ScheduleShootModal() {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={() => setActiveModal(null)}>
+            <button type="button" className="btn-secondary" onClick={closeModal}>
               Cancel
             </button>
             <button type="submit" className="btn-primary">
@@ -133,4 +149,3 @@ export default function ScheduleShootModal() {
     </div>
   );
 }
-

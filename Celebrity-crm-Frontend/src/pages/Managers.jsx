@@ -1,20 +1,33 @@
 import React from 'react';
 import { useCrm } from '../context/CrmContext';
-import { UserCheck, Mail, Phone, Building, Star, Plus } from 'lucide-react';
+import { Mail, Phone, Building, Star, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Managers() {
-  const { managers, addToast } = useCrm();
+  const { managers, addToast, setSearchQuery } = useCrm();
+  const navigate = useNavigate();
+
+  const handleInviteManager = () => {
+    navigator.clipboard?.writeText?.('https://zenvecrm.io/invite/join-agency-team');
+    addToast('Manager invitation link generated & copied to clipboard!', 'info');
+  };
+
+  const handleCelebrityClick = (celebName) => {
+    setSearchQuery(celebName);
+    navigate('/celebrities');
+  };
 
   return (
     <div>
       <div className="page-header-row">
         <div>
-          <h2>Talent Managers & Agency Liaisons</h2>
+          <h2>Talent Managers & Agency Liaisons ({managers.length})</h2>
           <p>Key agency executives, artist reps, and endorsement agents</p>
         </div>
         <button
+          type="button"
           className="btn-primary"
-          onClick={() => addToast('Manager invitation link generated & copied to clipboard!', 'info')}
+          onClick={handleInviteManager}
         >
           <Plus size={16} /> Invite Manager
         </button>
@@ -37,14 +50,22 @@ export default function Managers() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <a
+                href={`mailto:${mgr.email}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit' }}
+                title="Send email to manager"
+              >
                 <Mail size={14} color="var(--primary)" />
                 <span>{mgr.email}</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Phone size={14} color="var(--primary)" />
+              </a>
+              <a
+                href={`tel:${mgr.phone}`}
+                style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none', color: 'inherit' }}
+                title="Call manager"
+              >
+                <Phone size={14} color="var(--accent-emerald)" />
                 <span>{mgr.phone}</span>
-              </div>
+              </a>
             </div>
 
             <div>
@@ -53,10 +74,17 @@ export default function Managers() {
               </span>
               <div className="manager-celeb-chips">
                 {mgr.assignedCelebrities.map((celebName) => (
-                  <span key={celebName} className="celeb-chip">
+                  <button
+                    key={celebName}
+                    type="button"
+                    className="celeb-chip"
+                    onClick={() => handleCelebrityClick(celebName)}
+                    style={{ cursor: 'pointer', background: 'var(--bg-card-alt)' }}
+                    title={`View ${celebName} profile`}
+                  >
                     <Star size={10} color="#F59E0B" style={{ display: 'inline', marginRight: '4px' }} />
                     {celebName}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
@@ -66,4 +94,3 @@ export default function Managers() {
     </div>
   );
 }
-

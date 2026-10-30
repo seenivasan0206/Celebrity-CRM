@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useCrm } from '../context/CrmContext';
-import { Search, UserPlus, Phone, Mail, Award, Flame, MapPin } from 'lucide-react';
+import { Search, UserPlus, Phone, Mail, Flame, MapPin, Calendar, Megaphone, Trash2, X } from 'lucide-react';
 
 export default function Celebrities() {
-  const { celebrities, setActiveModal, searchQuery, setSearchQuery } = useCrm();
+  const { celebrities, openModal, deleteCelebrity, searchQuery, setSearchQuery } = useCrm();
   const [selectedFilter, setSelectedFilter] = useState('All');
 
   const filtered = celebrities.filter((c) => {
     const matchesSearch =
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.location.toLowerCase().includes(searchQuery.toLowerCase());
+      c.name.toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+      c.category.toLowerCase().includes((searchQuery || '').toLowerCase()) ||
+      c.location.toLowerCase().includes((searchQuery || '').toLowerCase());
 
     if (!matchesSearch) return false;
 
@@ -25,10 +25,14 @@ export default function Celebrities() {
     <div>
       <div className="page-header-row">
         <div>
-          <h2>Celebrity Roster</h2>
+          <h2>Celebrity Roster ({celebrities.length})</h2>
           <p>Manage talents, public profile metrics, contracts, and representation</p>
         </div>
-        <button className="btn-primary" onClick={() => setActiveModal('addCelebrity')}>
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={() => openModal('addCelebrity')}
+        >
           <UserPlus size={16} /> Onboard Celebrity
         </button>
       </div>
@@ -38,16 +42,36 @@ export default function Celebrities() {
           <Search size={16} className="icon" />
           <input
             type="text"
-            placeholder="Filter celebrities..."
+            placeholder="Filter celebrities by name, category, or city..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              style={{
+                position: 'absolute',
+                right: '10px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-dim)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              title="Clear search"
+            >
+              <X size={14} />
+            </button>
+          )}
         </div>
 
         <div className="filter-pills">
           {['All', 'Actors', 'Actresses', 'Music'].map((filter) => (
             <button
               key={filter}
+              type="button"
               className={`filter-pill ${selectedFilter === filter ? 'active' : ''}`}
               onClick={() => setSelectedFilter(filter)}
             >
@@ -69,9 +93,29 @@ export default function Celebrities() {
                   <MapPin size={12} /> {celeb.location}
                 </div>
               </div>
-              <span className={`badge ${celeb.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`}>
-                {celeb.status}
-              </span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
+                <span className={`badge ${celeb.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`}>
+                  {celeb.status}
+                </span>
+                <button
+                  type="button"
+                  title="Remove from roster"
+                  onClick={() => deleteCelebrity(celeb.id)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-dim)',
+                    cursor: 'pointer',
+                    padding: '4px',
+                    borderRadius: '4px',
+                    transition: 'all 0.15s ease'
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#F43F5E')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-dim)')}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
 
             <div className="celeb-stats-strip">
@@ -92,14 +136,24 @@ export default function Celebrities() {
             </div>
 
             <div className="celeb-contact-info">
-              <div className="celeb-contact-row">
-                <Mail size={13} color="var(--text-dim)" />
+              <a
+                href={`mailto:${celeb.email || 'mgmt@representation.com'}`}
+                className="celeb-contact-row"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+                title="Send email"
+              >
+                <Mail size={13} color="var(--primary)" />
                 <span>{celeb.email || 'mgmt@representation.com'}</span>
-              </div>
-              <div className="celeb-contact-row">
-                <Phone size={13} color="var(--text-dim)" />
+              </a>
+              <a
+                href={`tel:${celeb.phone || '+919840000000'}`}
+                className="celeb-contact-row"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+                title="Call manager"
+              >
+                <Phone size={13} color="var(--accent-emerald)" />
                 <span>{celeb.phone || '+91 98400 00000'}</span>
-              </div>
+              </a>
             </div>
 
             <div className="celeb-card-footer">
@@ -107,13 +161,27 @@ export default function Celebrities() {
                 <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>Contract Value</span>
                 <span className="contract-value-tag">{celeb.activeContract}</span>
               </div>
-              <button
-                className="btn-secondary"
-                style={{ padding: '6px 12px', fontSize: '0.76rem' }}
-                onClick={() => setActiveModal('scheduleShoot')}
-              >
-                Schedule Shoot
-              </button>
+
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ padding: '6px 10px', fontSize: '0.74rem' }}
+                  title={`Launch Campaign with ${celeb.name}`}
+                  onClick={() => openModal('createCampaign', { celebrity: celeb.name })}
+                >
+                  <Megaphone size={12} /> Campaign
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  style={{ padding: '6px 12px', fontSize: '0.74rem' }}
+                  title={`Book Shoot for ${celeb.name}`}
+                  onClick={() => openModal('scheduleShoot', { celebrity: celeb.name })}
+                >
+                  <Calendar size={12} /> Shoot
+                </button>
+              </div>
             </div>
           </div>
         ))}
@@ -121,4 +189,3 @@ export default function Celebrities() {
     </div>
   );
 }
-

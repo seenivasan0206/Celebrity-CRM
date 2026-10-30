@@ -13,7 +13,7 @@ import { Users, Megaphone, FileText, Camera, Plus, Sparkles } from 'lucide-react
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { celebrities, campaigns, contracts, shoots, setActiveModal } = useCrm();
+  const { celebrities, campaigns, contracts, shoots, openModal } = useCrm();
 
   return (
     <div className="dashboard-container">
@@ -27,14 +27,16 @@ export default function Dashboard() {
         </div>
         <div className="greeting-actions">
           <button
+            type="button"
             className="btn-primary"
-            onClick={() => setActiveModal('scheduleShoot')}
+            onClick={() => openModal('scheduleShoot')}
           >
             <Plus size={16} /> New Shoot Call
           </button>
           <button
+            type="button"
             className="btn-secondary"
-            onClick={() => setActiveModal('addCelebrity')}
+            onClick={() => openModal('addCelebrity')}
           >
             <Sparkles size={16} /> Onboard Talent
           </button>
@@ -104,4 +106,3 @@ export default function Dashboard() {
     </div>
   );
 }
-

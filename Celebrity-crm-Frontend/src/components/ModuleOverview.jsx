@@ -24,7 +24,7 @@ export default function ModuleOverview() {
     {
       name: 'Agencies',
       count: '4 Partnered',
-      link: '/managers',
+      link: '/agencies',
       color: '#10B981',
       icon: Building2
     },
@@ -52,14 +52,14 @@ export default function ModuleOverview() {
     {
       name: 'OTT Projects',
       count: '3 In Production',
-      link: '/campaigns',
+      link: '/ott-projects',
       color: '#8B5CF6',
       icon: Tv
     },
     {
       name: 'Casting Calls',
       count: '28 Auditions',
-      link: '/celebrities',
+      link: '/casting',
       color: '#EAB308',
       icon: Sparkles
     }
@@ -97,4 +97,3 @@ export default function ModuleOverview() {
     </div>
   );
 }
-
