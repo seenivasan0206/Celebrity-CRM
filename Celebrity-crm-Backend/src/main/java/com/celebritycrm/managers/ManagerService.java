@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.managers;
+package com.celebritycrm.managers;
 
 import com.celebritycrm.common.ResourceNotFoundException;
 import com.celebritycrm.managers.dto.ManagerRequest;

@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.managers.dto;
+package com.celebritycrm.managers.dto;
 
 import java.time.LocalDateTime;
 

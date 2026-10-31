@@ -12,23 +12,39 @@ const CrmContext = createContext();
 
 export const CrmProvider = ({ children }) => {
   const [celebrities, setCelebrities] = useState(() => {
-    const saved = localStorage.getItem('zenve_celebrities');
-    return saved ? JSON.parse(saved) : initialCelebrities;
+    try {
+      const saved = localStorage.getItem('zenve_celebrities');
+      return saved ? JSON.parse(saved) : initialCelebrities;
+    } catch {
+      return initialCelebrities;
+    }
   });
 
   const [shoots, setShoots] = useState(() => {
-    const saved = localStorage.getItem('zenve_shoots');
-    return saved ? JSON.parse(saved) : initialShoots;
+    try {
+      const saved = localStorage.getItem('zenve_shoots');
+      return saved ? JSON.parse(saved) : initialShoots;
+    } catch {
+      return initialShoots;
+    }
   });
 
   const [campaigns, setCampaigns] = useState(() => {
-    const saved = localStorage.getItem('zenve_campaigns');
-    return saved ? JSON.parse(saved) : initialCampaigns;
+    try {
+      const saved = localStorage.getItem('zenve_campaigns');
+      return saved ? JSON.parse(saved) : initialCampaigns;
+    } catch {
+      return initialCampaigns;
+    }
   });
 
   const [contracts, setContracts] = useState(() => {
-    const saved = localStorage.getItem('zenve_contracts');
-    return saved ? JSON.parse(saved) : initialContracts;
+    try {
+      const saved = localStorage.getItem('zenve_contracts');
+      return saved ? JSON.parse(saved) : initialContracts;
+    } catch {
+      return initialContracts;
+    }
   });
 
   const [managers, setManagers] = useState(() => {
@@ -58,8 +74,12 @@ export const CrmProvider = ({ children }) => {
   });
 
   const [activities, setActivities] = useState(() => {
-    const saved = localStorage.getItem('zenve_activities');
-    return saved ? JSON.parse(saved) : initialActivities;
+    try {
+      const saved = localStorage.getItem('zenve_activities');
+      return saved ? JSON.parse(saved) : initialActivities;
+    } catch {
+      return initialActivities;
+    }
   });
 
   const [notifications, setNotifications] = useState([
@@ -70,19 +90,39 @@ export const CrmProvider = ({ children }) => {
   ]);
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeModal, setActiveModal] = useState(null); // 'addCelebrity' | 'createCampaign' | 'createContract' | 'scheduleShoot' | null
+  const [activeModal, setActiveModalState] = useState(null); // 'addCelebrity' | 'createCampaign' | 'createContract' | 'scheduleShoot' | null
+  const [modalPayload, setModalPayload] = useState(null);
   const [toasts, setToasts] = useState([]);
+
+  const openModal = (modalName, payload = null) => {
+    setModalPayload(payload);
+    setActiveModalState(modalName);
+  };
+
+  const closeModal = () => {
+    setActiveModalState(null);
+    setModalPayload(null);
+  };
+
+  // Backward-compatible setter
+  const setActiveModal = (name) => {
+    if (name) {
+      openModal(name, null);
+    } else {
+      closeModal();
+    }
+  };
 
   const addToast = (message, type = 'success') => {
     const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
+    setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
+      setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 4000);
   };
 
   const removeToast = (id) => {
-    setToasts(prev => prev.filter(t => t.id !== id));
+    setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
   // Add Celebrity
@@ -111,13 +151,26 @@ export const CrmProvider = ({ children }) => {
     addToast(`Added ${newCeleb.name} to talent roster!`, 'success');
   };
 
+  // Delete Celebrity
+  const deleteCelebrity = (id) => {
+    const celeb = celebrities.find((c) => c.id === id);
+    const updated = celebrities.filter((c) => c.id !== id);
+    setCelebrities(updated);
+    localStorage.setItem('zenve_celebrities', JSON.stringify(updated));
+    addToast(`Removed ${celeb ? celeb.name : 'talent'} from roster`, 'info');
+  };
+
   // Add Shoot
   const addShoot = (shootData) => {
-    const matchedCeleb = celebrities.find(c => c.name.toLowerCase() === (shootData.celebrity || '').toLowerCase());
+    const matchedCeleb = celebrities.find(
+      (c) => c.name.toLowerCase() === (shootData.celebrity || '').toLowerCase()
+    );
     const newShoot = {
       id: Date.now(),
       status: 'Scheduled',
-      celebrityAvatar: matchedCeleb ? matchedCeleb.avatar : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      celebrityAvatar: matchedCeleb
+        ? matchedCeleb.avatar
+        : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
       ...shootData
     };
     const updated = [newShoot, ...shoots];
@@ -137,18 +190,18 @@ export const CrmProvider = ({ children }) => {
 
   // Update Shoot Status
   const updateShootStatus = (id, newStatus) => {
-    const updated = shoots.map(s => s.id === id ? { ...s, status: newStatus } : s);
+    const updated = shoots.map((s) => (s.id === id ? { ...s, status: newStatus } : s));
     setShoots(updated);
     localStorage.setItem('zenve_shoots', JSON.stringify(updated));
-    addToast(`Shoot status updated to ${newStatus}`, 'info');
+    addToast(`Shoot status updated to "${newStatus}"`, 'info');
   };
 
   // Delete Shoot
   const deleteShoot = (id) => {
-    const updated = shoots.filter(s => s.id !== id);
+    const updated = shoots.filter((s) => s.id !== id);
     setShoots(updated);
     localStorage.setItem('zenve_shoots', JSON.stringify(updated));
-    addToast(`Shoot removed from schedule`, 'info');
+    addToast(`Shoot canceled and removed`, 'info');
   };
 
   // Add Campaign
@@ -165,12 +218,14 @@ export const CrmProvider = ({ children }) => {
     localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
 
     // Also update celebrity campaign count
-    setCelebrities(prev => prev.map(c => {
-      if (c.name.toLowerCase() === (newCampaign.celebrity || '').toLowerCase()) {
-        return { ...c, campaignsCount: (c.campaignsCount || 0) + 1 };
-      }
-      return c;
-    }));
+    setCelebrities((prev) =>
+      prev.map((c) => {
+        if (c.name.toLowerCase() === (newCampaign.celebrity || '').toLowerCase()) {
+          return { ...c, campaignsCount: (c.campaignsCount || 0) + 1 };
+        }
+        return c;
+      })
+    );
 
     addActivity({
       type: 'campaign',
@@ -181,6 +236,22 @@ export const CrmProvider = ({ children }) => {
     });
 
     addToast(`Campaign "${newCampaign.title}" created successfully!`, 'success');
+  };
+
+  // Update Campaign Status
+  const updateCampaignStatus = (id, newStatus) => {
+    const updated = campaigns.map((c) => (c.id === id ? { ...c, status: newStatus } : c));
+    setCampaigns(updated);
+    localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
+    addToast(`Campaign status updated to "${newStatus}"`, 'info');
+  };
+
+  // Delete Campaign
+  const deleteCampaign = (id) => {
+    const updated = campaigns.filter((c) => c.id !== id);
+    setCampaigns(updated);
+    localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
+    addToast(`Campaign removed`, 'info');
   };
 
   // Add Contract
@@ -204,17 +275,38 @@ export const CrmProvider = ({ children }) => {
       iconColor: '#F59E0B'
     });
 
-    addToast(`Contract ${newContract.id} created!`, 'success');
+    addToast(`Contract ${newContract.id} executed successfully!`, 'success');
+  };
+
+  // Renew / Extend Contract
+  const renewContract = (id) => {
+    const updated = contracts.map((c) =>
+      c.id === id
+        ? {
+            ...c,
+            duration: `${parseInt(c.duration) + 12} Months`,
+            status: 'Active'
+          }
+        : c
+    );
+    setContracts(updated);
+    localStorage.setItem('zenve_contracts', JSON.stringify(updated));
+    addToast(`Contract ${id} renewed for +12 Months!`, 'success');
   };
 
   // Add Activity helper
   const addActivity = (act) => {
     const newAct = { id: Date.now(), ...act };
-    setActivities(prev => [newAct, ...prev.slice(0, 15)]);
+    setActivities((prev) => [newAct, ...prev.slice(0, 15)]);
   };
 
   const markAllNotificationsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })));
+    addToast('All notifications marked as read', 'info');
+  };
+
+  const markNotificationRead = (id) => {
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, unread: false } : n)));
   };
 
   const updateManagerPhoto = (id, newPhoto) => {
@@ -243,18 +335,25 @@ export const CrmProvider = ({ children }) => {
         activities,
         notifications,
         markAllNotificationsRead,
+        markNotificationRead,
         searchQuery,
         setSearchQuery,
         activeModal,
         setActiveModal,
+        openModal,
+        closeModal,
+        modalPayload,
         toasts,
         addToast,
         removeToast,
         addCelebrity,
+        deleteCelebrity,
         addShoot,
         updateShootStatus,
         deleteShoot,
         addCampaign,
+        updateCampaignStatus,
+        deleteCampaign,
         addContract,
         addActivity,
         updateManagerPhoto
@@ -266,4 +365,3 @@ export const CrmProvider = ({ children }) => {
 };
 
 export const useCrm = () => useContext(CrmContext);
-

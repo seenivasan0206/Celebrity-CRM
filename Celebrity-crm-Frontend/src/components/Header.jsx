@@ -12,7 +12,8 @@ import {
   User,
   Settings as SettingsIcon,
   LogOut,
-  CheckCheck
+  CheckCheck,
+  X
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -72,6 +73,7 @@ export default function Header({ toggleSidebar }) {
     <header className="crm-header">
       <div className="header-left">
         <button
+          type="button"
           className="sidebar-toggle-btn"
           onClick={toggleSidebar}
           aria-label="Toggle Sidebar Navigation"
@@ -88,7 +90,27 @@ export default function Header({ toggleSidebar }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <span className="search-shortcut">⌘K</span>
+          {searchQuery ? (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-dim)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+              title="Clear search"
+            >
+              <X size={15} />
+            </button>
+          ) : (
+            <span className="search-shortcut">⌘K</span>
+          )}
         </div>
       </div>
 
@@ -101,6 +123,7 @@ export default function Header({ toggleSidebar }) {
 
         {/* Theme toggle */}
         <button
+          type="button"
           className="header-action-btn"
           onClick={toggleTheme}
           title={`Switch to ${theme === 'dark' ? 'Light Frost' : 'Dark Luxe'} Mode`}
@@ -111,6 +134,7 @@ export default function Header({ toggleSidebar }) {
         {/* Notification Bell */}
         <div style={{ position: 'relative' }} ref={notifRef}>
           <button
+            type="button"
             className="header-action-btn"
             onClick={() => {
               setShowNotifs(!showNotifs);
@@ -127,7 +151,13 @@ export default function Header({ toggleSidebar }) {
               <div className="notif-header">
                 <h4>Notifications ({unreadCount} new)</h4>
                 {unreadCount > 0 && (
-                  <button onClick={markAllNotificationsRead}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      markAllNotificationsRead();
+                      setShowNotifs(false);
+                    }}
+                  >
                     <CheckCheck size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /> Mark all read
                   </button>
                 )}
@@ -149,6 +179,7 @@ export default function Header({ toggleSidebar }) {
         {/* User profile dropdown */}
         <div style={{ position: 'relative' }} ref={userMenuRef}>
           <button
+            type="button"
             className="header-user-btn"
             onClick={() => {
               setShowUserMenu(!showUserMenu);
@@ -176,6 +207,7 @@ export default function Header({ toggleSidebar }) {
                 <span>{user?.email}</span>
               </div>
               <button
+                type="button"
                 className="popover-item"
                 onClick={() => {
                   navigate('/settings');
@@ -185,6 +217,7 @@ export default function Header({ toggleSidebar }) {
                 <User size={16} /> Account Profile
               </button>
               <button
+                type="button"
                 className="popover-item"
                 onClick={() => {
                   navigate('/settings');
@@ -193,7 +226,11 @@ export default function Header({ toggleSidebar }) {
               >
                 <SettingsIcon size={16} /> CRM Preferences
               </button>
-              <button className="popover-item danger" onClick={handleLogout}>
+              <button
+                type="button"
+                className="popover-item danger"
+                onClick={handleLogout}
+              >
                 <LogOut size={16} /> Log Out
               </button>
             </div>
@@ -203,4 +240,3 @@ export default function Header({ toggleSidebar }) {
     </header>
   );
 }
-

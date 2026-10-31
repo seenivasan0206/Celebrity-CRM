@@ -10,15 +10,33 @@ import ScheduleShootModal from './Modals/ScheduleShootModal';
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    // If mobile screen, toggle mobile drawer; else toggle desktop collapse
+    if (window.innerWidth <= 992) {
+      setMobileOpen((prev) => !prev);
+    } else {
+      setCollapsed((prev) => !prev);
+    }
+  };
+
+  const closeMobileSidebar = () => {
+    setMobileOpen(false);
+  };
 
   return (
     <div className="crm-layout">
-      {/* Sidebar */}
-      <Sidebar collapsed={collapsed} />
+      {/* Sidebar with Mobile Drawer & Desktop Collapse Support */}
+      <Sidebar
+        collapsed={collapsed}
+        mobileOpen={mobileOpen}
+        closeMobileSidebar={closeMobileSidebar}
+      />
 
       {/* Main Container */}
       <div className="crm-main-area">
-        <Header toggleSidebar={() => setCollapsed(!collapsed)} />
+        <Header toggleSidebar={toggleSidebar} />
 
         <main className="crm-page-content">
           <Outlet />
@@ -36,4 +54,3 @@ export default function Layout() {
     </div>
   );
 }
-

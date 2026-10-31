@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCrm } from '../../context/CrmContext';
 import { X, FileText, Sparkles } from 'lucide-react';
 
 export default function CreateContractModal() {
-  const { activeModal, setActiveModal, addContract, celebrities } = useCrm();
+  const { activeModal, closeModal, addContract, celebrities, modalPayload } = useCrm();
 
   const [formData, setFormData] = useState({
     celebrity: celebrities[0]?.name || 'Vijay',
@@ -14,17 +14,32 @@ export default function CreateContractModal() {
     category: 'Brand Endorsement'
   });
 
+  useEffect(() => {
+    if (modalPayload?.celebrity) {
+      setFormData((prev) => ({ ...prev, celebrity: modalPayload.celebrity }));
+    }
+  }, [modalPayload]);
+
   if (activeModal !== 'createContract') return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.client.trim()) return;
     addContract(formData);
-    setActiveModal(null);
+    // Reset form
+    setFormData({
+      celebrity: celebrities[0]?.name || 'Vijay',
+      client: '',
+      value: '$250,000',
+      duration: '12 Months',
+      expiryDate: '2026-12-31',
+      category: 'Brand Endorsement'
+    });
+    closeModal();
   };
 
   return (
-    <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+    <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
@@ -36,7 +51,7 @@ export default function CreateContractModal() {
               <p>Bind legal, brand and talent terms with signature ledger</p>
             </div>
           </div>
-          <button className="modal-close-btn" onClick={() => setActiveModal(null)}>
+          <button type="button" className="modal-close-btn" onClick={closeModal}>
             <X size={18} />
           </button>
         </div>
@@ -112,7 +127,7 @@ export default function CreateContractModal() {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={() => setActiveModal(null)}>
+            <button type="button" className="btn-secondary" onClick={closeModal}>
               Cancel
             </button>
             <button type="submit" className="btn-primary">
@@ -124,4 +139,3 @@ export default function CreateContractModal() {
     </div>
   );
 }
-

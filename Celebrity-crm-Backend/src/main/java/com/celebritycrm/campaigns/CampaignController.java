@@ -1,4 +1,4 @@
-﻿package com.celebritycrm.campaigns;
+package com.celebritycrm.campaigns;
 
 import com.celebritycrm.campaigns.dto.CampaignRequest;
 import com.celebritycrm.campaigns.dto.CampaignResponse;

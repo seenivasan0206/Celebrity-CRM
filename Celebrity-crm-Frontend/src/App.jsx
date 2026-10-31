@@ -33,7 +33,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Authenticated Application Routes */}
+            {/* Authenticated Application Routes with Separate Dedicated Paths */}
             <Route
               path="/"
               element={
@@ -47,6 +47,9 @@ export default function App() {
               <Route path="managers" element={<TalentManagersPage />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="celebrities" element={<Celebrities />} />
+              <Route path="managers" element={<Managers />} />
+              <Route path="agencies" element={<Agencies />} />
+              <Route path="contracts" element={<Contracts />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="shoots" element={<Shoots />} />
               <Route path="contracts" element={<Contracts />} />
