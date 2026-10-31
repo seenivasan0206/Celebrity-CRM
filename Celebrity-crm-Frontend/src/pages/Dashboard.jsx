@@ -13,7 +13,15 @@ import { Users, Megaphone, FileText, Camera, Plus, Sparkles } from 'lucide-react
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { celebrities, campaigns, contracts, shoots, setActiveModal } = useCrm();
+  const { celebrities, campaigns, contracts, shoots, openModal, setActiveModal } = useCrm();
+
+  const handleOpenModal = (name) => {
+    if (openModal) {
+      openModal(name);
+    } else if (setActiveModal) {
+      setActiveModal(name);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -29,14 +37,14 @@ export default function Dashboard() {
           <button
             type="button"
             className="btn-primary"
-            onClick={() => setActiveModal && setActiveModal('scheduleShoot')}
+            onClick={() => handleOpenModal('scheduleShoot')}
           >
             <Plus size={16} /> New Shoot Call
           </button>
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => setActiveModal && setActiveModal('addCelebrity')}
+            onClick={() => handleOpenModal('addCelebrity')}
           >
             <Sparkles size={16} /> Onboard Talent
           </button>
@@ -101,7 +109,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bottom Row: Module Overview 8 Tiles */}
+      {/* 8-Card Module Quick-Access Overview Grid */}
       <ModuleOverview />
     </div>
   );

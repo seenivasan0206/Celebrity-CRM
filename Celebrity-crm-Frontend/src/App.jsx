@@ -7,11 +7,17 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import TalentManagersPage from './pages/TalentManagersPage';
 import Celebrities from './pages/Celebrities';
 import Campaigns from './pages/Campaigns';
 import Shoots from './pages/Shoots';
 import Contracts from './pages/Contracts';
+import Managers from './pages/Managers';
+import Agencies from './pages/Agencies';
+import OttProjects from './pages/OttProjects';
+import CastingCalls from './pages/CastingCalls';
+import Applications from './pages/Applications';
+import Files from './pages/Files';
+import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 
 // Protected Route Guard
@@ -33,7 +39,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
-            {/* Authenticated Application Routes */}
+            {/* Authenticated Application Routes with Separate Dedicated Paths */}
             <Route
               path="/"
               element={
@@ -42,16 +48,19 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              {/* Main Dashboard & Navigation Routes */}
               <Route index element={<Dashboard />} />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="managers" element={<TalentManagersPage />} />
-              <Route path="agencies" element={<TalentManagersPage />} />
               <Route path="celebrities" element={<Celebrities />} />
+              <Route path="managers" element={<Managers />} />
+              <Route path="agencies" element={<Agencies />} />
+              <Route path="contracts" element={<Contracts />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="shoots" element={<Shoots />} />
-              <Route path="contracts" element={<Contracts />} />
-              <Route path="reports" element={<Dashboard />} />
+              <Route path="ott-projects" element={<OttProjects />} />
+              <Route path="casting" element={<CastingCalls />} />
+              <Route path="applications" element={<Applications />} />
+              <Route path="files" element={<Files />} />
+              <Route path="reports" element={<Reports />} />
               <Route path="settings" element={<Settings />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
