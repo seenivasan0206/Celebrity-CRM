@@ -28,7 +28,7 @@ export default function Sidebar({ collapsed }) {
   const navigate = useNavigate();
 
   const navItems = [
-    { label: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'Celebrities', path: '/celebrities', icon: Users, badge: celebrities.length },
     { label: 'Managers', path: '/managers', icon: UserCheck, badge: managers.length },
     { label: 'Agencies', path: '/managers', icon: Building2 },
@@ -46,7 +46,7 @@ export default function Sidebar({ collapsed }) {
   return (
     <aside className={`crm-sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
-        <Link to="/" className="brand-wrapper">
+        <Link to="/managers" className="brand-wrapper">
           <div className="brand-icon">
             <Star size={22} fill="#ffffff" />
           </div>

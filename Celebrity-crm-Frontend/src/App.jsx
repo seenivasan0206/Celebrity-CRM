@@ -6,12 +6,12 @@ import { CrmProvider } from './context/CrmContext';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import TalentManagersPage from './pages/TalentManagersPage';
 import Dashboard from './pages/Dashboard';
 import Celebrities from './pages/Celebrities';
 import Campaigns from './pages/Campaigns';
 import Shoots from './pages/Shoots';
 import Contracts from './pages/Contracts';
-import Managers from './pages/Managers';
 import Settings from './pages/Settings';
 
 // Protected Route Guard
@@ -42,15 +42,17 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<Dashboard />} />
+              {/* Default redirect to the active Managers page directory */}
+              <Route index element={<Navigate to="/managers" replace />} />
+              <Route path="managers" element={<TalentManagersPage />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="celebrities" element={<Celebrities />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="shoots" element={<Shoots />} />
               <Route path="contracts" element={<Contracts />} />
-              <Route path="managers" element={<Managers />} />
               <Route path="reports" element={<Dashboard />} />
               <Route path="settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<Navigate to="/managers" replace />} />
             </Route>
           </Routes>
         </BrowserRouter>
@@ -58,4 +60,3 @@ export default function App() {
     </AuthProvider>
   );
 }
-

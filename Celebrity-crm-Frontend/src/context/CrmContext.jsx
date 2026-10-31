@@ -33,7 +33,28 @@ export const CrmProvider = ({ children }) => {
 
   const [managers, setManagers] = useState(() => {
     const saved = localStorage.getItem('zenve_managers');
-    return saved ? JSON.parse(saved) : initialManagers;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const hydrated = parsed.map((m) => {
+          const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
+          const resolvedPhoto = m.photo || m.avatar || defaultMatch.photo;
+          return {
+            ...defaultMatch,
+            ...m,
+            photo: resolvedPhoto,
+            avatar: resolvedPhoto,
+            role: m.role || m.title || defaultMatch.role,
+            representedTalents: m.representedTalents || m.assignedCelebrities || defaultMatch.representedTalents || []
+          };
+        });
+        localStorage.setItem('zenve_managers', JSON.stringify(hydrated));
+        return hydrated;
+      } catch {
+        return initialManagers;
+      }
+    }
+    return initialManagers;
   });
 
   const [activities, setActivities] = useState(() => {
@@ -196,6 +217,21 @@ export const CrmProvider = ({ children }) => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
   };
 
+  const updateManagerPhoto = (id, newPhoto) => {
+    setManagers(prev => {
+      const updated = prev.map(m => {
+        if (m.id === id) {
+          return { ...m, photo: newPhoto, avatar: newPhoto };
+        }
+        return m;
+      });
+      localStorage.setItem('zenve_managers', JSON.stringify(updated));
+      return updated;
+    });
+    const target = managers.find(m => m.id === id);
+    addToast('Profile photo updated for ' + (target?.name || 'Manager') + '!', 'success');
+  };
+
   return (
     <CrmContext.Provider
       value={{
@@ -220,7 +256,8 @@ export const CrmProvider = ({ children }) => {
         deleteShoot,
         addCampaign,
         addContract,
-        addActivity
+        addActivity,
+        updateManagerPhoto
       }}
     >
       {children}

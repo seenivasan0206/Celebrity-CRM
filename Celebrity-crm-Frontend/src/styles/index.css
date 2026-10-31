@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ========================================================
    ZENVE CRM — GLOBAL DESIGN SYSTEM & MODERN CSS
    ======================================================== */
