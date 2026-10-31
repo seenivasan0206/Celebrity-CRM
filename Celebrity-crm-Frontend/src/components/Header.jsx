@@ -27,6 +27,18 @@ export default function Header({ toggleSidebar }) {
 
   const userMenuRef = useRef(null);
   const notifRef = useRef(null);
+  const searchInputRef = useRef(null);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const unreadCount = notifications.filter((n) => n.unread).length;
 

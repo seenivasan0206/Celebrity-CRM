@@ -13,7 +13,7 @@ import { Users, Megaphone, FileText, Camera, Plus, Sparkles } from 'lucide-react
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { celebrities, campaigns, contracts, shoots, openModal } = useCrm();
+  const { celebrities, campaigns, contracts, shoots, setActiveModal } = useCrm();
 
   return (
     <div className="dashboard-container">
@@ -29,14 +29,14 @@ export default function Dashboard() {
           <button
             type="button"
             className="btn-primary"
-            onClick={() => openModal('scheduleShoot')}
+            onClick={() => setActiveModal && setActiveModal('scheduleShoot')}
           >
             <Plus size={16} /> New Shoot Call
           </button>
           <button
             type="button"
             className="btn-secondary"
-            onClick={() => openModal('addCelebrity')}
+            onClick={() => setActiveModal && setActiveModal('addCelebrity')}
           >
             <Sparkles size={16} /> Onboard Talent
           </button>
@@ -47,7 +47,7 @@ export default function Dashboard() {
       <div className="stat-cards-grid">
         <StatCard
           title="Total Celebrities"
-          value={celebrities.length}
+          value={celebrities?.length || 0}
           change="↑ 12%"
           isPositive={true}
           icon={Users}
@@ -56,7 +56,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Active Campaigns"
-          value={campaigns.length}
+          value={campaigns?.length || 0}
           change="↑ 33%"
           isPositive={true}
           icon={Megaphone}
@@ -65,7 +65,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Total Contracts"
-          value={contracts.length}
+          value={contracts?.length || 0}
           change="↑ 25%"
           isPositive={true}
           icon={FileText}
@@ -74,7 +74,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Ongoing Shoots"
-          value={shoots.length}
+          value={shoots?.length || 0}
           change="↑ 67%"
           isPositive={true}
           icon={Camera}
