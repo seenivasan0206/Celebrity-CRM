@@ -66,7 +66,7 @@ export const CrmProvider = ({ children }) => {
         const existingIds = new Set(parsed.map((m) => m.id));
         const hydrated = parsed.map((m) => {
           const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
-          const resolvedPhoto = m.photo || m.avatar || defaultMatch.photo;
+          const resolvedPhoto = (m.photo && m.photo.startsWith('/images/')) ? m.photo : (defaultMatch.photo || `/images/managers/${m.id || 1}.jpg`);
           return {
             ...defaultMatch,
             ...m,

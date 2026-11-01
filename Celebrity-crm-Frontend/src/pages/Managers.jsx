@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import { useNavigate } from 'react-router-dom';
 import ChangeManagerPhotoModal from '../components/ChangeManagerPhotoModal';
+import { MANAGER_PHOTOS_MAP, getManagerPhoto } from '../data/managerPhotos';
 import {
   Users,
   Building2,
@@ -18,7 +19,40 @@ import {
   X
 } from 'lucide-react';
 
+// Guaranteed local high-resolution portrait paths served directly by the application
 export const DEFAULT_MANAGER_PHOTOS = {
+  1: '/images/managers/1.jpg',
+  2: '/images/managers/2.jpg',
+  3: '/images/managers/3.jpg',
+  4: '/images/managers/4.jpg',
+  5: '/images/managers/5.jpg',
+  6: '/images/managers/6.jpg',
+  7: '/images/managers/7.jpg',
+  8: '/images/managers/8.jpg',
+  9: '/images/managers/9.jpg',
+  10: '/images/managers/10.jpg',
+  11: '/images/managers/11.jpg',
+  12: '/images/managers/12.jpg',
+  13: '/images/managers/13.jpg',
+  14: '/images/managers/14.jpg',
+  'john doe': '/images/managers/1.jpg',
+  'sarah jenkins': '/images/managers/2.jpg',
+  'vikram rathore': '/images/managers/3.jpg',
+  'priya sunder': '/images/managers/4.jpg',
+  'arjun verma': '/images/managers/5.jpg',
+  'ananya sen': '/images/managers/6.jpg',
+  'rohan mehta': '/images/managers/7.jpg',
+  'meera nambiar': '/images/managers/8.jpg',
+  'kavita krishnan': '/images/managers/9.jpg',
+  'devendra singhania': '/images/managers/10.jpg',
+  'tara alagappan': '/images/managers/11.jpg',
+  'karthik sundaram': '/images/managers/12.jpg',
+  'rhea chawla': '/images/managers/13.jpg',
+  'siddharth roy': '/images/managers/14.jpg'
+};
+
+// High-resolution online fallback portraits
+export const ONLINE_BACKUP_PHOTOS = {
   1: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
   2: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
   3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
@@ -32,37 +66,35 @@ export const DEFAULT_MANAGER_PHOTOS = {
   11: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
   12: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
   13: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80',
-  14: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
-  'john doe': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
-  'sarah jenkins': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
-  'vikram rathore': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
-  'priya sunder': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
-  'arjun verma': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
-  'ananya sen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  'rohan mehta': 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80',
-  'meera nambiar': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
-  'kavita krishnan': 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
-  'devendra singhania': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
-  'tara alagappan': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-  'karthik sundaram': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-  'rhea chawla': 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80',
-  'siddharth roy': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'
+  14: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'
 };
 
 export const resolvePhoto = (mgr) => {
-  return (
-    mgr?.photo ||
-    mgr?.avatar ||
-    DEFAULT_MANAGER_PHOTOS[mgr?.id] ||
-    DEFAULT_MANAGER_PHOTOS[(mgr?.name || '').toLowerCase().trim()] ||
-    DEFAULT_MANAGER_PHOTOS[1]
-  );
+  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:'))) {
+    return mgr.photo;
+  }
+  if (mgr?.id && MANAGER_PHOTOS_MAP[mgr.id]) {
+    return MANAGER_PHOTOS_MAP[mgr.id];
+  }
+  const nameKey = (mgr?.name || '').toLowerCase().trim();
+  if (MANAGER_PHOTOS_MAP[nameKey]) {
+    return MANAGER_PHOTOS_MAP[nameKey];
+  }
+  if (mgr?.photo && mgr.photo.startsWith('/images/')) {
+    return mgr.photo;
+  }
+  return getManagerPhoto(mgr?.id || 1);
 };
 
 // Resilient visual avatar component with automatic modern gradient fallback
 function ManagerAvatar({ mgr, onAvatarClick }) {
+  const [photoSrc, setPhotoSrc] = useState(() => resolvePhoto(mgr));
   const [imgFailed, setImgFailed] = useState(false);
-  const photoUrl = resolvePhoto(mgr);
+
+  useEffect(() => {
+    setPhotoSrc(resolvePhoto(mgr));
+    setImgFailed(false);
+  }, [mgr?.photo, mgr?.id, mgr?.name]);
 
   const initials = (mgr?.name || 'TM')
     .split(' ')
@@ -72,7 +104,7 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
     .join('')
     .toUpperCase() || 'TM';
 
-  // Distinct modern gradients for fallback
+  // Distinct modern gradients for initials fallback
   const gradients = [
     'linear-gradient(135deg, #6366F1 0%, #4338CA 100%)',
     'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
@@ -84,18 +116,27 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
   ];
   const gradient = gradients[(mgr?.id || 1) % gradients.length];
 
+  const handleImgError = () => {
+    const directPath = `/images/managers/${mgr?.id || 1}.jpg`;
+    if (photoSrc !== directPath) {
+      setPhotoSrc(directPath);
+    } else {
+      setImgFailed(true);
+    }
+  };
+
   return (
     <div
       className="manager-photo-wrap"
       onClick={onAvatarClick}
       title="Click to view or change profile photo"
     >
-      {!imgFailed && photoUrl ? (
+      {!imgFailed && photoSrc ? (
         <img
-          src={photoUrl}
+          src={photoSrc}
           alt={mgr?.name || 'Talent Manager'}
           className="manager-photo-img"
-          onError={() => setImgFailed(true)}
+          onError={handleImgError}
           loading="eager"
         />
       ) : (

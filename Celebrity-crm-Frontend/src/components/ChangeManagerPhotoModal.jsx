@@ -3,46 +3,14 @@ import { useAuth } from '../context/AuthContext';
 import { X, Upload, Link as LinkIcon, Camera, Check, RefreshCw, Sparkles, Image as ImageIcon } from 'lucide-react';
 
 export const CURATED_EXECUTIVE_PHOTOS = [
-  {
-    id: 'male-1',
-    label: 'Executive Partner (Navy Suit)',
-    url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'female-1',
-    label: 'Brand Director (Modern)',
-    url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'male-2',
-    label: 'Talent Producer (Studio)',
-    url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'female-2',
-    label: 'Casting Relations Head',
-    url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'male-3',
-    label: 'Creative Director',
-    url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'female-3',
-    label: 'Senior Artist Rep',
-    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'male-4',
-    label: 'VP of Representations',
-    url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80'
-  },
-  {
-    id: 'female-4',
-    label: 'Managing Director',
-    url: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80'
-  }
+  { id: 'male-1', label: 'Executive Partner (Navy Suit)', url: '/images/managers/1.jpg' },
+  { id: 'female-1', label: 'Brand Director (Modern)', url: '/images/managers/2.jpg' },
+  { id: 'male-2', label: 'Talent Producer (Studio)', url: '/images/managers/3.jpg' },
+  { id: 'female-2', label: 'Casting Relations Head', url: '/images/managers/4.jpg' },
+  { id: 'male-3', label: 'VP Brand Alliances', url: '/images/managers/5.jpg' },
+  { id: 'female-3', label: 'Global Talent Liaison', url: '/images/managers/6.jpg' },
+  { id: 'male-4', label: 'VP of Representations', url: '/images/managers/7.jpg' },
+  { id: 'female-4', label: 'Head of Legal & Contracts', url: '/images/managers/8.jpg' }
 ];
 
 export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSavePhoto }) {

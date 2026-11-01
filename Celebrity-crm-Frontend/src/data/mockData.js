@@ -1,3 +1,4 @@
+import { getManagerPhoto } from './managerPhotos';
 // Initial mock data for Zenve CRM Portal
 
 export const initialCelebrities = [
@@ -370,8 +371,8 @@ export const initialManagers = [
       "agency": "Elite Talent Management",
       "email": "john.doe@celebrityagency.com",
       "phone": "+1-555-0199",
-      "photo": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/1.jpg",
+      "avatar": "/images/managers/1.jpg",
       "representedTalents": [
           "Vijay",
           "Anirudh Ravichander"
@@ -390,8 +391,8 @@ export const initialManagers = [
       "agency": "Global Talent & Media",
       "email": "sarah.j@globaltalent.com",
       "phone": "+1-555-0245",
-      "photo": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/2.jpg",
+      "avatar": "/images/managers/2.jpg",
       "representedTalents": [
           "Nayanthara",
           "Trisha"
@@ -410,8 +411,8 @@ export const initialManagers = [
       "agency": "Apex Studio Representations",
       "email": "vikram.r@apexstudio.in",
       "phone": "+91 98200 45678",
-      "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/3.jpg",
+      "avatar": "/images/managers/3.jpg",
       "representedTalents": [
           "Ajith Kumar",
           "Suriya"
@@ -430,8 +431,8 @@ export const initialManagers = [
       "agency": "Zenve Talent Network",
       "email": "priya.s@zenvetalent.com",
       "phone": "+91 98450 11223",
-      "photo": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/4.jpg",
+      "avatar": "/images/managers/4.jpg",
       "representedTalents": [
           "Dhanush",
           "Samantha Ruth Prabhu"
@@ -450,8 +451,8 @@ export const initialManagers = [
       "agency": "Apex Studio Representations",
       "email": "arjun.v@apexstudio.in",
       "phone": "+91 98201 55670",
-      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/5.jpg",
+      "avatar": "/images/managers/5.jpg",
       "representedTalents": [
           "Vijay",
           "Suriya"
@@ -470,8 +471,8 @@ export const initialManagers = [
       "agency": "Global Talent & Media",
       "email": "ananya.sen@globaltalent.in",
       "phone": "+91 98112 33445",
-      "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/6.jpg",
+      "avatar": "/images/managers/6.jpg",
       "representedTalents": [
           "Nayanthara",
           "Samantha Ruth Prabhu"
@@ -490,8 +491,8 @@ export const initialManagers = [
       "agency": "Elite Talent Management",
       "email": "rohan.m@elitetalent.com",
       "phone": "+91 22 2640 9911",
-      "photo": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/7.jpg",
+      "avatar": "/images/managers/7.jpg",
       "representedTalents": [
           "Ajith Kumar",
           "Anirudh Ravichander"
@@ -510,8 +511,8 @@ export const initialManagers = [
       "agency": "Zenve Talent Network",
       "email": "meera.n@zenvetalent.com",
       "phone": "+91 80 4123 8899",
-      "photo": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/8.jpg",
+      "avatar": "/images/managers/8.jpg",
       "representedTalents": [
           "Anirudh Ravichander",
           "Trisha"
@@ -530,8 +531,8 @@ export const initialManagers = [
       "agency": "Elite Talent Management",
       "email": "kavita.k@elitetalent.com",
       "phone": "+91 22 2640 7722",
-      "photo": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/9.jpg",
+      "avatar": "/images/managers/9.jpg",
       "representedTalents": [
           "Vijay",
           "Trisha"
@@ -550,8 +551,8 @@ export const initialManagers = [
       "agency": "Apex Studio Representations",
       "email": "devendra.s@apexstudio.in",
       "phone": "+91 98203 88990",
-      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/10.jpg",
+      "avatar": "/images/managers/10.jpg",
       "representedTalents": [
           "Suriya",
           "Dhanush"
@@ -570,8 +571,8 @@ export const initialManagers = [
       "agency": "Global Talent & Media",
       "email": "tara.a@globaltalent.in",
       "phone": "+91 44 2811 7700",
-      "photo": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/11.jpg",
+      "avatar": "/images/managers/11.jpg",
       "representedTalents": [
           "Nayanthara",
           "Ajith Kumar"
@@ -590,8 +591,8 @@ export const initialManagers = [
       "agency": "Zenve Talent Network",
       "email": "karthik.s@zenvetalent.com",
       "phone": "+91 80 4123 9933",
-      "photo": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/12.jpg",
+      "avatar": "/images/managers/12.jpg",
       "representedTalents": [
           "Samantha Ruth Prabhu",
           "Anirudh Ravichander"
@@ -610,8 +611,8 @@ export const initialManagers = [
       "agency": "Elite Talent Management",
       "email": "rhea.c@elitetalent.com",
       "phone": "+91 22 2640 4455",
-      "photo": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/13.jpg",
+      "avatar": "/images/managers/13.jpg",
       "representedTalents": [
           "Nayanthara",
           "Vijay"
@@ -630,8 +631,8 @@ export const initialManagers = [
       "agency": "Apex Studio Representations",
       "email": "siddharth.r@apexstudio.in",
       "phone": "+91 98205 66778",
-      "photo": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
-      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
+      "photo": "/images/managers/14.jpg",
+      "avatar": "/images/managers/14.jpg",
       "representedTalents": [
           "Ajith Kumar",
           "Dhanush"
