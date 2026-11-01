@@ -363,60 +363,164 @@ export const initialContracts = [
 
 export const initialManagers = [
   {
-    id: 1,
-    name: 'John Doe',
-    role: 'Senior VP of Talent',
-    title: 'Senior VP of Talent',
-    agency: 'Elite Talent Management',
-    email: 'john.doe@celebrityagency.com',
-    phone: '+1-555-0199',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Vijay', 'Anirudh Ravichander'],
-    assignedCelebrities: ['Vijay', 'Anirudh Ravichander'],
-    status: 'Active'
+      "id": 1,
+      "name": "John Doe",
+      "role": "Senior VP of Talent",
+      "title": "Senior VP of Talent",
+      "agency": "Elite Talent Management",
+      "email": "john.doe@celebrityagency.com",
+      "phone": "+1-555-0199",
+      "photo": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Vijay",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
   },
   {
-    id: 2,
-    name: 'Sarah Jenkins',
-    role: 'Director of Brand Endorsements',
-    title: 'Director of Brand Endorsements',
-    agency: 'Global Talent & Media',
-    email: 'sarah.j@globaltalent.com',
-    phone: '+1-555-0245',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Nayanthara', 'Trisha'],
-    assignedCelebrities: ['Nayanthara', 'Trisha'],
-    status: 'Active'
+      "id": 2,
+      "name": "Sarah Jenkins",
+      "role": "Director of Brand Endorsements",
+      "title": "Director of Brand Endorsements",
+      "agency": "Global Talent & Media",
+      "email": "sarah.j@globaltalent.com",
+      "phone": "+1-555-0245",
+      "photo": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Nayanthara",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Trisha"
+      ],
+      "status": "Active"
   },
   {
-    id: 3,
-    name: 'Vikram Rathore',
-    role: 'Executive Talent Producer',
-    title: 'Executive Talent Producer',
-    agency: 'Apex Studio Representations',
-    email: 'vikram.r@apexstudio.in',
-    phone: '+91 98200 45678',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Ajith Kumar', 'Suriya'],
-    assignedCelebrities: ['Ajith Kumar', 'Suriya'],
-    status: 'Active'
+      "id": 3,
+      "name": "Vikram Rathore",
+      "role": "Executive Talent Producer",
+      "title": "Executive Talent Producer",
+      "agency": "Apex Studio Representations",
+      "email": "vikram.r@apexstudio.in",
+      "phone": "+91 98200 45678",
+      "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Suriya"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Suriya"
+      ],
+      "status": "Active"
   },
   {
-    id: 4,
-    name: 'Priya Sunder',
-    role: 'Casting & Contract Relations Head',
-    title: 'Casting & Contract Relations Head',
-    agency: 'Zenve Talent Network',
-    email: 'priya.s@zenvetalent.com',
-    phone: '+91 98450 11223',
-    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Dhanush', 'Samantha Ruth Prabhu'],
-    assignedCelebrities: ['Dhanush', 'Samantha Ruth Prabhu'],
-    status: 'Active'
+      "id": 4,
+      "name": "Priya Sunder",
+      "role": "Casting & Contract Relations Head",
+      "title": "Casting & Contract Relations Head",
+      "agency": "Zenve Talent Network",
+      "email": "priya.s@zenvetalent.com",
+      "phone": "+91 98450 11223",
+      "photo": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Dhanush",
+          "Samantha Ruth Prabhu"
+      ],
+      "assignedCelebrities": [
+          "Dhanush",
+          "Samantha Ruth Prabhu"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 5,
+      "name": "Arjun Verma",
+      "role": "VP of Brand Alliances & Partnerships",
+      "title": "VP of Brand Alliances & Partnerships",
+      "agency": "Apex Studio Representations",
+      "email": "arjun.v@apexstudio.in",
+      "phone": "+91 98201 55670",
+      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Vijay",
+          "Suriya"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Suriya"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 6,
+      "name": "Ananya Sen",
+      "role": "Head of Artist Endorsements & OTT",
+      "title": "Head of Artist Endorsements & OTT",
+      "agency": "Global Talent & Media",
+      "email": "ananya.sen@globaltalent.in",
+      "phone": "+91 98112 33445",
+      "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Nayanthara",
+          "Samantha Ruth Prabhu"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Samantha Ruth Prabhu"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 7,
+      "name": "Rohan Mehta",
+      "role": "Executive Director of Talent Booking",
+      "title": "Executive Director of Talent Booking",
+      "agency": "Elite Talent Management",
+      "email": "rohan.m@elitetalent.com",
+      "phone": "+91 22 2640 9911",
+      "photo": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 8,
+      "name": "Meera Nambiar",
+      "role": "Music & Performing Arts Liaison",
+      "title": "Music & Performing Arts Liaison",
+      "agency": "Zenve Talent Network",
+      "email": "meera.n@zenvetalent.com",
+      "phone": "+91 80 4123 8899",
+      "photo": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Anirudh Ravichander",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Anirudh Ravichander",
+          "Trisha"
+      ],
+      "status": "Active"
   }
 ];
 

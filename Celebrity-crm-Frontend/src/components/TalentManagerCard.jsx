@@ -9,10 +9,18 @@ export const DEFAULT_MANAGER_PHOTOS = {
   2: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
   3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
   4: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
+  5: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+  6: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+  7: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
+  8: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80',
   'john doe': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
   'sarah jenkins': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
   'vikram rathore': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-  'priya sunder': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80'
+  'priya sunder': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
+  'arjun verma': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+  'ananya sen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+  'rohan mehta': 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
+  'meera nambiar': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80'
 };
 
 export default function TalentManagerCard({ manager }) {
@@ -89,6 +97,7 @@ export default function TalentManagerCard({ manager }) {
               title="Click to view or change portrait photo"
             >
               <div 
+                style={{ width: "68px", height: "68px", minWidth: "68px", minHeight: "68px", borderRadius: "16px", overflow: "hidden", position: "relative" }}
                 className={`w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-2xl overflow-hidden shadow-md transition-transform duration-300 group-hover:scale-105 ${
                   isLight
                     ? 'bg-slate-100 border border-slate-200 ring-2 ring-slate-100'
@@ -99,6 +108,7 @@ export default function TalentManagerCard({ manager }) {
                   <img
                     src={photo}
                     alt={name}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     className="w-full h-full object-cover rounded-2xl"
                     referrerPolicy="no-referrer"
                     crossOrigin="anonymous"

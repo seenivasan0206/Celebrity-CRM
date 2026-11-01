@@ -63,6 +63,7 @@ export const CrmProvider = ({ children }) => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((m) => m.id));
         const hydrated = parsed.map((m) => {
           const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
           const resolvedPhoto = m.photo || m.avatar || defaultMatch.photo;
@@ -75,8 +76,10 @@ export const CrmProvider = ({ children }) => {
             representedTalents: m.representedTalents || m.assignedCelebrities || defaultMatch.representedTalents || []
           };
         });
-        localStorage.setItem('zenve_managers', JSON.stringify(hydrated));
-        return hydrated;
+        const missing = initialManagers.filter((im) => !existingIds.has(im.id));
+        const allManagers = [...hydrated, ...missing];
+        localStorage.setItem('zenve_managers', JSON.stringify(allManagers));
+        return allManagers;
       } catch {
         return initialManagers;
       }
