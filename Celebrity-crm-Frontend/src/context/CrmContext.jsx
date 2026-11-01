@@ -32,7 +32,18 @@ export const CrmProvider = ({ children }) => {
   const [campaigns, setCampaigns] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_campaigns');
-      return saved ? JSON.parse(saved) : initialCampaigns;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((c) => c.id));
+        const missing = initialCampaigns.filter((c) => !existingIds.has(c.id));
+        if (missing.length > 0) {
+          const merged = [...parsed, ...missing];
+          localStorage.setItem('zenve_campaigns', JSON.stringify(merged));
+          return merged;
+        }
+        return parsed;
+      }
+      return initialCampaigns;
     } catch {
       return initialCampaigns;
     }
@@ -246,6 +257,14 @@ export const CrmProvider = ({ children }) => {
     addToast(`Campaign status updated to "${newStatus}"`, 'info');
   };
 
+  // Update Campaign Target Date / Deadline
+  const updateCampaignDeadline = (id, newDeadline) => {
+    const updated = campaigns.map((c) => (c.id === id ? { ...c, deadline: newDeadline } : c));
+    setCampaigns(updated);
+    localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
+    addToast(`Target date updated to "${newDeadline}"`, 'success');
+  };
+
   // Delete Campaign
   const deleteCampaign = (id) => {
     const updated = campaigns.filter((c) => c.id !== id);
@@ -353,6 +372,7 @@ export const CrmProvider = ({ children }) => {
         deleteShoot,
         addCampaign,
         updateCampaignStatus,
+        updateCampaignDeadline,
         deleteCampaign,
         addContract,
         addActivity,
