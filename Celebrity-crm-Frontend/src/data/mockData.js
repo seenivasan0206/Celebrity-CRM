@@ -521,6 +521,126 @@ export const initialManagers = [
           "Trisha"
       ],
       "status": "Active"
+  },
+  {
+      "id": 9,
+      "name": "Kavita Krishnan",
+      "role": "Chief Casting Director & Talent Strategist",
+      "title": "Chief Casting Director & Talent Strategist",
+      "agency": "Elite Talent Management",
+      "email": "kavita.k@elitetalent.com",
+      "phone": "+91 22 2640 7722",
+      "photo": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Vijay",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Trisha"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 10,
+      "name": "Devendra Singhania",
+      "role": "Global Commercial Brand Agent",
+      "title": "Global Commercial Brand Agent",
+      "agency": "Apex Studio Representations",
+      "email": "devendra.s@apexstudio.in",
+      "phone": "+91 98203 88990",
+      "photo": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Suriya",
+          "Dhanush"
+      ],
+      "assignedCelebrities": [
+          "Suriya",
+          "Dhanush"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 11,
+      "name": "Tara Alagappan",
+      "role": "International Media & PR Director",
+      "title": "International Media & PR Director",
+      "agency": "Global Talent & Media",
+      "email": "tara.a@globaltalent.in",
+      "phone": "+91 44 2811 7700",
+      "photo": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Nayanthara",
+          "Ajith Kumar"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Ajith Kumar"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 12,
+      "name": "Karthik Sundaram",
+      "role": "Digital Influencer & OTT Contract Head",
+      "title": "Digital Influencer & OTT Contract Head",
+      "agency": "Zenve Talent Network",
+      "email": "karthik.s@zenvetalent.com",
+      "phone": "+91 80 4123 9933",
+      "photo": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Samantha Ruth Prabhu",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Samantha Ruth Prabhu",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 13,
+      "name": "Rhea Chawla",
+      "role": "Senior VP of Endorsement Strategy",
+      "title": "Senior VP of Endorsement Strategy",
+      "agency": "Elite Talent Management",
+      "email": "rhea.c@elitetalent.com",
+      "phone": "+91 22 2640 4455",
+      "photo": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Nayanthara",
+          "Vijay"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Vijay"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 14,
+      "name": "Siddharth Roy",
+      "role": "Lead Production Coordinator & Talent Escort",
+      "title": "Lead Production Coordinator & Talent Escort",
+      "agency": "Apex Studio Representations",
+      "email": "siddharth.r@apexstudio.in",
+      "phone": "+91 98205 66778",
+      "photo": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
+      "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Dhanush"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Dhanush"
+      ],
+      "status": "Active"
   }
 ];
 

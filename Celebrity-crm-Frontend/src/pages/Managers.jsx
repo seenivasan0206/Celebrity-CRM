@@ -15,28 +15,117 @@ import {
   Copy,
   Check,
   Camera,
-  X,
-  ExternalLink
+  X
 } from 'lucide-react';
 
 export const DEFAULT_MANAGER_PHOTOS = {
-  1: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-  2: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-  3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-  4: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-  5: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-  6: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-  7: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
-  8: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80',
-  'john doe': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-  'sarah jenkins': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-  'vikram rathore': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-  'priya sunder': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-  'arjun verma': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-  'ananya sen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
-  'rohan mehta': 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=300&q=80',
-  'meera nambiar': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=300&q=80'
+  1: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+  2: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+  3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  4: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
+  5: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+  6: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  7: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80',
+  8: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
+  9: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
+  10: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
+  11: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+  12: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
+  13: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80',
+  14: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80',
+  'john doe': 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
+  'sarah jenkins': 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+  'vikram rathore': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+  'priya sunder': 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80',
+  'arjun verma': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+  'ananya sen': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+  'rohan mehta': 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80',
+  'meera nambiar': 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80',
+  'kavita krishnan': 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
+  'devendra singhania': 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=80',
+  'tara alagappan': 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
+  'karthik sundaram': 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
+  'rhea chawla': 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=400&q=80',
+  'siddharth roy': 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80'
 };
+
+export const resolvePhoto = (mgr) => {
+  return (
+    mgr?.photo ||
+    mgr?.avatar ||
+    DEFAULT_MANAGER_PHOTOS[mgr?.id] ||
+    DEFAULT_MANAGER_PHOTOS[(mgr?.name || '').toLowerCase().trim()] ||
+    DEFAULT_MANAGER_PHOTOS[1]
+  );
+};
+
+// Resilient visual avatar component with automatic modern gradient fallback
+function ManagerAvatar({ mgr, onAvatarClick }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const photoUrl = resolvePhoto(mgr);
+
+  const initials = (mgr?.name || 'TM')
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'TM';
+
+  // Distinct modern gradients for fallback
+  const gradients = [
+    'linear-gradient(135deg, #6366F1 0%, #4338CA 100%)',
+    'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
+    'linear-gradient(135deg, #10B981 0%, #047857 100%)',
+    'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)',
+    'linear-gradient(135deg, #EC4899 0%, #BE185D 100%)',
+    'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
+    'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
+  ];
+  const gradient = gradients[(mgr?.id || 1) % gradients.length];
+
+  return (
+    <div
+      className="manager-photo-wrap"
+      onClick={onAvatarClick}
+      title="Click to view or change profile photo"
+    >
+      {!imgFailed && photoUrl ? (
+        <img
+          src={photoUrl}
+          alt={mgr?.name || 'Talent Manager'}
+          className="manager-photo-img"
+          onError={() => setImgFailed(true)}
+          loading="eager"
+        />
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: gradient,
+            color: '#ffffff',
+            fontWeight: 800,
+            fontSize: '1.25rem',
+            letterSpacing: '0.04em',
+            borderRadius: '14px',
+            userSelect: 'none'
+          }}
+        >
+          {initials}
+        </div>
+      )}
+      <div className="manager-photo-hover-overlay">
+        <Camera size={16} />
+        <span>Change</span>
+      </div>
+      <span className="manager-online-dot" title="Active Liaison" />
+    </div>
+  );
+}
 
 export default function Managers() {
   const { theme } = useAuth();
@@ -118,16 +207,6 @@ export default function Managers() {
       setGlobalSearchQuery(celebName);
     }
     navigate('/celebrities');
-  };
-
-  const resolvePhoto = (mgr) => {
-    return (
-      mgr.photo ||
-      mgr.avatar ||
-      DEFAULT_MANAGER_PHOTOS[mgr.id] ||
-      DEFAULT_MANAGER_PHOTOS[(mgr.name || '').toLowerCase().trim()] ||
-      DEFAULT_MANAGER_PHOTOS[1]
-    );
   };
 
   return (
@@ -753,7 +832,6 @@ export default function Managers() {
       ) : (
         <div className="managers-cards-grid">
           {filteredManagers.map((mgr) => {
-            const photoUrl = resolvePhoto(mgr);
             const talents = mgr.representedTalents || mgr.assignedCelebrities || [];
 
             return (
@@ -761,35 +839,14 @@ export default function Managers() {
                 {/* Top Section: Photo & Identity Meta */}
                 <div>
                   <div className="manager-card-top">
-                    {/* Visible Portrait Photo with Fallback & Interactive Click */}
-                    <div
-                      className="manager-photo-wrap"
-                      onClick={() => {
+                    {/* Resilient Avatar Component with Initials Fallback */}
+                    <ManagerAvatar
+                      mgr={mgr}
+                      onAvatarClick={() => {
                         setSelectedManagerForPhoto(mgr);
                         setIsPhotoModalOpen(true);
                       }}
-                      title="Click to view or change profile photo"
-                    >
-                      <img
-                        src={photoUrl}
-                        alt={mgr.name}
-                        className="manager-photo-img"
-                        referrerPolicy="no-referrer"
-                        crossOrigin="anonymous"
-                        onError={(e) => {
-                          if (!e.target.dataset.fallbackTried) {
-                            e.target.dataset.fallbackTried = 'true';
-                            e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(mgr.name)}&background=1e1b4b&color=a5b4fc&size=200&bold=true`;
-                          }
-                        }}
-                        loading="eager"
-                      />
-                      <div className="manager-photo-hover-overlay">
-                        <Camera size={16} />
-                        <span>Change</span>
-                      </div>
-                      <span className="manager-online-dot" title="Active Liaison" />
-                    </div>
+                    />
 
                     <div className="manager-info-meta">
                       <div className="manager-name-row">
