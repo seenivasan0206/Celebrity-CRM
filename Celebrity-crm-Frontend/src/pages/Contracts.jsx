@@ -23,7 +23,7 @@ export default function Contracts() {
 
       <div className="contract-kpis">
         <div className="crm-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10B981' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--c-accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)' }}>
             <DollarSign size={24} />
           </div>
           <div>
@@ -33,7 +33,7 @@ export default function Contracts() {
         </div>
 
         <div className="crm-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(99, 102, 241, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366F1' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--c-primary-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
             <ShieldCheck size={24} />
           </div>
           <div>
@@ -43,7 +43,7 @@ export default function Contracts() {
         </div>
 
         <div className="crm-card" style={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#F59E0B' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'var(--c-secondary-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--secondary)' }}>
             <Clock size={24} />
           </div>
           <div>
@@ -77,12 +77,12 @@ export default function Contracts() {
                   <td style={{ fontWeight: 600, color: 'var(--text-main)', whiteSpace: 'nowrap' }}>{c.celebrity}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>{c.client}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <span className="badge badge-purple" style={{ whiteSpace: 'nowrap' }}>{c.category || 'Endorsement'}</span>
+                    <span className="badge badge-primary" style={{ whiteSpace: 'nowrap' }}>{c.category || 'Endorsement'}</span>
                   </td>
-                  <td style={{ fontWeight: 800, color: 'var(--accent-emerald)', whiteSpace: 'nowrap' }}>{c.value}</td>
+                  <td style={{ fontWeight: 800, color: 'var(--accent)', whiteSpace: 'nowrap' }}>{c.value}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>{c.duration}</td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <span className={`badge ${c.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`} style={{ whiteSpace: 'nowrap' }}>
+                    <span className={`badge ${c.status === 'Active' ? 'badge-accent' : 'badge-secondary'}`} style={{ whiteSpace: 'nowrap' }}>
                       {c.status}
                     </span>
                   </td>
@@ -95,7 +95,7 @@ export default function Contracts() {
                         title="Renew Contract for 1 Year"
                         onClick={() => renewContract && renewContract(c.id)}
                       >
-                        <RefreshCw size={12} color="#10B981" /> Renew
+                        <RefreshCw size={12} color="var(--accent)" /> Renew
                       </button>
                       <button
                         type="button"

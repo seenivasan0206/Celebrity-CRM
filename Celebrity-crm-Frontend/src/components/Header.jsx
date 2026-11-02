@@ -116,9 +116,9 @@ export default function Header({ toggleSidebar }) {
           type="button"
           className="header-action-btn"
           onClick={toggleTheme}
-          title={`Switch to ${theme === 'dark' ? 'Light Frost' : 'Dark Luxe'} Mode`}
+          title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
         >
-          {theme === 'dark' ? <Sun size={18} color="#FBBF24" /> : <Moon size={18} color="#6366F1" />}
+          {theme === 'dark' ? <Sun size={18} color="var(--text-muted)" /> : <Moon size={18} color="var(--primary)" />}
         </button>
 
         {/* Notification Bell */}

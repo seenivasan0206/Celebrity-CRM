@@ -97,7 +97,7 @@ export default function Campaigns() {
                 <span className="campaign-brand-tag">{camp.brand}</span>
                 <h3>{camp.title}</h3>
               </div>
-              <span className={`badge ${camp.status === 'Completed' ? 'badge-emerald' : 'badge-indigo'}`}>
+              <span className={`badge ${camp.status === 'Completed' ? 'badge-accent' : 'badge-primary'}`}>
                 {camp.status}
               </span>
             </div>
@@ -119,7 +119,7 @@ export default function Campaigns() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <TrendingUp size={14} color="#06B6D4" />
+                <TrendingUp size={14} color="var(--primary)" />
                 <span>Estimated Reach: <strong>{camp.reach}</strong></span>
               </div>
 
@@ -131,14 +131,14 @@ export default function Campaigns() {
                     alignItems: 'center',
                     gap: '6px',
                     flexWrap: 'wrap',
-                    background: 'rgba(245, 158, 11, 0.08)',
+                    background: 'var(--bg-card-alt)',
                     padding: '6px 8px',
-                    borderRadius: '8px',
-                    border: '1px solid rgba(245, 158, 11, 0.3)'
+                    borderRadius: '6px',
+                    border: '1px solid var(--border-medium)'
                   }}
                 >
-                  <Calendar size={14} color="#F59E0B" />
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#F59E0B' }}>Target:</span>
+                  <Calendar size={14} color="var(--primary)" />
+                  <span style={{ fontSize: '0.74rem', fontWeight: 600, color: 'var(--text-main)' }}>Target:</span>
                   <input
                     type="date"
                     value={tempDate}
@@ -150,10 +150,10 @@ export default function Campaigns() {
                     style={{
                       padding: '3px 6px',
                       fontSize: '0.74rem',
-                      borderRadius: '6px',
-                      border: '1px solid #F59E0B',
-                      background: 'var(--bg-secondary, #1e293b)',
-                      color: 'var(--text-main, #ffffff)',
+                      borderRadius: '4px',
+                      border: '1px solid var(--border-medium)',
+                      background: 'var(--bg-card)',
+                      color: 'var(--text-main)',
                       outline: 'none',
                       fontFamily: 'inherit'
                     }}
@@ -163,19 +163,11 @@ export default function Campaigns() {
                     type="button"
                     onClick={() => handleSaveDate(camp.id)}
                     title="Save Target Date"
+                    className="btn-primary"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '3px',
-                      background: '#10B981',
-                      border: 'none',
-                      color: '#ffffff',
-                      borderRadius: '6px',
-                      padding: '4px 8px',
-                      cursor: 'pointer',
+                      padding: '3px 8px',
                       fontSize: '0.72rem',
-                      fontWeight: 700,
-                      transition: 'all 0.15s ease'
+                      borderRadius: '4px'
                     }}
                   >
                     <Check size={12} /> Save
@@ -184,16 +176,11 @@ export default function Campaigns() {
                     type="button"
                     onClick={handleCancelEdit}
                     title="Cancel"
+                    className="btn-secondary"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      background: 'rgba(255, 255, 255, 0.1)',
-                      border: 'none',
-                      color: 'var(--text-dim, #94a3b8)',
-                      borderRadius: '6px',
-                      padding: '4px 7px',
-                      cursor: 'pointer',
-                      fontSize: '0.72rem'
+                      padding: '3px 7px',
+                      fontSize: '0.72rem',
+                      borderRadius: '4px'
                     }}
                   >
                     <X size={12} />
@@ -202,34 +189,17 @@ export default function Campaigns() {
               ) : (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Calendar size={14} color="#F59E0B" />
+                    <Calendar size={14} color="var(--primary)" />
                     <span>Target: <strong>{camp.deadline || 'TBD'}</strong></span>
                   </div>
                   <button
                     type="button"
                     onClick={() => handleStartEdit(camp)}
                     title="Edit Target Date"
+                    className="btn-secondary"
                     style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
-                      color: '#F59E0B',
-                      background: 'rgba(245, 158, 11, 0.12)',
-                      border: '1px solid rgba(245, 158, 11, 0.3)',
-                      borderRadius: '6px',
                       padding: '2px 8px',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#F59E0B';
-                      e.currentTarget.style.color = '#ffffff';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(245, 158, 11, 0.12)';
-                      e.currentTarget.style.color = '#F59E0B';
+                      fontSize: '0.72rem'
                     }}
                   >
                     <Edit2 size={11} /> Edit

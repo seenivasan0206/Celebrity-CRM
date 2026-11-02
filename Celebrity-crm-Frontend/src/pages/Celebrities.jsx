@@ -94,7 +94,7 @@ export default function Celebrities() {
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-                <span className={`badge ${celeb.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`}>
+                <span className={`badge ${celeb.status === 'Active' ? 'badge-accent' : 'badge-secondary'}`}>
                   {celeb.status}
                 </span>
                 <button
@@ -110,7 +110,7 @@ export default function Celebrities() {
                     borderRadius: '4px',
                     transition: 'all 0.15s ease'
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#F43F5E')}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--text-main)')}
                   onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-dim)')}
                 >
                   <Trash2 size={14} />
@@ -128,8 +128,8 @@ export default function Celebrities() {
                 <span>Reach</span>
               </div>
               <div className="celeb-stat-unit">
-                <strong style={{ color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
-                  <Flame size={12} fill="#F59E0B" /> {celeb.rating}%
+                <strong style={{ color: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+                  <Flame size={12} fill="var(--accent)" /> {celeb.rating}%
                 </strong>
                 <span>Index</span>
               </div>
@@ -151,7 +151,7 @@ export default function Celebrities() {
                 style={{ textDecoration: 'none', color: 'inherit' }}
                 title="Call manager"
               >
-                <Phone size={13} color="var(--accent-emerald)" />
+                <Phone size={13} color="var(--accent)" />
                 <span>{celeb.phone || '+91 98400 00000'}</span>
               </a>
             </div>

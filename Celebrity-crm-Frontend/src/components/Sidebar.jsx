@@ -66,7 +66,7 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
         <div className="sidebar-header">
           <Link to="/" className="brand-wrapper" onClick={handleNavClick}>
             <div className="brand-icon">
-              <Star size={22} fill="#ffffff" />
+              <Star size={20} fill="#ffffff" />
             </div>
             <div className="brand-title">
               <h1>Zenve CRM</h1>
@@ -107,7 +107,7 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
                 title={collapsed ? item.label : undefined}
                 onClick={handleNavClick}
               >
-                <Icon size={19} className="nav-icon-only" />
+                <Icon size={18} className="nav-icon-only" />
                 <span>{item.label}</span>
                 {item.badge !== undefined && !collapsed && (
                   <span className="nav-badge">{item.badge}</span>
@@ -127,11 +127,11 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
               }}
             >
               <div className="tier-icon">
-                <Crown size={18} />
+                <Crown size={16} />
               </div>
               <div className="tier-info">
-                <span className="tier-name">{user?.plan || 'Premium VIP'}</span>
-                <span className="tier-sub">Subscription is active</span>
+                <span className="tier-name">{user?.plan || 'Enterprise License'}</span>
+                <span className="tier-sub">Active Subscription</span>
               </div>
               <ChevronRight size={14} color="var(--text-dim)" />
             </div>
@@ -148,7 +148,7 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
             }}
             title={collapsed ? 'Log Out' : undefined}
           >
-            <LogOut size={18} color="var(--accent-rose)" />
+            <LogOut size={18} color="var(--secondary)" />
             <span>Sign Out</span>
           </button>
         </div>

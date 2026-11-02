@@ -41,7 +41,7 @@ export default function CreateCampaignModal() {
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <div className="modal-icon-badge" style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}>
+            <div className="modal-icon-badge">
               <Megaphone size={20} />
             </div>
             <div>

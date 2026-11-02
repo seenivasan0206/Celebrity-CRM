@@ -1,11 +1,12 @@
 /* ========================================================
    ZENVE CRM — DASHBOARD SPECIFIC STYLES
+   5-Colour Architecture (No neon glows / clean enterprise styling)
    ======================================================== */
 
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   max-width: 1600px;
   margin: 0 auto;
 }
@@ -16,13 +17,13 @@
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 14px;
 }
 
 .greeting-text h2 {
   font-family: var(--font-display);
-  font-size: 1.65rem;
-  font-weight: 800;
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-main);
   letter-spacing: -0.02em;
   display: flex;
@@ -32,8 +33,8 @@
 
 .greeting-text p {
   color: var(--text-muted);
-  font-size: 0.88rem;
-  margin-top: 4px;
+  font-size: 0.84rem;
+  margin-top: 3px;
 }
 
 .greeting-actions {
@@ -48,14 +49,14 @@
 .stat-cards-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 18px;
 }
 
 .stat-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -66,21 +67,9 @@
 }
 
 .stat-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-color: var(--border-medium);
   box-shadow: var(--shadow-md);
-}
-
-.stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, var(--card-accent, rgba(99, 102, 241, 0.15)) 0%, transparent 70%);
-  pointer-events: none;
-  opacity: 0.6;
 }
 
 .stat-card-header {
@@ -91,18 +80,19 @@
 }
 
 .stat-icon-box {
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-subtle);
+  color: var(--primary);
 }
 
 .stat-card-title {
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   font-weight: 600;
 }
@@ -110,14 +100,14 @@
 .stat-card-body {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
 .stat-number {
   font-family: var(--font-display);
-  font-size: 2.2rem;
-  font-weight: 800;
+  font-size: 2rem;
+  font-weight: 700;
   color: var(--text-main);
   line-height: 1;
 }
@@ -126,20 +116,20 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.74rem;
+  font-weight: 600;
 }
 
 .stat-trend.up {
-  color: var(--accent-emerald);
+  color: var(--accent);
 }
 
 .stat-trend.down {
-  color: var(--accent-rose);
+  color: var(--secondary);
 }
 
 .stat-footer-text {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
 }
 
@@ -149,11 +139,11 @@
 .analytics-grid-row {
   display: grid;
   grid-template-columns: 1.8fr 1.1fr 1.1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 .analytics-card-header {
-  padding: 18px 22px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -161,8 +151,8 @@
 }
 
 .analytics-card-title {
-  font-size: 1rem;
-  font-weight: 700;
+  font-size: 0.94rem;
+  font-weight: 600;
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -175,7 +165,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
   padding: 4px 10px;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 500;
   outline: none;
   cursor: pointer;
@@ -183,10 +173,10 @@
 
 /* Custom SVG Performance Chart */
 .chart-content-area {
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .chart-legend-row {
@@ -200,7 +190,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   color: var(--text-muted);
   font-weight: 500;
 }
@@ -211,9 +201,17 @@
   border-radius: 50%;
 }
 
+.legend-dot.primary {
+  background: var(--primary);
+}
+
+.legend-dot.accent {
+  background: var(--accent);
+}
+
 .svg-chart-container {
   width: 100%;
-  height: 220px;
+  height: 210px;
 }
 
 .svg-chart-container svg {
@@ -224,17 +222,17 @@
 
 /* Celebrity Donut Chart */
 .donut-card-content {
-  padding: 20px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .donut-visual-wrap {
   position: relative;
-  width: 180px;
-  height: 180px;
+  width: 170px;
+  height: 170px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -250,14 +248,14 @@
 
 .donut-center-metric .count {
   font-family: var(--font-display);
-  font-size: 1.8rem;
-  font-weight: 800;
+  font-size: 1.65rem;
+  font-weight: 700;
   color: var(--text-main);
   line-height: 1;
 }
 
 .donut-center-metric .label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
   text-transform: uppercase;
   font-weight: 600;
@@ -268,14 +266,14 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .donut-breakdown-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   padding: 4px 6px;
   border-radius: var(--radius-sm);
   transition: background var(--transition-fast);
@@ -293,18 +291,18 @@
 }
 
 .breakdown-right {
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-main);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
 }
 
 /* Recent Activity List */
 .activity-list-wrap {
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-height: 330px;
+  gap: 12px;
+  max-height: 310px;
   overflow-y: auto;
 }
 
@@ -316,15 +314,17 @@
 }
 
 .activity-icon-badge {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #ffffff;
-  font-size: 0.8rem;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-subtle);
+  color: var(--primary);
+  font-size: 0.76rem;
 }
 
 .activity-details {
@@ -334,22 +334,22 @@
 }
 
 .activity-title {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-main);
   line-height: 1.3;
 }
 
 .activity-desc {
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .activity-time-stamp {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: var(--text-dim);
-  margin-top: 3px;
+  margin-top: 2px;
 }
 
 /* ========================================================
@@ -358,7 +358,7 @@
 .middle-grid-row {
   display: grid;
   grid-template-columns: 2fr 1.1fr 1fr;
-  gap: 20px;
+  gap: 18px;
 }
 
 /* Shoots Table */
@@ -380,8 +380,8 @@
 }
 
 .zenve-table th {
-  padding: 12px 18px;
-  font-size: 0.74rem;
+  padding: 11px 16px;
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-dim);
   text-transform: uppercase;
@@ -392,8 +392,8 @@
 }
 
 .zenve-table td {
-  padding: 14px 18px;
-  font-size: 0.84rem;
+  padding: 12px 16px;
+  font-size: 0.82rem;
   color: var(--text-muted);
   border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
@@ -413,10 +413,11 @@
 }
 
 .table-celebrity-cell img {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--border-medium);
 }
 
 .table-celebrity-cell span {
@@ -442,17 +443,17 @@
 
 /* Top Celebrities Leaderboard */
 .top-celebrities-list {
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .top-celeb-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 7px 10px;
   border-radius: var(--radius-md);
   background: var(--bg-card-alt);
   border: 1px solid var(--border-subtle);
@@ -460,17 +461,18 @@
 }
 
 .top-celeb-item:hover {
-  border-color: var(--primary);
-  transform: translateX(4px);
+  border-color: var(--border-medium);
+  background: var(--bg-card-hover);
 }
 
 .rank-badge {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: var(--bg-card);
-  font-size: 0.74rem;
-  font-weight: 800;
+  border: 1px solid var(--border-subtle);
+  font-size: 0.72rem;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -478,26 +480,19 @@
   flex-shrink: 0;
 }
 
-.rank-badge.gold {
-  background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
-  color: #ffffff;
-}
-
-.rank-badge.silver {
-  background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
-  color: #ffffff;
-}
-
-.rank-badge.bronze {
-  background: linear-gradient(135deg, #d97706 0%, #78350f 100%);
-  color: #ffffff;
+.rank-badge.gold,
+.rank-badge.top-rank {
+  background: var(--primary-subtle);
+  border-color: var(--primary-border);
+  color: var(--primary);
 }
 
 .top-celeb-avatar {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  border: 1px solid var(--border-medium);
 }
 
 .top-celeb-info {
@@ -507,53 +502,54 @@
 }
 
 .top-celeb-name {
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--text-main);
 }
 
 .top-celeb-campaigns {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-dim);
 }
 
 /* Quick Actions Cards */
 .quick-actions-panel {
-  padding: 18px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .quick-action-button {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: 12px;
+  padding: 12px 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
   background: var(--bg-card-alt);
   color: var(--text-main);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 600;
   transition: all var(--transition-fast);
   cursor: pointer;
 }
 
 .quick-action-button:hover {
-  transform: translateY(-2px);
-  border-color: var(--action-color, var(--primary));
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  border-color: var(--primary);
+  background: var(--bg-card-hover);
 }
 
 .quick-action-icon {
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  background: var(--primary-subtle);
+  color: var(--primary);
   flex-shrink: 0;
 }
 
@@ -563,70 +559,72 @@
 .module-overview-section {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .section-headline {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.05rem;
-  font-weight: 700;
+  font-size: 0.98rem;
+  font-weight: 600;
   color: var(--text-main);
 }
 
 .module-cards-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 .module-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
-  padding: 14px 12px;
+  padding: 12px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 8px;
+  gap: 6px;
   text-decoration: none;
   transition: all var(--transition-fast);
 }
 
 .module-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--module-accent, var(--primary));
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .module-icon-wrap {
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border-subtle);
+  color: var(--primary);
 }
 
 .module-name {
-  font-size: 0.78rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 600;
   color: var(--text-main);
 }
 
 .module-count {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--text-dim);
 }
 
 .module-link-text {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   color: var(--primary);
   font-weight: 600;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 /* Responsive adjustments */
@@ -673,4 +671,3 @@
     grid-template-columns: 1fr;
   }
 }
-

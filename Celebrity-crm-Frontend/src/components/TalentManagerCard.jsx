@@ -95,7 +95,7 @@ export default function TalentManagerCard({ manager }) {
         className={`group relative rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between ${
           isLight
             ? 'bg-white border border-slate-200/90 shadow-md shadow-slate-200/50 hover:shadow-xl hover:border-slate-300 hover:-translate-y-1'
-            : 'bg-[#111827] border border-slate-800 hover:border-slate-750 shadow-2xl shadow-black/50 hover:shadow-2xl hover:-translate-y-1'
+            : 'bg-[var(--c-surface)] border border-[var(--border-color)] shadow-xl hover:-translate-y-1'
         }`}
       >
         {/* Top Details Section */}
@@ -135,7 +135,7 @@ export default function TalentManagerCard({ manager }) {
                     loading="eager"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-indigo-600 via-indigo-700 to-cyan-600 text-white font-bold text-lg sm:text-xl flex items-center justify-center tracking-wider rounded-2xl">
+                  <div className="w-full h-full bg-[var(--c-primary-dim)] text-[var(--primary)] font-bold text-lg sm:text-xl flex items-center justify-center tracking-wider rounded-2xl">
                     {initials}
                   </div>
                 )}
@@ -155,7 +155,7 @@ export default function TalentManagerCard({ manager }) {
               {/* Online / Active Status Dot */}
               <span
                 className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 ${
-                  isLight ? 'border-white' : 'border-[#111827]'
+                  isLight ? 'border-white' : 'border-[var(--c-surface)]'
                 } ${
                   status === 'Active' ? 'bg-emerald-500 shadow-sm shadow-emerald-500/50' : 'bg-slate-500'
                 }`}
@@ -170,7 +170,7 @@ export default function TalentManagerCard({ manager }) {
                   setIsPhotoModalOpen(true);
                 }}
                 className={`sm:hidden absolute -bottom-1 -left-1 w-5 h-5 rounded-full bg-indigo-600 text-white border-2 flex items-center justify-center shadow ${
-                  isLight ? 'border-white' : 'border-[#111827]'
+                  isLight ? 'border-white' : 'border-[var(--c-surface)]'
                 }`}
                 title="Change Photo"
                 aria-label="Change Photo"

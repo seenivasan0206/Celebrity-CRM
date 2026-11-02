@@ -12,7 +12,8 @@ import {
   Briefcase,
   ArrowRight,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  AtSign
 } from 'lucide-react';
 
 export default function Register() {
@@ -21,34 +22,65 @@ export default function Register() {
 
   const [formData, setFormData] = useState({
     name: '',
+    username: '',
     email: '',
     agency: '',
     role: 'Executive Talent Manager',
     password: '',
     agree: true
   });
+  const [usernameManual, setUsernameManual] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Simple password strength calculation
+  // Auto-generate suggested username from email or name
+  const handleEmailChange = (val) => {
+    setFormData((prev) => {
+      const next = { ...prev, email: val };
+      if (!usernameManual) {
+        const raw = val.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+        next.username = raw.length >= 3 ? raw : (raw ? raw + '123' : '');
+      }
+      return next;
+    });
+  };
+
+  const handleNameChange = (val) => {
+    setFormData((prev) => {
+      const next = { ...prev, name: val };
+      if (!usernameManual && !prev.email) {
+        const raw = val.replace(/\s+/g, '').replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+        next.username = raw.length >= 3 ? raw : (raw ? raw + '123' : '');
+      }
+      return next;
+    });
+  };
+
+  // Simple password strength calculation using 5-colour palette
   const getPasswordStrength = () => {
     const len = formData.password.length;
     if (len === 0) return { percent: 0, text: '', color: 'transparent' };
-    if (len < 6) return { percent: 30, text: 'Weak', color: '#F43F5E' };
-    if (len < 10) return { percent: 65, text: 'Moderate', color: '#F59E0B' };
-    return { percent: 100, text: 'Strong (Optimal)', color: '#10B981' };
+    if (len < 6) return { percent: 30, text: 'Weak', color: 'var(--secondary)' };
+    if (len < 10) return { percent: 65, text: 'Moderate', color: 'var(--primary)' };
+    return { percent: 100, text: 'Strong (Optimal)', color: 'var(--accent)' };
   };
 
   const strength = getPasswordStrength();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!formData.name.trim() || !formData.email.trim()) {
-      setError('Please provide your name and work email.');
+      setError('Please provide your full name and work email.');
+      return;
+    }
+
+    const cleanUsername = (formData.username || formData.email.split('@')[0] || '').trim();
+    if (cleanUsername.length < 3) {
+      setError('Username must contain at least 3 characters.');
       return;
     }
 
@@ -64,29 +96,32 @@ export default function Register() {
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = register(formData);
+    try {
+      const res = await register({
+        ...formData,
+        username: cleanUsername
+      });
       setIsLoading(false);
       if (res.success) {
         navigate('/');
       } else {
         setError(res.message || 'Unable to register account.');
       }
-    }, 450);
+    } catch (err) {
+      setIsLoading(false);
+      setError(err.message || 'Registration failed. Please check your credentials.');
+    }
   };
 
   return (
-    <div className="auth-page-wrapper">
-      <div className="auth-glow-blob-1" />
-      <div className="auth-glow-blob-2" />
-
+    <div className="auth-page-wrapper auth-register-wrapper">
       <div className="auth-split-container">
         {/* Left Hero Pane */}
         <div className="auth-hero-pane">
           <div className="auth-hero-top">
             <div className="auth-brand-badge">
               <div className="icon-box">
-                <Star size={24} fill="#ffffff" />
+                <Star size={20} fill="#ffffff" />
               </div>
               <div className="brand-text">
                 <h2>Zenve CRM</h2>
@@ -125,9 +160,9 @@ export default function Register() {
 
           <div className="auth-hero-bottom">
             <div className="avatar-stack">
-              <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" alt="Anirudh" />
-              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Trisha" />
-              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Samantha" />
+              <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&auto=format&fit=crop&q=80" alt="Talent 1" />
+              <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&auto=format&fit=crop&q=80" alt="Talent 2" />
+              <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80" alt="Talent 3" />
             </div>
             <div className="social-proof-text">
               <strong>Join 450+ Top Talent Executives</strong>
@@ -146,13 +181,13 @@ export default function Register() {
 
             {error && (
               <div style={{
-                background: 'rgba(244, 63, 94, 0.12)',
-                border: '1px solid rgba(244, 63, 94, 0.3)',
-                color: '#F43F5E',
+                background: 'var(--secondary-subtle)',
+                border: '1px solid var(--secondary-border)',
+                color: 'var(--text-main)',
                 padding: '10px 14px',
                 borderRadius: '8px',
-                fontSize: '0.82rem',
-                fontWeight: 600
+                fontSize: '0.8rem',
+                fontWeight: 500
               }}>
                 {error}
               </div>
@@ -169,7 +204,7 @@ export default function Register() {
                     placeholder="e.g. Karthik Raja"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => handleNameChange(e.target.value)}
                   />
                 </div>
               </div>
@@ -184,7 +219,28 @@ export default function Register() {
                     placeholder="karthik@agency.com"
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label className="form-label" style={{ margin: 0 }}>Portal Username *</label>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>Min 3 letters / numbers</span>
+                </div>
+                <div className="form-input-wrap" style={{ marginTop: '4px' }}>
+                  <AtSign size={18} className="input-icon-left" />
+                  <input
+                    type="text"
+                    className="zenve-input"
+                    placeholder="e.g. karthik_exec"
+                    required
+                    value={formData.username}
+                    onChange={(e) => {
+                      setUsernameManual(true);
+                      setFormData({ ...formData, username: e.target.value });
+                    }}
                   />
                 </div>
               </div>
@@ -276,7 +332,7 @@ export default function Register() {
                 {isLoading ? 'Setting up workspace...' : (
                   <>
                     <span>Create Agency Portal</span>
-                    <ArrowRight size={18} />
+                    <ArrowRight size={16} />
                   </>
                 )}
               </button>
@@ -292,4 +348,3 @@ export default function Register() {
     </div>
   );
 }
-

@@ -90,7 +90,7 @@ export default function TalentManagersPage() {
   return (
     <div 
       className={`flex-1 min-h-[calc(100vh-70px)] p-6 md:p-8 lg:p-10 transition-colors duration-200 ${
-        isLight ? 'bg-[#f4f6fb] text-slate-800' : 'bg-[#0b0f19] text-slate-100'
+        isLight ? 'bg-slate-50 text-slate-800' : 'bg-[var(--c-bg)] text-slate-100'
       }`}
     >
       <div className="max-w-7xl mx-auto space-y-8">
@@ -150,7 +150,7 @@ export default function TalentManagersPage() {
             className={`rounded-2xl p-4 flex items-center gap-3.5 transition-all ${
               isLight 
                 ? 'bg-white border border-slate-200/90 shadow-sm shadow-slate-200/40 text-slate-900' 
-                : 'bg-[#111827] border border-slate-800 shadow-sm text-white'
+                : 'bg-[var(--c-surface)] border border-[var(--border-color)] shadow-sm text-white'
             }`}
           >
             <div 
@@ -176,7 +176,7 @@ export default function TalentManagersPage() {
             className={`rounded-2xl p-4 flex items-center gap-3.5 transition-all ${
               isLight 
                 ? 'bg-white border border-slate-200/90 shadow-sm shadow-slate-200/40 text-slate-900' 
-                : 'bg-[#111827] border border-slate-800 shadow-sm text-white'
+                : 'bg-[var(--c-surface)] border border-[var(--border-color)] shadow-sm text-white'
             }`}
           >
             <div 
@@ -202,7 +202,7 @@ export default function TalentManagersPage() {
             className={`rounded-2xl p-4 flex items-center gap-3.5 transition-all ${
               isLight 
                 ? 'bg-white border border-slate-200/90 shadow-sm shadow-slate-200/40 text-slate-900' 
-                : 'bg-[#111827] border border-slate-800 shadow-sm text-white'
+                : 'bg-[var(--c-surface)] border border-[var(--border-color)] shadow-sm text-white'
             }`}
           >
             <div 
@@ -228,7 +228,7 @@ export default function TalentManagersPage() {
             className={`rounded-2xl p-4 flex items-center gap-3.5 transition-all ${
               isLight 
                 ? 'bg-white border border-slate-200/90 shadow-sm shadow-slate-200/40 text-slate-900' 
-                : 'bg-[#111827] border border-slate-800 shadow-sm text-white'
+                : 'bg-[var(--c-surface)] border border-[var(--border-color)] shadow-sm text-white'
             }`}
           >
             <div 
@@ -293,7 +293,7 @@ export default function TalentManagersPage() {
               className={`w-full pl-10 pr-4 py-2 rounded-xl text-sm transition-all focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 ${
                 isLight
                   ? 'bg-white border border-slate-200/90 text-slate-900 placeholder-slate-400 shadow-xs'
-                  : 'bg-[#111827] border border-slate-800 text-slate-200 placeholder-slate-500'
+                  : 'bg-[var(--c-surface)] border border-[var(--border-color)] text-slate-200 placeholder-slate-500'
               }`}
             />
             {localSearch && (
@@ -325,7 +325,7 @@ export default function TalentManagersPage() {
             className={`border rounded-2xl p-12 text-center max-w-lg mx-auto ${
               isLight 
                 ? 'bg-white border-slate-200/90 shadow-md text-slate-900' 
-                : 'bg-[#111827] border-slate-800 text-white'
+                : 'bg-[var(--c-surface)] border-[var(--border-color)] text-white'
             }`}
           >
             <div 

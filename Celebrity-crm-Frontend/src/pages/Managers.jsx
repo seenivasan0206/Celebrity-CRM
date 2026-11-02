@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import { useNavigate } from 'react-router-dom';
 import ChangeManagerPhotoModal from '../components/ChangeManagerPhotoModal';
+import InviteManagerModal from '../components/InviteManagerModal';
 import { MANAGER_PHOTOS_MAP, getManagerPhoto } from '../data/managerPhotos';
 import {
   Users,
@@ -19,7 +20,6 @@ import {
   X
 } from 'lucide-react';
 
-// Guaranteed local high-resolution portrait paths served directly by the application
 export const DEFAULT_MANAGER_PHOTOS = {
   1: '/images/managers/1.jpg',
   2: '/images/managers/2.jpg',
@@ -51,7 +51,6 @@ export const DEFAULT_MANAGER_PHOTOS = {
   'siddharth roy': '/images/managers/14.jpg'
 };
 
-// High-resolution online fallback portraits
 export const ONLINE_BACKUP_PHOTOS = {
   1: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80',
   2: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
@@ -70,7 +69,7 @@ export const ONLINE_BACKUP_PHOTOS = {
 };
 
 export const resolvePhoto = (mgr) => {
-  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:'))) {
+  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:') || mgr.photo.startsWith('http') || mgr.photo.startsWith('/images/'))) {
     return mgr.photo;
   }
   if (mgr?.id && MANAGER_PHOTOS_MAP[mgr.id]) {
@@ -86,7 +85,6 @@ export const resolvePhoto = (mgr) => {
   return getManagerPhoto(mgr?.id || 1);
 };
 
-// Resilient visual avatar component with automatic modern gradient fallback
 function ManagerAvatar({ mgr, onAvatarClick }) {
   const [photoSrc, setPhotoSrc] = useState(() => resolvePhoto(mgr));
   const [imgFailed, setImgFailed] = useState(false);
@@ -103,18 +101,6 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
     .slice(0, 2)
     .join('')
     .toUpperCase() || 'TM';
-
-  // Distinct modern gradients for initials fallback
-  const gradients = [
-    'linear-gradient(135deg, #6366F1 0%, #4338CA 100%)',
-    'linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)',
-    'linear-gradient(135deg, #10B981 0%, #047857 100%)',
-    'linear-gradient(135deg, #F59E0B 0%, #B45309 100%)',
-    'linear-gradient(135deg, #EC4899 0%, #BE185D 100%)',
-    'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)',
-    'linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)'
-  ];
-  const gradient = gradients[(mgr?.id || 1) % gradients.length];
 
   const handleImgError = () => {
     const directPath = `/images/managers/${mgr?.id || 1}.jpg`;
@@ -147,8 +133,8 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: gradient,
-            color: '#ffffff',
+            background: 'var(--c-primary-dim)',
+            color: 'var(--primary)',
             fontWeight: 800,
             fontSize: '1.25rem',
             letterSpacing: '0.04em',
@@ -177,7 +163,8 @@ export default function Managers() {
     managers,
     addToast,
     setSearchQuery: setGlobalSearchQuery,
-    updateManagerPhoto
+    updateManagerPhoto,
+    addManager
   } = useCrm();
 
   const [selectedAgency, setSelectedAgency] = useState('All');
@@ -185,14 +172,13 @@ export default function Managers() {
   const [copiedId, setCopiedId] = useState(null);
   const [selectedManagerForPhoto, setSelectedManagerForPhoto] = useState(null);
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
-  // Distinct agencies
   const agencies = useMemo(() => {
     const list = Array.from(new Set((managers || []).map((m) => m.agency).filter(Boolean)));
     return ['All', ...list];
   }, [managers]);
 
-  // Total represented talents count across all managers
   const totalTalentsCount = useMemo(() => {
     const unique = new Set();
     (managers || []).forEach((m) => {
@@ -202,45 +188,57 @@ export default function Managers() {
     return unique.size;
   }, [managers]);
 
-  // Filtered managers
   const filteredManagers = useMemo(() => {
-    return (managers || []).filter((m) => {
-      const matchesAgency = selectedAgency === 'All' || m.agency === selectedAgency;
-      const q = search.toLowerCase().trim();
-      const talents = m.representedTalents || m.assignedCelebrities || [];
-      const matchesSearch =
-        !q ||
-        (m.name || '').toLowerCase().includes(q) ||
-        (m.agency || '').toLowerCase().includes(q) ||
-        (m.role || m.title || '').toLowerCase().includes(q) ||
-        talents.some((t) => (t || '').toLowerCase().includes(q));
+    return (managers || []).filter((mgr) => {
+      const matchesAgency = selectedAgency === 'All' || mgr.agency === selectedAgency;
+      if (!matchesAgency) return false;
 
-      return matchesAgency && matchesSearch;
+      if (!search.trim()) return true;
+
+      const q = search.toLowerCase().trim();
+      const inName = (mgr.name || '').toLowerCase().includes(q);
+      const inAgency = (mgr.agency || '').toLowerCase().includes(q);
+      const inRole = (mgr.role || mgr.title || '').toLowerCase().includes(q);
+      const inEmail = (mgr.email || '').toLowerCase().includes(q);
+      const inPhone = (mgr.phone || '').toLowerCase().includes(q);
+      const inTalents = (mgr.representedTalents || mgr.assignedCelebrities || []).some((t) =>
+        t.toLowerCase().includes(q)
+      );
+
+      return inName || inAgency || inRole || inEmail || inPhone || inTalents;
     });
   }, [managers, selectedAgency, search]);
 
+<<<<<<< HEAD
+=======
   const handleInviteLiaison = () => {
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText('https://zenvecrm.io/invite/join-agency-team');
-    }
-    if (addToast) {
-      addToast('Manager invitation link generated & copied to clipboard!', 'info');
-    }
+    setIsInviteModalOpen(true);
   };
 
-  const handleCopyEmail = (e, mgr) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!mgr.email) return;
-
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText(mgr.email);
+  const handleAddNewManager = (newManager) => {
+    if (addManager) {
+      addManager(newManager);
+    } else {
+      localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
+      if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
     }
+    // Automatically reset agency filter and clear search so new manager is immediately visible at the top!
+    setSelectedAgency('All');
+    setSearch('');
+  };
+
+>>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
+  const handleCopyEmail = (e, mgr) => {
+    e.stopPropagation();
+    if (!mgr?.email) return;
+    navigator.clipboard?.writeText(mgr.email);
     setCopiedId(mgr.id);
     if (addToast) {
-      addToast(`Email copied: ${mgr.email}`, 'info');
+      addToast(`Copied ${mgr.email} to clipboard`, 'success');
     }
-    setTimeout(() => setCopiedId(null), 2000);
+    setTimeout(() => {
+      setCopiedId(null);
+    }, 2000);
   };
 
   const handleCelebrityClick = (celebName) => {
@@ -250,17 +248,21 @@ export default function Managers() {
     navigate('/celebrities');
   };
 
+  const handleInviteLiaison = () => {
+    if (addToast) {
+      addToast('Agency manager onboarding form initiated', 'info');
+    }
+  };
+
   return (
     <div className="managers-page-wrapper">
-      {/* Scoped Dynamic Styles */}
       <style>{`
         .managers-page-wrapper {
           display: flex;
           flex-direction: column;
-          gap: 22px;
+          gap: 24px;
         }
 
-        /* KPI Banner */
         .managers-kpi-banner {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -280,21 +282,21 @@ export default function Managers() {
         }
 
         .manager-kpi-card {
-          background: ${isLight ? '#ffffff' : '#111827'};
-          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
-          border-radius: 16px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: 14px;
           padding: 16px 18px;
           display: flex;
           align-items: center;
           gap: 14px;
-          box-shadow: ${isLight ? '0 1px 3px rgba(0,0,0,0.05)' : '0 4px 12px rgba(0,0,0,0.3)'};
+          box-shadow: var(--shadow-sm);
           transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .manager-kpi-card:hover {
           transform: translateY(-2px);
-          border-color: ${isLight ? '#cbd5e1' : '#374151'};
-          box-shadow: ${isLight ? '0 6px 16px rgba(0,0,0,0.08)' : '0 8px 20px rgba(0,0,0,0.45)'};
+          border-color: var(--border-medium);
+          box-shadow: var(--shadow-md);
         }
 
         .manager-kpi-icon {
@@ -353,8 +355,8 @@ export default function Managers() {
           border-radius: 9999px;
           font-size: 0.82rem;
           font-weight: 600;
-          background: ${isLight ? '#ffffff' : '#111827'};
-          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           color: var(--text-muted);
           cursor: pointer;
           transition: all 0.2s ease;
@@ -363,14 +365,14 @@ export default function Managers() {
         .manager-filter-pill-btn:hover {
           border-color: var(--border-medium);
           color: var(--text-main);
-          background: ${isLight ? '#f8fafc' : '#172033'};
+          background: var(--bg-card-alt);
         }
 
         .manager-filter-pill-btn.active {
-          background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+          background: var(--primary);
           color: #ffffff;
-          border-color: transparent;
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+          border-color: var(--primary);
+          box-shadow: var(--shadow-sm);
         }
 
         /* Search Box */
@@ -385,8 +387,8 @@ export default function Managers() {
 
         .managers-search-input {
           width: 100%;
-          background: ${isLight ? '#ffffff' : '#111827'};
-          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           border-radius: 12px;
           padding: 8px 34px 8px 36px;
           font-size: 0.83rem;
@@ -397,7 +399,7 @@ export default function Managers() {
 
         .managers-search-input:focus {
           border-color: var(--primary);
-          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+          box-shadow: 0 0 0 3px var(--c-primary-dim);
         }
 
         .managers-search-icon {
@@ -446,23 +448,23 @@ export default function Managers() {
 
         /* Manager Profile Card */
         .manager-profile-card {
-          background: ${isLight ? '#ffffff' : '#111827'};
-          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
-          border-radius: 18px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: 16px;
           padding: 22px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           height: 100%;
-          box-shadow: ${isLight ? '0 2px 10px rgba(0, 0, 0, 0.05)' : '0 8px 24px rgba(0, 0, 0, 0.4)'};
+          box-shadow: var(--shadow-sm);
           transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
           position: relative;
         }
 
         .manager-profile-card:hover {
-          transform: translateY(-4px);
-          border-color: ${isLight ? '#cbd5e1' : '#374151'};
-          box-shadow: ${isLight ? '0 12px 28px rgba(0, 0, 0, 0.1)' : '0 16px 36px rgba(0, 0, 0, 0.55)'};
+          transform: translateY(-3px);
+          border-color: var(--border-medium);
+          box-shadow: var(--shadow-md);
         }
 
         /* Header Row inside Card */
@@ -479,20 +481,20 @@ export default function Managers() {
           height: 68px;
           min-width: 68px;
           min-height: 68px;
-          border-radius: 16px;
+          border-radius: 14px;
           overflow: hidden;
           position: relative;
-          border: 2px solid ${isLight ? '#e2e8f0' : '#1f2937'};
-          background: ${isLight ? '#f8fafc' : '#1e293b'};
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          border: 1px solid var(--border-color);
+          background: var(--bg-card-alt);
+          box-shadow: var(--shadow-sm);
           cursor: pointer;
           flex-shrink: 0;
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .manager-photo-wrap:hover {
-          transform: scale(1.04);
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+          transform: scale(1.02);
+          box-shadow: var(--shadow-md);
         }
 
         .manager-photo-img {
@@ -531,9 +533,8 @@ export default function Managers() {
           width: 12px;
           height: 12px;
           border-radius: 50%;
-          background: #10b981;
-          border: 2px solid ${isLight ? '#ffffff' : '#111827'};
-          box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+          background: var(--accent);
+          border: 2px solid var(--bg-card);
           z-index: 2;
         }
 
@@ -551,7 +552,7 @@ export default function Managers() {
         }
 
         .manager-name-text {
-          font-size: 1.10rem;
+          font-size: 1.05rem;
           font-weight: 700;
           color: var(--text-main);
           white-space: nowrap;
@@ -567,9 +568,9 @@ export default function Managers() {
           font-size: 0.68rem;
           font-weight: 700;
           border-radius: 9999px;
-          background: ${isLight ? '#ecfdf5' : 'rgba(16, 185, 129, 0.12)'};
-          color: #10b981;
-          border: 1px solid ${isLight ? '#a7f3d0' : 'rgba(16, 185, 129, 0.3)'};
+          background: var(--c-accent-dim);
+          color: var(--accent);
+          border: 1px solid var(--border-color);
           letter-spacing: 0.04em;
           flex-shrink: 0;
         }
@@ -599,8 +600,8 @@ export default function Managers() {
           display: flex;
           flex-direction: column;
           gap: 8px;
-          background: ${isLight ? '#f8fafc' : 'rgba(255, 255, 255, 0.03)'};
-          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
+          background: var(--bg-card-alt);
+          border: 1px solid var(--border-color);
           border-radius: 12px;
           padding: 10px 12px;
           margin-bottom: 16px;
@@ -644,7 +645,7 @@ export default function Managers() {
 
         .manager-copy-btn:hover {
           color: var(--primary);
-          background: rgba(99, 102, 241, 0.1);
+          background: var(--c-primary-dim);
         }
 
         /* Talents Section */
@@ -679,17 +680,17 @@ export default function Managers() {
           font-size: 0.74rem;
           font-weight: 600;
           border-radius: 9999px;
-          background: ${isLight ? '#f1f5f9' : '#1a243d'};
+          background: var(--bg-card-alt);
           color: var(--text-main);
-          border: 1px solid ${isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)'};
+          border: 1px solid var(--border-color);
           cursor: pointer;
           transition: all 0.15s ease;
         }
 
         .manager-celeb-chip:hover {
-          background: rgba(99, 102, 241, 0.15);
-          color: #818cf8;
-          border-color: rgba(99, 102, 241, 0.35);
+          background: var(--c-primary-dim);
+          color: var(--primary);
+          border-color: var(--primary);
           transform: translateY(-1px);
         }
 
@@ -697,9 +698,9 @@ export default function Managers() {
         .managers-empty-state {
           text-align: center;
           padding: 56px 20px;
-          background: ${isLight ? '#ffffff' : '#111827'};
-          border: 1px dashed ${isLight ? '#cbd5e1' : '#334155'};
-          border-radius: 18px;
+          background: var(--bg-card);
+          border: 1px dashed var(--border-color);
+          border-radius: 16px;
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -719,7 +720,7 @@ export default function Managers() {
           className="btn-primary"
           onClick={handleInviteLiaison}
         >
-          <UserPlus size={16} /> Invite Liaison
+          <UserPlus size={16} /> Invite Manager
         </button>
       </div>
 
@@ -729,8 +730,8 @@ export default function Managers() {
           <div
             className="manager-kpi-icon"
             style={{
-              background: isLight ? '#eef2ff' : 'rgba(99, 102, 241, 0.12)',
-              color: '#6366f1'
+              background: 'var(--c-primary-dim)',
+              color: 'var(--primary)'
             }}
           >
             <Users size={21} />
@@ -745,8 +746,8 @@ export default function Managers() {
           <div
             className="manager-kpi-icon"
             style={{
-              background: isLight ? '#ecfeff' : 'rgba(6, 182, 212, 0.12)',
-              color: '#06b6d4'
+              background: 'var(--c-secondary-dim)',
+              color: 'var(--secondary)'
             }}
           >
             <Building2 size={21} />
@@ -761,8 +762,8 @@ export default function Managers() {
           <div
             className="manager-kpi-icon"
             style={{
-              background: isLight ? '#fffbeb' : 'rgba(245, 158, 11, 0.12)',
-              color: '#f59e0b'
+              background: 'var(--c-accent-dim)',
+              color: 'var(--accent)'
             }}
           >
             <Star size={21} />
@@ -777,8 +778,8 @@ export default function Managers() {
           <div
             className="manager-kpi-icon"
             style={{
-              background: isLight ? '#ecfdf5' : 'rgba(16, 185, 129, 0.12)',
-              color: '#10b981'
+              background: 'var(--c-primary-dim)',
+              color: 'var(--primary)'
             }}
           >
             <ShieldCheck size={21} />
@@ -880,7 +881,6 @@ export default function Managers() {
                 {/* Top Section: Photo & Identity Meta */}
                 <div>
                   <div className="manager-card-top">
-                    {/* Resilient Avatar Component with Initials Fallback */}
                     <ManagerAvatar
                       mgr={mgr}
                       onAvatarClick={() => {
@@ -928,7 +928,7 @@ export default function Managers() {
                         title="Copy email address"
                       >
                         {copiedId === mgr.id ? (
-                          <Check size={13} color="#10B981" />
+                          <Check size={13} color="var(--accent)" />
                         ) : (
                           <Copy size={13} />
                         )}
@@ -941,7 +941,7 @@ export default function Managers() {
                         className="manager-contact-left"
                         title="Call phone"
                       >
-                        <Phone size={13} color="var(--accent-emerald)" />
+                        <Phone size={13} color="var(--accent)" />
                         <span>{mgr.phone}</span>
                       </a>
                     </div>
@@ -964,7 +964,7 @@ export default function Managers() {
                         onClick={() => handleCelebrityClick(celebName)}
                         title={`View ${celebName} in Celebrity Directory`}
                       >
-                        <Star size={11} fill="#f59e0b" color="#f59e0b" />
+                        <Star size={11} fill="var(--primary)" color="var(--primary)" />
                         <span>{celebName}</span>
                       </button>
                     ))}
@@ -975,6 +975,15 @@ export default function Managers() {
           })}
         </div>
       )}
+
+      {/* Invite / Add Manager Modal */}
+      <InviteManagerModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onAddManager={handleAddNewManager}
+        currentAgency={selectedAgency}
+        existingAgencies={agencies}
+      />
 
       {/* Change Photo Modal */}
       {isPhotoModalOpen && selectedManagerForPhoto && (

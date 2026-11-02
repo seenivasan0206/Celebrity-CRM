@@ -44,7 +44,7 @@ export default function ScheduleShootModal() {
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <div className="modal-icon-badge" style={{ background: 'linear-gradient(135deg, #EC4899 0%, #BE185D 100%)' }}>
+            <div className="modal-icon-badge">
               <Camera size={20} />
             </div>
             <div>

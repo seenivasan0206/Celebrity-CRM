@@ -1,0 +1,3 @@
+[{"name": "Alex", "grades": [85, 92, 78], "attendance": 0.95}, 
+{"name": "Pavi", "grades": [88, 91, 95], "attendance": 0.98}, 
+{"name": "Sathish", "grades": [72, 65, 80], "attendance": 0.85}]

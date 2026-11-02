@@ -43,7 +43,7 @@ export default function CreateContractModal() {
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
-            <div className="modal-icon-badge" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}>
+            <div className="modal-icon-badge">
               <FileText size={20} />
             </div>
             <div>

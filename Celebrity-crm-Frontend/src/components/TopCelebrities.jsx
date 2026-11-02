@@ -9,18 +9,11 @@ export default function TopCelebrities() {
   // Sort celebrities by campaigns count descending
   const sorted = [...celebrities].sort((a, b) => (b.campaignsCount || 0) - (a.campaignsCount || 0));
 
-  const getRankClass = (idx) => {
-    if (idx === 0) return 'gold';
-    if (idx === 1) return 'silver';
-    if (idx === 2) return 'bronze';
-    return '';
-  };
-
   return (
     <div className="crm-card" style={{ flex: 1.1 }}>
       <div className="analytics-card-header">
         <div className="analytics-card-title">
-          <Crown size={18} color="#F59E0B" />
+          <Crown size={18} color="var(--primary)" />
           <span>Top Celebrities by Campaigns</span>
         </div>
         <Link to="/celebrities" style={{ fontSize: '0.76rem', color: 'var(--primary)', fontWeight: 600 }}>
@@ -31,7 +24,7 @@ export default function TopCelebrities() {
       <div className="top-celebrities-list">
         {sorted.slice(0, 5).map((celeb, idx) => (
           <div key={celeb.id} className="top-celeb-item">
-            <span className={`rank-badge ${getRankClass(idx)}`}>
+            <span className={`rank-badge ${idx === 0 ? 'top-rank' : ''}`}>
               {idx + 1}
             </span>
             <img src={celeb.avatar} alt={celeb.name} className="top-celeb-avatar" />

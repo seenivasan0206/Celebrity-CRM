@@ -10,6 +10,14 @@ export default function StatusDonutChart() {
   const circumference = 2 * Math.PI * radius;
   const totalCount = celebrityStatusData.reduce((acc, curr) => acc + curr.count, 0);
 
+  // Map each status to our clean 5-colour palette
+  const statusPalette = {
+    'Active': '#10B981',     // Accent
+    'On Hold': '#3B82F6',    // Primary
+    'Inactive': '#64748B',   // Secondary
+    'Pending': '#94A3B8'     // Muted Secondary
+  };
+
   // Calculate SVG stroke offset for each arc
   let accumulatedPercent = 0;
   const segments = celebrityStatusData.map((item, idx) => {
@@ -17,9 +25,11 @@ export default function StatusDonutChart() {
     const strokeDasharray = `${fraction * circumference} ${circumference}`;
     const strokeDashoffset = -accumulatedPercent * circumference;
     accumulatedPercent += fraction;
+    const color = statusPalette[item.label] || 'var(--secondary)';
 
     return {
       ...item,
+      color,
       strokeDasharray,
       strokeDashoffset,
       index: idx
@@ -30,7 +40,7 @@ export default function StatusDonutChart() {
     <div className="crm-card" style={{ flex: 1 }}>
       <div className="analytics-card-header">
         <div className="analytics-card-title">
-          <Trophy size={18} color="var(--accent-amber)" />
+          <Trophy size={18} color="var(--primary)" />
           <span>Celebrity Status</span>
         </div>
       </div>
@@ -56,14 +66,14 @@ export default function StatusDonutChart() {
                   r={radius}
                   fill="transparent"
                   stroke={seg.color}
-                  strokeWidth={isHighlighted ? strokeWidth + 4 : strokeWidth}
+                  strokeWidth={isHighlighted ? strokeWidth + 2 : strokeWidth}
                   strokeDasharray={seg.strokeDasharray}
                   strokeDashoffset={seg.strokeDashoffset}
                   strokeLinecap="round"
                   style={{
-                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                    transition: 'all 0.2s ease',
                     cursor: 'pointer',
-                    filter: isHighlighted ? `drop-shadow(0 0 8px ${seg.color})` : 'none'
+                    opacity: activeSegment !== null && !isHighlighted ? 0.6 : 1
                   }}
                   onMouseEnter={() => setActiveSegment(seg.index)}
                   onMouseLeave={() => setActiveSegment(null)}
@@ -79,7 +89,7 @@ export default function StatusDonutChart() {
         </div>
 
         <div className="donut-breakdown-list">
-          {celebrityStatusData.map((item, idx) => (
+          {segments.map((item, idx) => (
             <div
               key={item.label}
               className="donut-breakdown-item"
@@ -87,7 +97,7 @@ export default function StatusDonutChart() {
               onMouseLeave={() => setActiveSegment(null)}
               style={{
                 background: activeSegment === idx ? 'var(--bg-hover)' : 'transparent',
-                borderRadius: '8px'
+                borderRadius: '6px'
               }}
             >
               <div className="breakdown-left">
@@ -104,4 +114,3 @@ export default function StatusDonutChart() {
     </div>
   );
 }
-

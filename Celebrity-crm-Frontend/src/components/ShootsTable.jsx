@@ -19,13 +19,13 @@ export default function ShootsTable() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Confirmed':
-        return <span className="badge badge-emerald">Confirmed</span>;
+        return <span className="badge badge-accent">Confirmed</span>;
       case 'Scheduled':
-        return <span className="badge badge-indigo">Scheduled</span>;
+        return <span className="badge badge-primary">Scheduled</span>;
       case 'Planned':
-        return <span className="badge badge-amber">Planned</span>;
+        return <span className="badge badge-secondary">Planned</span>;
       default:
-        return <span className="badge badge-cyan">{status}</span>;
+        return <span className="badge badge-primary">{status}</span>;
     }
   };
 
@@ -88,7 +88,7 @@ export default function ShootsTable() {
                         title="Confirm shoot"
                         onClick={() => updateShootStatus(shoot.id, 'Confirmed')}
                       >
-                        <CheckCircle2 size={13} color="#10B981" />
+                        <CheckCircle2 size={13} color="var(--accent)" />
                       </button>
                     ) : (
                       <button
@@ -98,17 +98,17 @@ export default function ShootsTable() {
                         title="Reschedule shoot"
                         onClick={() => updateShootStatus(shoot.id, 'Scheduled')}
                       >
-                        <Clock size={13} color="#6366F1" />
+                        <Clock size={13} color="var(--primary)" />
                       </button>
                     )}
                     <button
                       type="button"
                       className="btn-secondary"
-                      style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--accent-rose)', whiteSpace: 'nowrap' }}
-                      title="Cancel shoot"
+                      style={{ padding: '4px 8px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}
+                      title="Delete shoot"
                       onClick={() => deleteShoot(shoot.id)}
                     >
-                      <Trash2 size={13} />
+                      <Trash2 size={13} color="var(--secondary)" />
                     </button>
                   </div>
                 </td>

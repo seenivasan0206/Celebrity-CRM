@@ -67,8 +67,8 @@ export default function Shoots() {
                   </td>
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <span className={`badge ${
-                      shoot.status === 'Confirmed' ? 'badge-emerald' :
-                      shoot.status === 'Scheduled' ? 'badge-indigo' : 'badge-amber'
+                      shoot.status === 'Confirmed' ? 'badge-accent' :
+                      shoot.status === 'Scheduled' ? 'badge-primary' : 'badge-secondary'
                     }`} style={{ whiteSpace: 'nowrap' }}>
                       {shoot.status}
                     </span>
@@ -83,7 +83,7 @@ export default function Shoots() {
                           title="Confirm shoot"
                           onClick={() => updateShootStatus && updateShootStatus(shoot.id, 'Confirmed')}
                         >
-                          <CheckCircle2 size={13} color="#10B981" /> Confirm
+                          <CheckCircle2 size={13} color="var(--accent)" /> Confirm
                         </button>
                       ) : (
                         <button
@@ -93,13 +93,13 @@ export default function Shoots() {
                           title="Revert to scheduled"
                           onClick={() => updateShootStatus && updateShootStatus(shoot.id, 'Scheduled')}
                         >
-                          <RefreshCw size={13} color="#6366F1" /> Reschedule
+                          <RefreshCw size={13} color="var(--primary)" /> Reschedule
                         </button>
                       )}
                       <button
                         type="button"
                         className="btn-secondary"
-                        style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--accent-rose)', whiteSpace: 'nowrap' }}
+                        style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--secondary)', whiteSpace: 'nowrap' }}
                         title="Cancel shoot"
                         onClick={() => deleteShoot && deleteShoot(shoot.id)}
                       >

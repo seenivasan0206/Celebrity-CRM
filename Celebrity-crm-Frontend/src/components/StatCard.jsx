@@ -1,13 +1,13 @@
 import React from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-export default function StatCard({ title, value, change, isPositive = true, icon: Icon, color, accentGlow }) {
+export default function StatCard({ title, value, change, isPositive = true, icon: Icon }) {
   return (
-    <div className="stat-card" style={{ '--card-accent': accentGlow }}>
+    <div className="stat-card">
       <div className="stat-card-header">
         <span className="stat-card-title">{title}</span>
-        <div className="stat-icon-box" style={{ background: color }}>
-          <Icon size={22} />
+        <div className="stat-icon-box">
+          <Icon size={20} />
         </div>
       </div>
       <div className="stat-card-body">
@@ -23,4 +23,3 @@ export default function StatCard({ title, value, change, isPositive = true, icon
     </div>
   );
 }
-

@@ -40,7 +40,7 @@ export default function RecentActivity() {
       <div className="activity-list-wrap">
         {activities.slice(0, 5).map((act) => (
           <div key={act.id} className="activity-item">
-            <div className="activity-icon-badge" style={{ background: act.iconColor || 'var(--primary)' }}>
+            <div className="activity-icon-badge">
               {getIcon(act.type)}
             </div>
             <div className="activity-details">
@@ -54,4 +54,3 @@ export default function RecentActivity() {
     </div>
   );
 }
-

@@ -26,26 +26,29 @@ export default function Login() {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     if (!email.trim() || !password.trim()) {
-      setError('Please enter both your work email and password.');
+      setError('Please enter both your work email/username and password.');
       return;
     }
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      const res = login(email.trim(), password);
+    try {
+      const res = await login(email.trim(), password);
       setIsLoading(false);
       if (res.success) {
         navigate('/');
       } else {
         setError(res.message || 'Invalid credentials. Please verify your email and password.');
       }
-    }, 450);
+    } catch (err) {
+      setIsLoading(false);
+      setError(err.message || 'Unable to connect to authentication server. Please check your credentials.');
+    }
   };
 
   return (
@@ -53,36 +56,36 @@ export default function Login() {
       {/* Professional Enterprise Sign In Card */}
       <div className="auth-form-card">
         {/* Brand Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
           <div
             style={{
-              width: '46px',
-              height: '46px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #6366F1 0%, #06B6D4 100%)',
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'var(--primary)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
-              boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)',
+              boxShadow: 'var(--shadow-sm)',
               flexShrink: 0
             }}
           >
-            <Star size={24} fill="#ffffff" />
+            <Star size={20} fill="#ffffff" />
           </div>
           <div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 800, color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.85)', margin: 0, lineHeight: 1.1 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)', margin: 0, lineHeight: 1.1 }}>
               Zenve CRM
             </h2>
-            <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#67e8f9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <span style={{ fontSize: '0.68rem', fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
               Enterprise Talent OS
             </span>
           </div>
         </div>
 
         <div className="auth-header-block">
-          <h3 style={{ fontSize: '1.4rem' }}>Sign In</h3>
-          <p style={{ fontSize: '0.84rem', marginTop: '4px', lineHeight: 1.4 }}>
+          <h3>Sign In</h3>
+          <p>
             Enter your authorized credentials to access your talent workspace
           </p>
         </div>
@@ -90,13 +93,13 @@ export default function Login() {
         {error && (
           <div
             style={{
-              background: 'rgba(244, 63, 94, 0.12)',
-              border: '1px solid rgba(244, 63, 94, 0.35)',
-              color: '#F43F5E',
-              padding: '11px 14px',
+              background: 'var(--secondary-subtle)',
+              border: '1px solid var(--secondary-border)',
+              color: 'var(--text-main)',
+              padding: '10px 14px',
               borderRadius: '8px',
-              fontSize: '0.82rem',
-              fontWeight: 600,
+              fontSize: '0.8rem',
+              fontWeight: 500,
               lineHeight: 1.4
             }}
           >
@@ -106,17 +109,20 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label className="form-label">Work Email Address</label>
-            <div className="form-input-wrap">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="form-label" style={{ margin: 0 }}>Work Email or Username</label>
+              <span style={{ fontSize: '0.72rem', color: 'var(--primary)', fontWeight: 600 }}>Default: admin</span>
+            </div>
+            <div className="form-input-wrap" style={{ marginTop: '4px' }}>
               <Mail size={18} className="input-icon-left" />
               <input
-                type="email"
+                type="text"
                 className="zenve-input"
-                placeholder="name@agency.com"
+                placeholder="admin or name@agency.com"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
+                autoComplete="username"
               />
             </div>
           </div>
@@ -178,7 +184,7 @@ export default function Login() {
             ) : (
               <>
                 <span>Sign In to Portal</span>
-                <ArrowRight size={18} />
+                <ArrowRight size={16} />
               </>
             )}
           </button>
@@ -191,15 +197,15 @@ export default function Login() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            padding: '10px 12px',
-            background: 'rgba(0, 0, 0, 0.28)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            borderRadius: '8px',
-            fontSize: '0.74rem',
-            color: 'rgba(255, 255, 255, 0.72)'
+            padding: '8px 12px',
+            background: 'var(--bg-card-alt)',
+            border: '1px solid var(--border-subtle)',
+            borderRadius: '6px',
+            fontSize: '0.72rem',
+            color: 'var(--text-muted)'
           }}
         >
-          <ShieldCheck size={15} color="#10B981" />
+          <ShieldCheck size={14} color="var(--accent)" />
           <span>256-bit SSL Encrypted · SOC2 Compliant Security</span>
         </div>
 
@@ -224,30 +230,31 @@ export default function Login() {
                 <div style={{ textAlign: 'center', padding: '10px 0' }}>
                   <div
                     style={{
-                      width: '46px',
-                      height: '46px',
+                      width: '42px',
+                      height: '42px',
                       borderRadius: '50%',
-                      background: 'rgba(16, 185, 129, 0.15)',
-                      color: '#10B981',
+                      background: 'var(--accent-subtle)',
+                      color: 'var(--accent)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      margin: '0 auto 12px'
+                      margin: '0 auto 12px',
+                      border: '1px solid var(--accent-border)'
                     }}
                   >
-                    <Check size={24} />
+                    <Check size={20} />
                   </div>
                   <h4 style={{ color: 'var(--text-main)', marginBottom: '6px' }}>Recovery Link Sent</h4>
-                  <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                     We dispatched a secure password reset link to <strong>{forgotEmail}</strong>.
                   </p>
                 </div>
               ) : (
                 <>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                  <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
                     Enter your registered work email and we will send you an authorized reset link.
                   </p>
-                  <div className="form-group" style={{ marginTop: '14px' }}>
+                  <div className="form-group" style={{ marginTop: '12px' }}>
                     <label className="form-label">Work Email</label>
                     <input
                       type="email"

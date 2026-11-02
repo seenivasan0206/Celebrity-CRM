@@ -5,62 +5,8 @@ import { Building2, Plus, MapPin, Users, Globe, Phone, Mail } from 'lucide-react
 const DEFAULT_AGENCY_IMAGE = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80';
 
 export default function Agencies() {
-  const { addToast } = useCrm();
-
-  const agenciesList = [
-    {
-      id: 1,
-      name: 'Elite Talent Management',
-      headquarters: 'Bandra West, Mumbai',
-      specialty: 'A-List Film Actors & Global Ambassadorship',
-      rosterCount: 14,
-      commission: '12%',
-      website: 'www.elitetalent.com',
-      email: 'partners@elitetalent.com',
-      phone: '+91 22 2640 8899',
-      status: 'Verified Partner',
-      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      id: 2,
-      name: 'Global Talent & Media',
-      headquarters: 'Poes Garden, Chennai',
-      specialty: 'South Indian Superstars & OTT Exclusives',
-      rosterCount: 22,
-      commission: '10%',
-      website: 'www.globaltalent.in',
-      email: 'contact@globaltalent.in',
-      phone: '+91 44 2811 5566',
-      status: 'Verified Partner',
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      id: 3,
-      name: 'Apex Studio Representations',
-      headquarters: 'Jubilee Hills, Hyderabad',
-      specialty: 'Pan-India Action Icons & Commercial Ads',
-      rosterCount: 11,
-      commission: '15%',
-      website: 'www.apexstudio.in',
-      email: 'connect@apexstudio.in',
-      phone: '+91 40 2355 4433',
-      status: 'Premium Partner',
-      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      id: 4,
-      name: 'Zenve Talent Network',
-      headquarters: 'Koramangala, Bangalore',
-      specialty: 'Music Directors, Indie Stars & Tech Brands',
-      rosterCount: 18,
-      commission: '8%',
-      website: 'www.zenvetalent.com',
-      email: 'roster@zenvetalent.com',
-      phone: '+91 80 4123 7788',
-      status: 'Direct Network',
-      image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=400&q=80'
-    }
-  ];
+  const { agencies, addToast } = useCrm();
+  const agenciesList = agencies || [];
 
   return (
     <div>
@@ -92,8 +38,8 @@ export default function Agencies() {
                   borderRadius: '12px',
                   overflow: 'hidden',
                   flexShrink: 0,
-                  border: '1.5px solid var(--border-medium)',
-                  background: 'var(--bg-secondary, #1e293b)',
+                  border: '1px solid var(--border-color)',
+                  background: 'var(--bg-card-alt)',
                   boxShadow: 'var(--shadow-sm)'
                 }}
               >
@@ -124,12 +70,12 @@ export default function Agencies() {
                   <MapPin size={12} /> {agency.headquarters}
                 </div>
               </div>
-              <span className="badge badge-emerald">{agency.status}</span>
+              <span className="badge-accent">{agency.status}</span>
             </div>
 
             <div className="celeb-stats-strip">
               <div className="celeb-stat-unit">
-                <strong>{agency.rosterCount}</strong>
+                <strong>{agency.rosterCount || 12}</strong>
                 <span>Stars</span>
               </div>
               <div className="celeb-stat-unit">
@@ -137,7 +83,7 @@ export default function Agencies() {
                 <span>Agency Fee</span>
               </div>
               <div className="celeb-stat-unit">
-                <strong style={{ color: '#10B981' }}>Active</strong>
+                <strong style={{ color: 'var(--accent)' }}>Active</strong>
                 <span>Status</span>
               </div>
             </div>
@@ -152,7 +98,7 @@ export default function Agencies() {
                 <span>{agency.email}</span>
               </div>
               <div className="celeb-contact-row">
-                <Phone size={13} color="var(--accent-emerald)" />
+                <Phone size={13} color="var(--accent)" />
                 <span>{agency.phone}</span>
               </div>
             </div>

@@ -9,7 +9,7 @@ export default function QuickActions() {
     <div className="crm-card" style={{ flex: 1 }}>
       <div className="analytics-card-header">
         <div className="analytics-card-title">
-          <Zap size={18} color="#06B6D4" />
+          <Zap size={18} color="var(--primary)" />
           <span>Quick Actions</span>
         </div>
       </div>
@@ -18,10 +18,9 @@ export default function QuickActions() {
         <button
           type="button"
           className="quick-action-button"
-          style={{ '--action-color': '#6366F1' }}
           onClick={() => openModal('addCelebrity')}
         >
-          <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #6366F1 0%, #4338CA 100%)' }}>
+          <div className="quick-action-icon">
             <UserPlus size={18} />
           </div>
           <span>Add Celebrity</span>
@@ -30,10 +29,9 @@ export default function QuickActions() {
         <button
           type="button"
           className="quick-action-button"
-          style={{ '--action-color': '#10B981' }}
           onClick={() => openModal('createCampaign')}
         >
-          <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}>
+          <div className="quick-action-icon">
             <Megaphone size={18} />
           </div>
           <span>Create Campaign</span>
@@ -42,10 +40,9 @@ export default function QuickActions() {
         <button
           type="button"
           className="quick-action-button"
-          style={{ '--action-color': '#F59E0B' }}
           onClick={() => openModal('createContract')}
         >
-          <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}>
+          <div className="quick-action-icon">
             <FileText size={18} />
           </div>
           <span>Create Contract</span>
@@ -54,10 +51,9 @@ export default function QuickActions() {
         <button
           type="button"
           className="quick-action-button"
-          style={{ '--action-color': '#EC4899' }}
           onClick={() => openModal('scheduleShoot')}
         >
-          <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)' }}>
+          <div className="quick-action-icon">
             <CalendarPlus size={18} />
           </div>
           <span>Schedule Shoot</span>

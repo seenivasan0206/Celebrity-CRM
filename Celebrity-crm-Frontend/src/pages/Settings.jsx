@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import { User, Bell, Shield, Palette, Crown, Save, Download, Zap, Lock, Sun, Moon } from 'lucide-react';
+import api from '../services/api';
 
 export default function Settings() {
   const { user, updateProfile, theme, toggleTheme } = useAuth();
@@ -11,23 +12,11 @@ export default function Settings() {
 
   // Profile Form state
   const [profileData, setProfileData] = useState({
-    name: user?.name || 'Admin',
-    email: user?.email || 'admin@zenvecrm.io',
-    role: user?.role || 'System Administrator',
-    agency: user?.agency || 'Zenve Global Entertainment'
+    name: user?.name || user?.fullName || 'Administrator',
+    email: user?.email || 'admin@celebritycrm.com',
+    role: user?.role || 'Executive Talent Manager',
+    agency: user?.agency || 'Zenve Talent Network'
   });
-
-  // Sync with user
-  useEffect(() => {
-    if (user) {
-      setProfileData({
-        name: user.name || 'Admin',
-        email: user.email || 'admin@zenvecrm.io',
-        role: user.role || 'System Administrator',
-        agency: user.agency || 'Zenve Global Entertainment'
-      });
-    }
-  }, [user]);
 
   // Security Form state
   const [securityData, setSecurityData] = useState({
@@ -44,44 +33,138 @@ export default function Settings() {
     castingSubmissions: false
   });
 
-  const handleSaveProfile = (e) => {
+  // Subscription state
+  const [subscription, setSubscription] = useState({
+    planName: user?.plan || 'Zenve VIP Enterprise',
+    renewalDate: '28 Nov 2027',
+    status: 'ACTIVE',
+    description: 'Includes unlimited celebrity rosters, automated shoot dispatch, legal contract generation, and multi-agency collaboration.'
+  });
+
+  // Fetch live settings from Spring Boot backend on mount
+  useEffect(() => {
+    let isMounted = true;
+    const fetchSettings = async () => {
+      try {
+        const res = await api.settings.getAll();
+        if (isMounted && res) {
+          if (res.profile) {
+            setProfileData({
+              name: res.profile.name || res.profile.fullName || 'Administrator',
+              email: res.profile.email || 'admin@celebritycrm.com',
+              role: res.profile.role || 'ROLE_ADMIN',
+              agency: res.profile.agencyName || res.profile.agency || 'Zenve Global Entertainment'
+            });
+          }
+          if (res.notifications) {
+            setNotifPreferences({
+              shootReminders: res.notifications.shootReminders ?? res.notifications.shootScheduleReminders ?? true,
+              contractMilestones: res.notifications.contractMilestones ?? res.notifications.contractMilestoneAlerts ?? true,
+              campaignAlerts: res.notifications.campaignAlerts ?? res.notifications.campaignProgressReports ?? true,
+              castingSubmissions: res.notifications.castingSubmissions ?? res.notifications.castingCallSubmissions ?? false
+            });
+          }
+          if (res.subscription) {
+            setSubscription({
+              planName: res.subscription.planName || res.subscription.plan || 'Zenve VIP Enterprise',
+              renewalDate: res.subscription.renewalDate || '28 Nov 2027',
+              status: res.subscription.status || 'ACTIVE',
+              description: res.subscription.description || 'Enterprise Active License'
+            });
+          }
+        }
+      } catch (err) {
+        console.warn('Backend settings fetch failed, using local profile:', err.message);
+      }
+    };
+    fetchSettings();
+    return () => { isMounted = false; };
+  }, []);
+
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
-    if (updateProfile) {
-      updateProfile(profileData);
-    }
-    if (addToast) {
-      addToast('Profile information successfully saved!', 'success');
+    try {
+      await api.settings.updateProfile({
+        fullName: profileData.name,
+        email: profileData.email,
+        agencyName: profileData.agency,
+        role: profileData.role
+      });
+      if (updateProfile) {
+        updateProfile(profileData);
+      }
+      addToast('Profile information successfully saved to backend database!', 'success');
+    } catch (err) {
+      console.warn('Backend update failed:', err.message);
+      if (updateProfile) {
+        updateProfile(profileData);
+      }
+      addToast('Profile information saved locally!', 'info');
     }
   };
 
-  const handleUpdatePassword = (e) => {
+  const handleUpdatePassword = async (e) => {
     e.preventDefault();
     if (!securityData.newPassword || securityData.newPassword.length < 6) {
-      if (addToast) addToast('New password must be at least 6 characters', 'danger');
+      addToast('New password must be at least 6 characters', 'danger');
       return;
     }
     if (securityData.newPassword !== securityData.confirmPassword) {
-      if (addToast) addToast('New passwords do not match!', 'danger');
+      addToast('New passwords do not match!', 'danger');
       return;
     }
-    setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    if (addToast) addToast('Security password updated successfully!', 'success');
-  };
-
-  const handleSaveNotifications = (e) => {
-    e.preventDefault();
-    if (addToast) addToast('Notification preferences updated!', 'success');
-  };
-
-  const handleUpgradePlan = () => {
-    if (updateProfile) {
-      updateProfile({ plan: 'VIP Platinum Enterprise' });
+    try {
+      await api.settings.changePassword({
+        currentPassword: securityData.currentPassword,
+        newPassword: securityData.newPassword,
+        confirmPassword: securityData.confirmPassword
+      });
+      setSecurityData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      addToast('Security password updated successfully in backend!', 'success');
+    } catch (err) {
+      addToast(err.message || 'Failed to update password. Verify current password.', 'danger');
     }
-    if (addToast) addToast('Upgraded to VIP Platinum Enterprise License!', 'success');
+  };
+
+  const handleSaveNotifications = async (e) => {
+    e.preventDefault();
+    try {
+      await api.settings.updateNotifications({
+        shootReminders: notifPreferences.shootReminders,
+        contractMilestones: notifPreferences.contractMilestones,
+        campaignAlerts: notifPreferences.campaignAlerts,
+        castingSubmissions: notifPreferences.castingSubmissions
+      });
+      addToast('Notification preferences persisted in database!', 'success');
+    } catch (err) {
+      console.warn('Backend notification update failed:', err.message);
+      addToast('Notification preferences updated locally!', 'info');
+    }
+  };
+
+  const handleUpgradePlan = async () => {
+    const upgradedPlan = 'VIP Platinum Enterprise';
+    try {
+      await api.settings.updateSubscription({
+        planName: upgradedPlan
+      });
+      setSubscription(prev => ({ ...prev, planName: upgradedPlan }));
+      if (updateProfile) {
+        updateProfile({ plan: upgradedPlan });
+      }
+      addToast(`Upgraded to ${upgradedPlan} License!`, 'success');
+    } catch (err) {
+      console.warn('Backend subscription update failed:', err.message);
+      setSubscription(prev => ({ ...prev, planName: upgradedPlan }));
+      if (updateProfile) {
+        updateProfile({ plan: upgradedPlan });
+      }
+      addToast(`Upgraded to ${upgradedPlan} License (locally)!`, 'success');
+    }
   };
 
   const handleDownloadInvoice = () => {
-    if (addToast) addToast('Latest receipt & invoice downloaded (PDF)', 'info');
+    addToast('Latest receipt & invoice downloaded (PDF)', 'info');
   };
 
   return (
@@ -204,39 +287,49 @@ export default function Settings() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
                 <div
                   className={`crm-card ${theme === 'dark' ? 'active-border' : ''}`}
-                  onClick={() => theme === 'light' && toggleTheme && toggleTheme()}
+                  onClick={() => {
+                    if (theme === 'light' && toggleTheme) {
+                      toggleTheme();
+                      api.settings.updateTheme({ mode: 'dark' }).catch(() => {});
+                    }
+                  }}
                   style={{
                     padding: '20px',
                     cursor: 'pointer',
-                    border: theme === 'dark' ? '2px solid var(--primary)' : '1px solid var(--border-subtle)',
-                    background: '#0B0F19'
+                    border: theme === 'dark' ? '2px solid var(--primary)' : '1px solid var(--border-color)',
+                    background: 'var(--c-surface)'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                    <Moon size={20} color="#818CF8" />
-                    <strong style={{ color: '#FFFFFF' }}>Dark Luxe (Default)</strong>
+                    <Moon size={20} color="var(--primary)" />
+                    <strong style={{ color: 'var(--text-main)' }}>Dark Luxe (Default)</strong>
                   </div>
-                  <p style={{ fontSize: '0.78rem', color: '#94A3B8' }}>
-                    Cinematic midnight aesthetic with high contrast & glowing accents.
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    Cinematic midnight aesthetic with subtle elevation and high contrast readability.
                   </p>
                 </div>
 
                 <div
                   className={`crm-card ${theme === 'light' ? 'active-border' : ''}`}
-                  onClick={() => theme === 'dark' && toggleTheme && toggleTheme()}
+                  onClick={() => {
+                    if (theme === 'dark' && toggleTheme) {
+                      toggleTheme();
+                      api.settings.updateTheme({ mode: 'light' }).catch(() => {});
+                    }
+                  }}
                   style={{
                     padding: '20px',
                     cursor: 'pointer',
-                    border: theme === 'light' ? '2px solid var(--primary)' : '1px solid var(--border-subtle)',
-                    background: '#F8FAFC'
+                    border: theme === 'light' ? '2px solid var(--primary)' : '1px solid var(--border-color)',
+                    background: 'var(--c-surface)'
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                    <Sun size={20} color="#F59E0B" />
-                    <strong style={{ color: '#0F172A' }}>Light Frost</strong>
+                    <Sun size={20} color="var(--primary)" />
+                    <strong style={{ color: 'var(--text-main)' }}>Light Frost</strong>
                   </div>
-                  <p style={{ fontSize: '0.78rem', color: '#64748B' }}>
-                    Clean daylight editorial look with crisp white surfaces & soft shadows.
+                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    Clean daylight editorial look with crisp white surfaces and soft shadows.
                   </p>
                 </div>
               </div>
@@ -358,8 +451,8 @@ export default function Settings() {
 
               <div
                 style={{
-                  background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%)',
-                  border: '1px solid rgba(99, 102, 241, 0.3)',
+                  background: 'var(--bg-card-alt)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: '16px',
                   padding: '24px',
                   display: 'flex',
@@ -369,19 +462,19 @@ export default function Settings() {
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF' }}>
+                    <div style={{ width: '46px', height: '46px', borderRadius: '12px', background: 'var(--c-primary-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
                       <Crown size={24} />
                     </div>
                     <div>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>{user?.plan || 'Zenve VIP Enterprise'}</h3>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--accent-emerald)', fontWeight: 600 }}>Active · Renews 28 Nov 2027</span>
+                      <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>{subscription.planName}</h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--accent)', fontWeight: 600 }}>Active · Renews {subscription.renewalDate}</span>
                     </div>
                   </div>
-                  <span className="badge badge-emerald">ACTIVE LICENSE</span>
+                  <span className="badge badge-accent">{subscription.status} LICENSE</span>
                 </div>
 
                 <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                  Includes unlimited celebrity rosters, automated shoot dispatch, legal contract generation, and multi-agency collaboration.
+                  {subscription.description}
                 </p>
 
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>

@@ -59,8 +59,6 @@ export default function Dashboard() {
           change="↑ 12%"
           isPositive={true}
           icon={Users}
-          color="linear-gradient(135deg, #6366F1 0%, #4338CA 100%)"
-          accentGlow="rgba(99, 102, 241, 0.2)"
         />
         <StatCard
           title="Active Campaigns"
@@ -68,8 +66,6 @@ export default function Dashboard() {
           change="↑ 33%"
           isPositive={true}
           icon={Megaphone}
-          color="linear-gradient(135deg, #10B981 0%, #059669 100%)"
-          accentGlow="rgba(16, 185, 129, 0.2)"
         />
         <StatCard
           title="Total Contracts"
@@ -77,8 +73,6 @@ export default function Dashboard() {
           change="↑ 25%"
           isPositive={true}
           icon={FileText}
-          color="linear-gradient(135deg, #F59E0B 0%, #D97706 100%)"
-          accentGlow="rgba(245, 158, 11, 0.2)"
         />
         <StatCard
           title="Ongoing Shoots"
@@ -86,8 +80,6 @@ export default function Dashboard() {
           change="↑ 67%"
           isPositive={true}
           icon={Camera}
-          color="linear-gradient(135deg, #EC4899 0%, #DB2777 100%)"
-          accentGlow="rgba(236, 72, 153, 0.2)"
         />
       </div>
 
@@ -102,14 +94,18 @@ export default function Dashboard() {
 
       {/* Middle Row: Upcoming Shoots Table + Top Celebrities + Quick Actions */}
       <div className="middle-grid-row">
-        <ShootsTable />
-        <TopCelebrities />
+        <div className="shoots-table-col">
+          <ShootsTable />
+        </div>
+        <div className="top-celeb-col">
+          <TopCelebrities />
+        </div>
         <div className="quick-actions-col">
           <QuickActions />
         </div>
       </div>
 
-      {/* 8-Card Module Quick-Access Overview Grid */}
+      {/* Bottom Row: 8 Module Cards */}
       <ModuleOverview />
     </div>
   );

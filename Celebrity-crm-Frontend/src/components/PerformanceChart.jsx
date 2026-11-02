@@ -41,36 +41,21 @@ export default function PerformanceChart() {
       <div className="chart-content-area">
         <div className="chart-legend-row">
           <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#10B981' }} />
+            <span className="legend-dot" style={{ background: 'var(--accent)' }} />
             <span>Completed</span>
           </div>
           <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#3B82F6' }} />
+            <span className="legend-dot" style={{ background: 'var(--primary)' }} />
             <span>Ongoing</span>
           </div>
           <div className="legend-item">
-            <span className="legend-dot" style={{ background: '#8B5CF6' }} />
+            <span className="legend-dot" style={{ background: 'var(--secondary)' }} />
             <span>Planned</span>
           </div>
         </div>
 
         <div className="svg-chart-container" style={{ position: 'relative' }}>
           <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="gradCompleted" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#34D399" />
-                <stop offset="100%" stopColor="#059669" />
-              </linearGradient>
-              <linearGradient id="gradOngoing" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#60A5FA" />
-                <stop offset="100%" stopColor="#2563EB" />
-              </linearGradient>
-              <linearGradient id="gradPlanned" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#C084FC" />
-                <stop offset="100%" stopColor="#7C3AED" />
-              </linearGradient>
-            </defs>
-
             {/* Grid horizontal lines */}
             {[0, 2, 4, 6, 8, 10].map((val) => {
               const y = paddingTop + graphHeight - (val / maxValue) * graphHeight;
@@ -125,38 +110,38 @@ export default function PerformanceChart() {
                       width={groupWidth - 8}
                       height={graphHeight}
                       fill="var(--bg-hover)"
-                      rx="6"
+                      rx="4"
                     />
                   )}
 
-                  {/* Completed Bar */}
+                  {/* Completed Bar (Accent) */}
                   <rect
                     x={startX}
                     y={paddingTop + graphHeight - completedH}
                     width={barWidth}
                     height={completedH}
-                    fill="url(#gradCompleted)"
-                    rx="3"
+                    fill="var(--accent)"
+                    rx="2"
                   />
 
-                  {/* Ongoing Bar */}
+                  {/* Ongoing Bar (Primary) */}
                   <rect
                     x={startX + barWidth + barGap}
                     y={paddingTop + graphHeight - ongoingH}
                     width={barWidth}
                     height={ongoingH}
-                    fill="url(#gradOngoing)"
-                    rx="3"
+                    fill="var(--primary)"
+                    rx="2"
                   />
 
-                  {/* Planned Bar */}
+                  {/* Planned Bar (Secondary) */}
                   <rect
                     x={startX + (barWidth + barGap) * 2}
                     y={paddingTop + graphHeight - plannedH}
                     width={barWidth}
                     height={plannedH}
-                    fill="url(#gradPlanned)"
-                    rx="3"
+                    fill="var(--secondary)"
+                    rx="2"
                   />
 
                   {/* Month Label */}
@@ -184,7 +169,7 @@ export default function PerformanceChart() {
                 left: `${(hoveredGroup / (monthlyPerformanceData.length - 1)) * 65 + 10}%`,
                 background: 'var(--bg-card-alt)',
                 border: '1px solid var(--border-medium)',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 padding: '6px 12px',
                 boxShadow: 'var(--shadow-md)',
                 fontSize: '0.72rem',
@@ -198,13 +183,13 @@ export default function PerformanceChart() {
               <strong style={{ color: 'var(--text-main)' }}>
                 {monthlyPerformanceData[hoveredGroup].month} 2025
               </strong>
-              <div style={{ color: '#10B981' }}>
+              <div style={{ color: 'var(--accent)' }}>
                 Completed: {monthlyPerformanceData[hoveredGroup].completed}
               </div>
-              <div style={{ color: '#3B82F6' }}>
+              <div style={{ color: 'var(--primary)' }}>
                 Ongoing: {monthlyPerformanceData[hoveredGroup].ongoing}
               </div>
-              <div style={{ color: '#8B5CF6' }}>
+              <div style={{ color: 'var(--secondary)' }}>
                 Planned: {monthlyPerformanceData[hoveredGroup].planned}
               </div>
             </div>
@@ -214,4 +199,3 @@ export default function PerformanceChart() {
     </div>
   );
 }
-

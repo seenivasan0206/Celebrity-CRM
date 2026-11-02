@@ -1,21 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../services/api';
 
 const AuthContext = createContext();
-
-const DEFAULT_USER = {
-  id: 1,
-  name: 'Admin',
-  email: 'admin@zenvecrm.io',
-  role: 'System Administrator',
-  agency: 'Zenve Global Entertainment',
-  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  plan: 'Premium Plan (Active)'
-};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
-      const stored = sessionStorage.getItem('zenve_auth_user');
+      const stored = sessionStorage.getItem('zenve_auth_user') || localStorage.getItem('zenve_auth_user');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -32,75 +23,127 @@ export const AuthProvider = ({ children }) => {
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  const login = (email, password) => {
-    // Simulated authentication with realistic verification
-    if (!email || !password) {
-      return { success: false, message: 'Please provide both email and password' };
+  /**
+   * Real Authentication Login — calls Backend POST /api/auth/login
+   */
+  const login = async (identifier, password) => {
+    if (!identifier || !password) {
+      return { success: false, message: 'Please provide both work email/username and password.' };
     }
-    
-    // Create or find user
-    let loggedUser = DEFAULT_USER;
-    if (email.toLowerCase().includes('manager')) {
-      loggedUser = {
-        id: 2,
-        name: 'Sarah Jenkins',
-        email: email,
-        role: 'Talent Manager',
-        agency: 'Global Talent & Media',
-        avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-        plan: 'Executive Pro'
+
+    try {
+      const cleanIdentifier = identifier.trim();
+      // Send request to real backend auth endpoint with all alias fields
+      const res = await api.auth.login({
+        usernameOrEmail: cleanIdentifier,
+        username: cleanIdentifier,
+        email: cleanIdentifier,
+        password: password
+      });
+
+      const token = res.token;
+      const authenticatedUser = {
+        id: res.userId || res.id,
+        username: res.username || cleanIdentifier.split('@')[0],
+        email: res.email || cleanIdentifier,
+        name: res.fullName || res.username || cleanIdentifier.split('@')[0],
+        role: res.role || 'ROLE_ADMIN',
+        agency: 'Zenve Global Entertainment',
+        plan: 'Enterprise Active License',
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(res.fullName || res.username || cleanIdentifier)}`
       };
-    } else if (email !== DEFAULT_USER.email) {
-      loggedUser = {
-        id: Date.now(),
-        name: email.split('@')[0].replace('.', ' '),
-        email: email,
-        role: 'VIP Talent Executive',
-        agency: 'Zenve Entertainment Network',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-        plan: 'Custom Enterprise'
+
+      if (token) {
+        sessionStorage.setItem('zenve_auth_token', token);
+        localStorage.setItem('zenve_auth_token', token);
+      }
+      sessionStorage.setItem('zenve_auth_user', JSON.stringify(authenticatedUser));
+      localStorage.setItem('zenve_auth_user', JSON.stringify(authenticatedUser));
+
+      setUser(authenticatedUser);
+      return { success: true, user: authenticatedUser };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Invalid credentials. Please verify your email and password.'
       };
     }
-
-    setUser(loggedUser);
-    sessionStorage.setItem('zenve_auth_user', JSON.stringify(loggedUser));
-    localStorage.setItem('zenve_auth_user', JSON.stringify(loggedUser));
-    return { success: true, user: loggedUser };
   };
 
-  const register = (data) => {
-    const { name, email, agency, role } = data;
-    if (!name || !email) {
-      return { success: false, message: 'Name and email are required' };
+  /**
+   * Real Authentication Register — calls Backend POST /api/auth/register
+   */
+  const register = async (data) => {
+    const { name, email, password, role } = data;
+    if (!name || !email || !password) {
+      return { success: false, message: 'Name, email, and password are required.' };
     }
 
-    const newUser = {
-      id: Date.now(),
-      name,
-      email,
-      agency: agency || 'Zenve Talent Agency',
-      role: role || 'Talent Executive',
-      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`,
-      plan: 'Growth Pro (Trial)'
-    };
+    try {
+      // Derive a safe alphanumeric username of at least 3 characters
+      let username = (data.username || email.split('@')[0] || name.replace(/\s+/g, '')).trim().toLowerCase();
+      username = username.replace(/[^a-z0-9._-]/g, '');
+      if (username.length < 3) {
+        username = (username + 'user').substring(0, 15);
+      }
 
-    setUser(newUser);
-    sessionStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
-    localStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
-    return { success: true, user: newUser };
+      const res = await api.auth.register({
+        username,
+        email: email.trim().toLowerCase(),
+        password,
+        fullName: name.trim(),
+        role: role || 'ROLE_USER'
+      });
+
+      const token = res.token;
+      const newUser = {
+        id: res.userId || res.id,
+        username: res.username || username,
+        email: res.email || email,
+        name: res.fullName || name,
+        role: res.role || 'ROLE_USER',
+        agency: data.agency || 'Zenve Talent Agency',
+        plan: 'Enterprise Active License',
+        avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`
+      };
+
+      if (token) {
+        sessionStorage.setItem('zenve_auth_token', token);
+        localStorage.setItem('zenve_auth_token', token);
+      }
+      sessionStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
+      localStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
+
+      setUser(newUser);
+      return { success: true, user: newUser };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.message || 'Unable to register account. Please check your credentials.'
+      };
+    }
   };
 
+  /**
+   * Logout — clears all sessions and tokens
+   */
   const logout = () => {
     setUser(null);
     sessionStorage.removeItem('zenve_auth_user');
     localStorage.removeItem('zenve_auth_user');
+    sessionStorage.removeItem('zenve_auth_token');
+    localStorage.removeItem('zenve_auth_token');
   };
 
+  /**
+   * Update Profile
+   */
   const updateProfile = (updates) => {
-    setUser(prev => {
+    setUser((prev) => {
+      if (!prev) return null;
       const updated = { ...prev, ...updates };
       sessionStorage.setItem('zenve_auth_user', JSON.stringify(updated));
       localStorage.setItem('zenve_auth_user', JSON.stringify(updated));
@@ -116,4 +159,3 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
-
