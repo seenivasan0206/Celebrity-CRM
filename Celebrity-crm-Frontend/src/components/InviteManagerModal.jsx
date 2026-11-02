@@ -48,7 +48,7 @@ export default function InviteManagerModal({
   const [role, setRole] = useState('Senior VP of Talent');
   const [photo, setPhoto] = useState('/images/managers/1.jpg');
   const [customUrl, setCustomUrl] = useState('');
-  const [photoSourceTab, setPhotoSourceTab] = useState('presets'); // 'presets' | 'upload' | 'url'
+  const [photoTab, setPhotoTab] = useState('presets'); // 'presets' | 'upload' | 'url'
   const fileInputRef = useRef(null);
 
   // Combine default and existing agencies uniquely
@@ -122,142 +122,189 @@ export default function InviteManagerModal({
     setRole('Senior VP of Talent');
     setPhoto('/images/managers/1.jpg');
     setCustomUrl('');
-    setPhotoSourceTab('presets');
+    setPhotoTab('presets');
     onClose();
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn"
-      onClick={onClose}
-    >
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
       <div
-        className={`relative w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] border transition-colors ${
-          isLight
-            ? 'bg-white border-slate-200 text-slate-900'
-            : 'bg-[#111827] border-slate-700/80 text-white'
-        }`}
+        className="modal-dialog"
         onClick={(e) => e.stopPropagation()}
+        style={{
+          maxWidth: '560px',
+          width: '100%',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
       >
-        {/* Header */}
-        <div
-          className={`flex items-center justify-between p-5 border-b ${
-            isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900/60'
-          }`}
-        >
-          <div className="flex items-center gap-3">
+        {/* Modal Header */}
+        <div className="modal-header">
+          <div className="modal-title-wrap">
             <div
-              className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                isLight
-                  ? 'bg-indigo-50 border border-indigo-100 text-indigo-600'
-                  : 'bg-indigo-500/10 border border-indigo-500/20 text-indigo-400'
-              }`}
+              className="modal-icon-badge"
+              style={{ background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)' }}
             >
               <UserPlus size={20} />
             </div>
             <div>
-              <h3 className={`text-lg font-bold tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                Invite Talent Manager
-              </h3>
-              <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Add an agency executive or artist representative to Zenve CRM
-              </p>
+              <h3>Invite Talent Manager</h3>
+              <p>Add an agency executive or artist representative to Zenve CRM</p>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className={`p-1.5 rounded-lg transition-colors ${
-              isLight
-                ? 'text-slate-400 hover:text-slate-700 hover:bg-slate-100'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
-            }`}
-          >
+          <button type="button" className="modal-close-btn" onClick={onClose}>
             <X size={18} />
           </button>
         </div>
 
-        {/* Scrollable Form Content */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
-          <div className="p-5 space-y-5">
-            {/* Portrait Preview and Selector Section */}
+        {/* Modal Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+          <div className="modal-body" style={{ overflowY: 'auto', gap: '16px' }}>
+            {/* Portrait Preview & Source Selector */}
             <div
-              className={`p-4 rounded-xl border flex flex-col gap-3.5 ${
-                isLight ? 'bg-slate-50/70 border-slate-200' : 'bg-slate-900/40 border-slate-800'
-              }`}
+              style={{
+                background: isLight ? '#f8fafc' : 'rgba(255, 255, 255, 0.03)',
+                border: `1px solid ${isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)'}`,
+                borderRadius: '14px',
+                padding: '14px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px'
+              }}
             >
-              <div className="flex items-center gap-4">
-                <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-indigo-500/70 shadow-md bg-slate-800 flex-shrink-0">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '14px',
+                    overflow: 'hidden',
+                    border: '2px solid #6366F1',
+                    background: '#1e293b',
+                    flexShrink: 0,
+                    boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
+                  }}
+                >
                   <img
                     src={photo}
                     alt="Preview"
-                    className="w-full h-full object-cover"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     onError={(e) => {
                       e.target.src = '/images/managers/1.jpg';
                     }}
                   />
-                  <div className="absolute inset-0 bg-black/10 flex items-center justify-center pointer-events-none" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-indigo-600 flex items-center gap-1.5">
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      color: '#6366F1',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
                     <Camera size={13} /> Manager Portrait
-                  </label>
-                  <p className={`text-xs mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Choose a preset headshot, upload a photo file, or enter a URL.
+                  </span>
+                  <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    Select a preset headshot, upload a picture file, or enter an image URL.
                   </p>
                 </div>
               </div>
 
               {/* Source Tabs */}
               <div
-                className={`flex rounded-lg p-1 text-xs font-medium border ${
-                  isLight ? 'bg-slate-200/60 border-slate-200' : 'bg-slate-800/80 border-slate-700/60'
-                }`}
+                style={{
+                  display: 'flex',
+                  gap: '6px',
+                  background: isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.06)',
+                  padding: '3px',
+                  borderRadius: '9px'
+                }}
               >
                 <button
                   type="button"
-                  onClick={() => setPhotoSourceTab('presets')}
-                  className={`flex-1 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                    photoSourceTab === 'presets'
-                      ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                      : isLight
-                      ? 'text-slate-600 hover:text-slate-900'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
+                  onClick={() => setPhotoTab('presets')}
+                  style={{
+                    flex: 1,
+                    padding: '6px 10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    borderRadius: '7px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: photoTab === 'presets' ? '#6366F1' : 'transparent',
+                    color: photoTab === 'presets' ? '#ffffff' : 'var(--text-muted)',
+                    transition: 'all 0.15s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px'
+                  }}
                 >
                   <Sparkles size={12} /> Presets
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPhotoSourceTab('upload')}
-                  className={`flex-1 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                    photoSourceTab === 'upload'
-                      ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                      : isLight
-                      ? 'text-slate-600 hover:text-slate-900'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
+                  onClick={() => setPhotoTab('upload')}
+                  style={{
+                    flex: 1,
+                    padding: '6px 10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    borderRadius: '7px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: photoTab === 'upload' ? '#6366F1' : 'transparent',
+                    color: photoTab === 'upload' ? '#ffffff' : 'var(--text-muted)',
+                    transition: 'all 0.15s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px'
+                  }}
                 >
                   <Upload size={12} /> Upload File
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPhotoSourceTab('url')}
-                  className={`flex-1 py-1.5 rounded-md transition-all flex items-center justify-center gap-1.5 ${
-                    photoSourceTab === 'url'
-                      ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                      : isLight
-                      ? 'text-slate-600 hover:text-slate-900'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
+                  onClick={() => setPhotoTab('url')}
+                  style={{
+                    flex: 1,
+                    padding: '6px 10px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    borderRadius: '7px',
+                    border: 'none',
+                    cursor: 'pointer',
+                    background: photoTab === 'url' ? '#6366F1' : 'transparent',
+                    color: photoTab === 'url' ? '#ffffff' : 'var(--text-muted)',
+                    transition: 'all 0.15s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '5px'
+                  }}
                 >
-                  <LinkIcon size={12} /> Image URL
+                  <LinkIcon size={12} /> URL
                 </button>
               </div>
 
-              {/* Tab 1: Presets */}
-              {photoSourceTab === 'presets' && (
-                <div className="grid grid-cols-6 gap-2 pt-1">
+              {/* Tab 1: Presets Grid */}
+              {photoTab === 'presets' && (
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(6, 1fr)',
+                    gap: '8px',
+                    paddingTop: '4px'
+                  }}
+                >
                   {PRESET_PORTRAITS.map((p) => {
                     const isSelected = photo === p.url;
                     return (
@@ -265,23 +312,49 @@ export default function InviteManagerModal({
                         key={p.id}
                         type="button"
                         onClick={() => setPhoto(p.url)}
-                        className={`group relative rounded-xl overflow-hidden aspect-square border-2 transition-all ${
-                          isSelected
-                            ? 'border-indigo-600 ring-2 ring-indigo-500/40 scale-105'
-                            : isLight
-                            ? 'border-slate-200 hover:border-indigo-400'
-                            : 'border-slate-700 hover:border-indigo-500'
-                        }`}
                         title={p.label}
+                        style={{
+                          position: 'relative',
+                          aspectRatio: '1',
+                          borderRadius: '10px',
+                          overflow: 'hidden',
+                          border: isSelected ? '2px solid #6366F1' : `1px solid ${isLight ? '#cbd5e1' : '#334155'}`,
+                          padding: 0,
+                          cursor: 'pointer',
+                          background: 'transparent',
+                          transform: isSelected ? 'scale(1.05)' : 'none',
+                          boxShadow: isSelected ? '0 0 0 2px rgba(99, 102, 241, 0.4)' : 'none',
+                          transition: 'all 0.15s ease'
+                        }}
                       >
                         <img
                           src={p.url}
                           alt={p.label}
-                          className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                         {isSelected && (
-                          <div className="absolute inset-0 bg-indigo-600/30 flex items-center justify-center">
-                            <div className="bg-indigo-600 text-white p-0.5 rounded-full shadow">
+                          <div
+                            style={{
+                              position: 'absolute',
+                              inset: 0,
+                              background: 'rgba(99, 102, 241, 0.35)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
+                            }}
+                          >
+                            <div
+                              style={{
+                                background: '#6366F1',
+                                borderRadius: '50%',
+                                width: '18px',
+                                height: '18px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: '#fff'
+                              }}
+                            >
                               <Check size={11} strokeWidth={3} />
                             </div>
                           </div>
@@ -292,50 +365,64 @@ export default function InviteManagerModal({
                 </div>
               )}
 
-              {/* Tab 2: Upload */}
-              {photoSourceTab === 'upload' && (
-                <div className="pt-1">
+              {/* Tab 2: Upload File */}
+              {photoTab === 'upload' && (
+                <div style={{ paddingTop: '4px' }}>
                   <input
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     accept="image/*"
-                    className="hidden"
+                    style={{ display: 'none' }}
                   />
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className={`w-full py-4 px-3 border-2 border-dashed rounded-xl flex flex-col items-center justify-center gap-1.5 text-xs transition-colors ${
-                      isLight
-                        ? 'border-slate-300 hover:border-indigo-500 hover:bg-indigo-50/40 text-slate-600'
-                        : 'border-slate-700 hover:border-indigo-500 hover:bg-indigo-950/20 text-slate-300'
-                    }`}
+                    style={{
+                      width: '100%',
+                      padding: '16px',
+                      borderRadius: '10px',
+                      border: `2px dashed ${isLight ? '#cbd5e1' : '#475569'}`,
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '6px',
+                      color: 'var(--text-main)',
+                      fontSize: '0.8rem',
+                      transition: 'all 0.15s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#6366F1';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = isLight ? '#cbd5e1' : '#475569';
+                    }}
                   >
-                    <Upload size={18} className="text-indigo-500" />
-                    <span className="font-semibold">Click to select photo from computer</span>
-                    <span className="text-[11px] opacity-70">JPG, PNG, WEBP up to 5MB</span>
+                    <Upload size={20} color="#6366F1" />
+                    <span style={{ fontWeight: 600 }}>Click to select photo from device</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>JPG, PNG, WEBP up to 5MB</span>
                   </button>
                 </div>
               )}
 
               {/* Tab 3: URL */}
-              {photoSourceTab === 'url' && (
-                <div className="flex gap-2 pt-1">
+              {photoTab === 'url' && (
+                <div style={{ display: 'flex', gap: '8px', paddingTop: '4px' }}>
                   <input
                     type="url"
                     value={customUrl}
                     onChange={(e) => setCustomUrl(e.target.value)}
                     placeholder="https://images.unsplash.com/photo-..."
-                    className={`flex-1 px-3 py-2 text-xs rounded-lg border outline-none transition-colors ${
-                      isLight
-                        ? 'bg-white border-slate-300 text-slate-900 focus:border-indigo-500'
-                        : 'bg-slate-900 border-slate-700 text-white focus:border-indigo-500'
-                    }`}
+                    className="zenve-input"
+                    style={{ flex: 1, fontSize: '0.8rem' }}
                   />
                   <button
                     type="button"
                     onClick={handleApplyUrl}
-                    className="px-3 py-2 text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                    className="btn-primary"
+                    style={{ padding: '6px 14px', fontSize: '0.78rem' }}
                   >
                     Apply
                   </button>
@@ -344,166 +431,82 @@ export default function InviteManagerModal({
             </div>
 
             {/* Field: Full Name */}
-            <div>
-              <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                Full Name *
-              </label>
-              <div className="relative">
-                <User
-                  size={15}
-                  className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-                    isLight ? 'text-slate-400' : 'text-slate-500'
-                  }`}
+            <div className="form-group">
+              <label className="form-label">Full Name *</label>
+              <input
+                type="text"
+                required
+                className="zenve-input"
+                placeholder="e.g. Ramesh Varma"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoFocus
+              />
+            </div>
+
+            {/* Fields: Email & Phone (Grid 2) */}
+            <div className="modal-grid-2">
+              <div className="form-group">
+                <label className="form-label">Work Email *</label>
+                <input
+                  type="email"
+                  required
+                  className="zenve-input"
+                  placeholder="ramesh@agency.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Direct Phone *</label>
+                <input
+                  type="tel"
+                  required
+                  className="zenve-input"
+                  placeholder="+91 98400 12345"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                />
+              </div>
+            </div>
+
+            {/* Fields: Agency & Role (Grid 2) */}
+            <div className="modal-grid-2">
+              <div className="form-group">
+                <label className="form-label">Agency Organization *</label>
+                <select
+                  className="zenve-select"
+                  value={agency}
+                  onChange={(e) => setAgency(e.target.value)}
+                >
+                  {agencyOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Designation / Role</label>
                 <input
                   type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Ramesh Varma"
-                  className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border outline-none transition-all ${
-                    isLight
-                      ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
-                      : 'bg-slate-900/80 border-slate-700 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/30'
-                  }`}
+                  className="zenve-input"
+                  placeholder="e.g. Senior VP of Talent"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
                 />
-              </div>
-            </div>
-
-            {/* Fields: Email and Phone (2-col grid) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                  Work Email *
-                </label>
-                <div className="relative">
-                  <Mail
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-                      isLight ? 'text-slate-400' : 'text-slate-500'
-                    }`}
-                  />
-                  <input
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. ramesh@agency.com"
-                    className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border outline-none transition-all ${
-                      isLight
-                        ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
-                        : 'bg-slate-900/80 border-slate-700 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/30'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                  Direct Phone *
-                </label>
-                <div className="relative">
-                  <Phone
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-                      isLight ? 'text-slate-400' : 'text-slate-500'
-                    }`}
-                  />
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="e.g. +91 98400 12345"
-                    className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border outline-none transition-all ${
-                      isLight
-                        ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
-                        : 'bg-slate-900/80 border-slate-700 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/30'
-                    }`}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Fields: Agency and Role */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                  Agency Organization *
-                </label>
-                <div className="relative">
-                  <Building2
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none ${
-                      isLight ? 'text-slate-400' : 'text-slate-500'
-                    }`}
-                  />
-                  <select
-                    value={agency}
-                    onChange={(e) => setAgency(e.target.value)}
-                    className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border outline-none transition-all appearance-none cursor-pointer ${
-                      isLight
-                        ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
-                        : 'bg-slate-900 border-slate-700 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/30'
-                    }`}
-                  >
-                    {agencyOptions.map((opt) => (
-                      <option key={opt} value={opt} className={isLight ? 'text-slate-900' : 'bg-slate-900 text-white'}>
-                        {opt}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className={`block text-xs font-semibold mb-1.5 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
-                  Designation / Role
-                </label>
-                <div className="relative">
-                  <Briefcase
-                    size={15}
-                    className={`absolute left-3 top-1/2 -translate-y-1/2 ${
-                      isLight ? 'text-slate-400' : 'text-slate-500'
-                    }`}
-                  />
-                  <input
-                    type="text"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    placeholder="e.g. Senior VP of Talent"
-                    className={`w-full pl-9 pr-3 py-2 text-sm rounded-xl border outline-none transition-all ${
-                      isLight
-                        ? 'bg-white border-slate-200 text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100'
-                        : 'bg-slate-900/80 border-slate-700 text-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900/30'
-                    }`}
-                  />
-                </div>
               </div>
             </div>
           </div>
 
-          {/* Footer */}
-          <div
-            className={`p-4 border-t flex items-center justify-end gap-3 ${
-              isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900/60'
-            }`}
-          >
-            <button
-              type="button"
-              onClick={onClose}
-              className={`px-4 py-2 text-sm font-semibold rounded-xl border transition-colors ${
-                isLight
-                  ? 'border-slate-200 text-slate-700 hover:bg-slate-100'
-                  : 'border-slate-700 text-slate-300 hover:bg-slate-800'
-              }`}
-            >
+          {/* Modal Footer */}
+          <div className="modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose}>
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-1.5 active:scale-95"
-            >
+            <button type="submit" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <UserPlus size={16} /> Invite Manager
             </button>
           </div>

@@ -60,12 +60,11 @@ export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSa
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
+    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
       <div 
-        className={`relative w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] border transition-colors ${
-          isLight ? 'bg-white border-slate-200 text-slate-900' : 'bg-[#111827] border-slate-700/80 text-white'
-        }`}
+        className="modal-dialog"
         onClick={(e) => e.stopPropagation()}
+        style={{ maxWidth: '580px', width: '100%', maxHeight: '90vh' }}
       >
         {/* Header */}
         <div className={`flex items-center justify-between p-5 border-b ${isLight ? 'border-slate-200 bg-slate-50' : 'border-slate-800 bg-slate-900/60'}`}>

@@ -233,6 +233,9 @@ export default function Managers() {
       localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
       if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
     }
+    // Automatically reset agency filter and clear search so new manager is immediately visible at the top!
+    setSelectedAgency('All');
+    setSearch('');
   };
 
   const handleCopyEmail = (e, mgr) => {
@@ -726,7 +729,7 @@ export default function Managers() {
           className="btn-primary"
           onClick={handleInviteLiaison}
         >
-          <UserPlus size={16} /> Invite Liaison
+          <UserPlus size={16} /> Invite Manager
         </button>
       </div>
 
