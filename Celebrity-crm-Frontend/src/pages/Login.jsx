@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
+  ShieldCheck,
   Check
 } from 'lucide-react';
 
@@ -15,8 +16,8 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('admin@zenvecrm.io');
-  const [password, setPassword] = useState('ZenveAdmin#2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
@@ -28,100 +29,75 @@ export default function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
+
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both your work email and password.');
+      return;
+    }
+
     setIsLoading(true);
 
     setTimeout(() => {
-      const res = login(email, password);
+      const res = login(email.trim(), password);
       setIsLoading(false);
       if (res.success) {
         navigate('/');
       } else {
-        setError(res.message || 'Invalid credentials');
+        setError(res.message || 'Invalid credentials. Please verify your email and password.');
       }
     }, 450);
   };
 
-  const handleDemoLogin = (role) => {
-    if (role === 'admin') {
-      setEmail('admin@zenvecrm.io');
-      setPassword('ZenveAdmin#2026');
-      login('admin@zenvecrm.io', 'ZenveAdmin#2026');
-    } else {
-      setEmail('manager@zenvecrm.io');
-      setPassword('ManagerPass#2026');
-      login('manager@zenvecrm.io', 'ManagerPass#2026');
-    }
-    navigate('/');
-  };
-
   return (
     <div className="auth-page-wrapper">
-      {/* Centered Sign In Card Only */}
+      {/* Professional Enterprise Sign In Card */}
       <div className="auth-form-card">
         {/* Brand Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', justifyContent: 'center', marginBottom: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '6px' }}>
           <div
             style={{
-              width: '42px',
-              height: '42px',
+              width: '46px',
+              height: '46px',
               borderRadius: '12px',
               background: 'linear-gradient(135deg, #6366F1 0%, #06B6D4 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
-              boxShadow: '0 4px 16px var(--primary-glow)'
+              boxShadow: '0 6px 20px rgba(99, 102, 241, 0.4)',
+              flexShrink: 0
             }}
           >
-            <Star size={22} fill="#ffffff" />
+            <Star size={24} fill="#ffffff" />
           </div>
           <div>
-            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.85)', margin: 0, lineHeight: 1.1 }}>
+            <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 800, color: '#ffffff', textShadow: '0 2px 10px rgba(0,0,0,0.85)', margin: 0, lineHeight: 1.1 }}>
               Zenve CRM
             </h2>
-            <span style={{ fontSize: '0.68rem', fontWeight: 700, color: '#67e8f9', textShadow: '0 1px 4px rgba(0,0,0,0.85)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-              Talent & Celebrity OS
+            <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#67e8f9', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              Enterprise Talent OS
             </span>
           </div>
         </div>
 
-        <div className="auth-header-block" style={{ textAlign: 'center' }}>
-          <h3 style={{ fontSize: '1.3rem' }}>Sign In</h3>
-          <p style={{ fontSize: '0.82rem', marginTop: '2px' }}>Enter your credentials to access your talent portal</p>
-        </div>
-
-        {/* Quick 1-Click Demo Logins */}
-        <div className="demo-login-box">
-          <span className="demo-login-label">⚡ 1-Click Quick Demo</span>
-          <div className="demo-buttons-row">
-            <button
-              type="button"
-              className="btn-demo-quick"
-              onClick={() => handleDemoLogin('admin')}
-            >
-              <Star size={13} color="#F59E0B" /> Admin Demo
-            </button>
-            <button
-              type="button"
-              className="btn-demo-quick"
-              onClick={() => handleDemoLogin('manager')}
-            >
-              <ArrowRight size={13} color="#06B6D4" /> Manager Demo
-            </button>
-          </div>
+        <div className="auth-header-block">
+          <h3 style={{ fontSize: '1.4rem' }}>Sign In</h3>
+          <p style={{ fontSize: '0.84rem', marginTop: '4px', lineHeight: 1.4 }}>
+            Enter your authorized credentials to access your talent workspace
+          </p>
         </div>
 
         {error && (
           <div
             style={{
-              background: 'rgba(244, 63, 94, 0.15)',
+              background: 'rgba(244, 63, 94, 0.12)',
               border: '1px solid rgba(244, 63, 94, 0.35)',
               color: '#F43F5E',
-              padding: '10px 14px',
+              padding: '11px 14px',
               borderRadius: '8px',
               fontSize: '0.82rem',
               fontWeight: 600,
-              textAlign: 'center'
+              lineHeight: 1.4
             }}
           >
             {error}
@@ -130,7 +106,7 @@ export default function Login() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label className="form-label">Email Address</label>
+            <label className="form-label">Work Email Address</label>
             <div className="form-input-wrap">
               <Mail size={18} className="input-icon-left" />
               <input
@@ -140,6 +116,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
               />
             </div>
           </div>
@@ -155,7 +132,7 @@ export default function Login() {
                   setForgotSubmitted(false);
                 }}
               >
-                Forgot?
+                Forgot password?
               </button>
             </div>
             <div className="form-input-wrap">
@@ -167,11 +144,13 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
               />
               <button
                 type="button"
                 className="input-icon-right"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
@@ -185,7 +164,7 @@ export default function Login() {
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
               />
-              <span>Remember me</span>
+              <span>Remember this device</span>
             </label>
           </div>
 
@@ -194,17 +173,38 @@ export default function Login() {
             className="btn-submit-auth"
             disabled={isLoading}
           >
-            {isLoading ? 'Authenticating...' : (
+            {isLoading ? (
+              <span>Authenticating...</span>
+            ) : (
               <>
-                <span>Enter Portal</span>
+                <span>Sign In to Portal</span>
                 <ArrowRight size={18} />
               </>
             )}
           </button>
         </form>
 
-        <div className="auth-switch-footer">
-          <span>Don't have an account?</span>
+        {/* Security & Compliance Badge */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            padding: '10px 12px',
+            background: 'rgba(0, 0, 0, 0.28)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '8px',
+            fontSize: '0.74rem',
+            color: 'rgba(255, 255, 255, 0.72)'
+          }}
+        >
+          <ShieldCheck size={15} color="#10B981" />
+          <span>256-bit SSL Encrypted · SOC2 Compliant Security</span>
+        </div>
+
+        <div className="auth-switch-footer" style={{ marginTop: '2px' }}>
+          <span>Need an enterprise account?</span>
           <Link to="/register">Create Account</Link>
         </div>
       </div>
@@ -245,14 +245,14 @@ export default function Login() {
               ) : (
                 <>
                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                    Enter your registered email address and we'll send you a recovery link.
+                    Enter your registered work email and we will send you an authorized reset link.
                   </p>
                   <div className="form-group" style={{ marginTop: '14px' }}>
                     <label className="form-label">Work Email</label>
                     <input
                       type="email"
                       className="zenve-input"
-                      placeholder="admin@zenvecrm.io"
+                      placeholder="name@agency.com"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
                     />
