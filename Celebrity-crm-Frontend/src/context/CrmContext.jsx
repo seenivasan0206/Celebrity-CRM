@@ -992,6 +992,9 @@ export const CrmProvider = ({ children }) => {
     if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
   };
 
+<<<<<<< HEAD
+>>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
+=======
 >>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
   return (
     <CrmContext.Provider
@@ -1033,7 +1036,12 @@ export const CrmProvider = ({ children }) => {
         addAgency,
         addActivity,
 <<<<<<< HEAD
+<<<<<<< HEAD
         backendConnected
+=======
+        updateManagerPhoto,
+        addManager
+>>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
 =======
         updateManagerPhoto,
         addManager

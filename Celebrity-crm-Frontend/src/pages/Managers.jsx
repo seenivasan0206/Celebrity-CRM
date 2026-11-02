@@ -213,6 +213,21 @@ export default function Managers() {
 =======
   const handleInviteLiaison = () => {
     setIsInviteModalOpen(true);
+<<<<<<< HEAD
+=======
+  };
+
+  const handleAddNewManager = (newManager) => {
+    if (addManager) {
+      addManager(newManager);
+    } else {
+      localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
+      if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
+    }
+    // Automatically reset agency filter and clear search so new manager is immediately visible at the top!
+    setSelectedAgency('All');
+    setSearch('');
+>>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
   };
 
   const handleAddNewManager = (newManager) => {

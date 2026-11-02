@@ -61,8 +61,12 @@ export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSa
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
       <div 
 <<<<<<< HEAD
+<<<<<<< HEAD
         className="relative w-full max-w-xl rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[90vh] border transition-colors"
         style={{ background: 'var(--c-surface)', borderColor: 'var(--border-color)', color: 'var(--text-main)' }}
+=======
+        className="modal-dialog"
+>>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
 =======
         className="modal-dialog"
 >>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
