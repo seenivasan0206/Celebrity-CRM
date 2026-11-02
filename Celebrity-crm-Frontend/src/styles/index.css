@@ -177,6 +177,7 @@ input, select, textarea {
   font-weight: 600;
   border-radius: var(--radius-full);
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .badge-emerald {
@@ -229,6 +230,7 @@ input, select, textarea {
   border-radius: var(--radius-md);
   box-shadow: 0 4px 14px var(--primary-glow);
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 .btn-primary:hover {
   transform: translateY(-1px);
@@ -253,6 +255,7 @@ input, select, textarea {
   padding: 10px 16px;
   border-radius: var(--radius-md);
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 .btn-secondary:hover {
   background: var(--bg-card-hover);

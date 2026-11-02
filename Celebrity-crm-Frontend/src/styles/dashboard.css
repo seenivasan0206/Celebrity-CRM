@@ -376,6 +376,7 @@
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  white-space: nowrap;
 }
 
 .zenve-table th {
@@ -387,6 +388,7 @@
   letter-spacing: 0.05em;
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-card-alt);
+  white-space: nowrap;
 }
 
 .zenve-table td {
@@ -395,6 +397,7 @@
   color: var(--text-muted);
   border-bottom: 1px solid var(--border-subtle);
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .zenve-table tr:hover td {
@@ -406,6 +409,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  white-space: nowrap;
 }
 
 .table-celebrity-cell img {

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import {
-  Menu,
   Search,
   Calendar,
   Bell,
@@ -72,15 +71,6 @@ export default function Header({ toggleSidebar }) {
   return (
     <header className="crm-header">
       <div className="header-left">
-        <button
-          type="button"
-          className="sidebar-toggle-btn"
-          onClick={toggleSidebar}
-          aria-label="Toggle Sidebar Navigation"
-        >
-          <Menu size={20} />
-        </button>
-
         <div className="header-search-bar">
           <Search size={18} className="search-icon" />
           <input
@@ -109,7 +99,7 @@ export default function Header({ toggleSidebar }) {
               <X size={15} />
             </button>
           ) : (
-            <span className="search-shortcut">⌘K</span>
+            <span className="search-shortcut"></span>
           )}
         </div>
       </div>

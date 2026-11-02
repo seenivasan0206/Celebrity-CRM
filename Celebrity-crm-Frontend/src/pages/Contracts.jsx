@@ -55,43 +55,43 @@ export default function Contracts() {
 
       <div className="crm-card" style={{ padding: '0', overflow: 'hidden' }}>
         <div className="table-responsive">
-          <table className="zenve-table">
+          <table className="zenve-table" style={{ whiteSpace: 'nowrap' }}>
             <thead>
               <tr>
-                <th>Contract ID</th>
-                <th>Celebrity Talent</th>
-                <th>Client / Agency</th>
-                <th>Category</th>
-                <th>Value</th>
-                <th>Duration</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Contract ID</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Celebrity Talent</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Client / Agency</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Category</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Value</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Duration</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Status</th>
+                <th style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {(contracts || []).map((c) => (
                 <tr key={c.id}>
-                  <td style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--primary)' }}>
+                  <td style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'nowrap' }}>
                     {c.id}
                   </td>
-                  <td style={{ fontWeight: 600, color: 'var(--text-main)' }}>{c.celebrity}</td>
-                  <td>{c.client}</td>
-                  <td>
-                    <span className="badge badge-purple">{c.category || 'Endorsement'}</span>
+                  <td style={{ fontWeight: 600, color: 'var(--text-main)', whiteSpace: 'nowrap' }}>{c.celebrity}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{c.client}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <span className="badge badge-purple" style={{ whiteSpace: 'nowrap' }}>{c.category || 'Endorsement'}</span>
                   </td>
-                  <td style={{ fontWeight: 800, color: 'var(--accent-emerald)' }}>{c.value}</td>
-                  <td>{c.duration}</td>
-                  <td>
-                    <span className={`badge ${c.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`}>
+                  <td style={{ fontWeight: 800, color: 'var(--accent-emerald)', whiteSpace: 'nowrap' }}>{c.value}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>{c.duration}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <span className={`badge ${c.status === 'Active' ? 'badge-emerald' : 'badge-amber'}`} style={{ whiteSpace: 'nowrap' }}>
                       {c.status}
                     </span>
                   </td>
-                  <td style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                  <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px', whiteSpace: 'nowrap' }}>
                       <button
                         type="button"
                         className="btn-secondary"
-                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        style={{ padding: '4px 8px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}
                         title="Renew Contract for 1 Year"
                         onClick={() => renewContract && renewContract(c.id)}
                       >
@@ -100,7 +100,7 @@ export default function Contracts() {
                       <button
                         type="button"
                         className="btn-secondary"
-                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        style={{ padding: '4px 8px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}
                         title="Download Contract PDF"
                         onClick={() => addToast && addToast(`Downloaded legal brief for ${c.id} (PDF)`, 'info')}
                       >

@@ -52,15 +52,15 @@ export default function ShootsTable() {
       </div>
 
       <div className="table-responsive">
-        <table className="zenve-table">
+        <table className="zenve-table" style={{ whiteSpace: 'nowrap' }}>
           <thead>
             <tr>
-              <th>Date</th>
-              <th>Title</th>
-              <th>Celebrity</th>
-              <th>Location</th>
-              <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Actions</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Date</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Title</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Celebrity</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Location</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Status</th>
+              <th style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -69,22 +69,22 @@ export default function ShootsTable() {
                 <td style={{ fontWeight: 600, color: 'var(--text-main)', whiteSpace: 'nowrap' }}>
                   {shoot.date}
                 </td>
-                <td style={{ fontWeight: 500 }}>{shoot.title}</td>
-                <td>
-                  <div className="table-celebrity-cell">
+                <td style={{ fontWeight: 500, whiteSpace: 'nowrap' }}>{shoot.title}</td>
+                <td style={{ whiteSpace: 'nowrap' }}>
+                  <div className="table-celebrity-cell" style={{ whiteSpace: 'nowrap' }}>
                     <img src={shoot.celebrityAvatar} alt={shoot.celebrity} />
-                    <span>{shoot.celebrity}</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{shoot.celebrity}</span>
                   </div>
                 </td>
-                <td style={{ color: 'var(--text-muted)' }}>{shoot.location}</td>
-                <td>{getStatusBadge(shoot.status)}</td>
-                <td style={{ textAlign: 'right' }}>
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                <td style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{shoot.location}</td>
+                <td style={{ whiteSpace: 'nowrap' }}>{getStatusBadge(shoot.status)}</td>
+                <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px', whiteSpace: 'nowrap' }}>
                     {shoot.status !== 'Confirmed' ? (
                       <button
                         type="button"
                         className="btn-secondary"
-                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        style={{ padding: '4px 8px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}
                         title="Confirm shoot"
                         onClick={() => updateShootStatus(shoot.id, 'Confirmed')}
                       >
@@ -94,7 +94,7 @@ export default function ShootsTable() {
                       <button
                         type="button"
                         className="btn-secondary"
-                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        style={{ padding: '4px 8px', fontSize: '0.74rem', whiteSpace: 'nowrap' }}
                         title="Reschedule shoot"
                         onClick={() => updateShootStatus(shoot.id, 'Scheduled')}
                       >
@@ -104,7 +104,7 @@ export default function ShootsTable() {
                     <button
                       type="button"
                       className="btn-secondary"
-                      style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--accent-rose)' }}
+                      style={{ padding: '4px 8px', fontSize: '0.74rem', color: 'var(--accent-rose)', whiteSpace: 'nowrap' }}
                       title="Cancel shoot"
                       onClick={() => deleteShoot(shoot.id)}
                     >
