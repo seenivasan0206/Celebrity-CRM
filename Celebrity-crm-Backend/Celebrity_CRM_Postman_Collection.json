@@ -526,7 +526,7 @@
       "name": "Files",
       "item": [
         {
-          "name": "1. Upload Single File",
+          "name": "1. Upload File (Stores in DB & Disk)",
           "request": {
             "method": "POST",
             "header": [],
@@ -537,6 +537,16 @@
                   "key": "file",
                   "type": "file",
                   "src": ""
+                },
+                {
+                  "key": "description",
+                  "value": "Official Endorsement Agreement",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "CONTRACT",
+                  "type": "text"
                 }
               ]
             },
@@ -551,7 +561,7 @@
                 "upload"
               ]
             },
-            "description": "Uploads a single file (image, PDF, contract, headshot, document). In Postman, select 'form-data', key 'file' of type File, and choose a file from your computer."
+            "description": "Uploads a file, saves to uploads/ directory, and stores record metadata in the MySQL database."
           },
           "response": []
         },
@@ -567,6 +577,16 @@
                   "key": "files",
                   "type": "file",
                   "src": []
+                },
+                {
+                  "key": "description",
+                  "value": "Celebrity Portfolio Documents",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "PORTFOLIO",
+                  "type": "text"
                 }
               ]
             },
@@ -581,12 +601,12 @@
                 "upload-multiple"
               ]
             },
-            "description": "Uploads multiple files at once. Key is 'files' of type File."
+            "description": "Uploads multiple files and stores all metadata records in MySQL."
           },
           "response": []
         },
         {
-          "name": "3. Get All Files List",
+          "name": "3. Get All Files (From Database)",
           "request": {
             "method": "GET",
             "header": [],
@@ -600,12 +620,32 @@
                 "files"
               ]
             },
-            "description": "Retrieves the list of all uploaded files with their download URIs and sizes."
+            "description": "Retrieves all file records from MySQL database sorted by newest first."
           },
           "response": []
         },
         {
-          "name": "4. Download File",
+          "name": "4. Get File Record By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "1"
+              ]
+            },
+            "description": "Retrieves metadata of a specific file by its primary key ID in MySQL."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Download File Attachment",
           "request": {
             "method": "GET",
             "header": [],
@@ -623,17 +663,17 @@
               "variable": [
                 {
                   "key": "fileName",
-                  "value": "your-file-name-here.pdf",
-                  "description": "The unique fileName returned from upload response"
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
+                  "description": "The unique fileName stored in DB"
                 }
               ]
             },
-            "description": "Downloads the specified file as an attachment."
+            "description": "Downloads the physical file from the server as an attachment."
           },
           "response": []
         },
         {
-          "name": "5. View File Inline",
+          "name": "6. View File Inline (Image / PDF Preview)",
           "request": {
             "method": "GET",
             "header": [],
@@ -651,17 +691,17 @@
               "variable": [
                 {
                   "key": "fileName",
-                  "value": "your-file-name-here.jpg",
-                  "description": "The unique fileName returned from upload response"
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
+                  "description": "The unique fileName stored in DB"
                 }
               ]
             },
-            "description": "Views/streams the file inline (ideal for rendering images, avatars, or PDF previews in frontend)."
+            "description": "Streams file inline for frontend image preview or PDF view in browser."
           },
           "response": []
         },
         {
-          "name": "6. Delete File",
+          "name": "7. Delete File by FileName",
           "request": {
             "method": "DELETE",
             "header": [],
@@ -678,12 +718,33 @@
               "variable": [
                 {
                   "key": "fileName",
-                  "value": "your-file-name-here.pdf",
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
                   "description": "The unique fileName to delete"
                 }
               ]
             },
-            "description": "Permanently deletes the file from the uploads directory."
+            "description": "Deletes the file from disk and its metadata row from the MySQL database (HTTP 204)."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete File by Database ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/id/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "id",
+                "1"
+              ]
+            },
+            "description": "Deletes the file from disk and database by its database primary ID (HTTP 204)."
           },
           "response": []
         }
