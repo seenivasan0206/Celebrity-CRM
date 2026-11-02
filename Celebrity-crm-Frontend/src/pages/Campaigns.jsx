@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import {
@@ -127,21 +127,89 @@ export default function Campaigns() {
     return 'linear-gradient(90deg, #F59E0B 0%, #F43F5E 100%)';
   };
 
-  const handleEditTargetDate = (camp) => {
-    const currentVal = camp.deadline || '';
-    const newDate = window.prompt(
-      `Update Target Date for "${camp.title}":\n(e.g., 25 Feb 2026 or 2026-03-31)`,
-      currentVal
-    );
-    if (newDate !== null) {
-      const trimmed = newDate.trim();
-      if (trimmed && trimmed !== currentVal) {
-        if (updateCampaignDeadline) {
-          updateCampaignDeadline(camp.id, trimmed);
-        }
-      }
+    // Date helper functions for Target Date editing
+  const toDateInputValue = (dateStr) => {
+    if (!dateStr) return '';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    const parsed = new Date(dateStr);
+    if (isNaN(parsed.getTime())) return '';
+    const y = parsed.getFullYear();
+    const m = String(parsed.getMonth() + 1).padStart(2, '0');
+    const d = String(parsed.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + d;
+  };
+
+  const formatTargetDate = (isoOrDateStr) => {
+    if (!isoOrDateStr) return 'TBD';
+    if (/^\d{4}-\d{2}-\d{2}$/.test(isoOrDateStr)) {
+      const [y, m, d] = isoOrDateStr.split('-').map(Number);
+      const date = new Date(y, m - 1, d);
+      return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    return isoOrDateStr;
+  };
+
+  const getPresetDate = (type, currentVal) => {
+    const base = currentVal && !isNaN(new Date(currentVal).getTime()) ? new Date(currentVal) : new Date();
+    const d = new Date(base.getTime());
+    if (type === '1week') {
+      d.setDate(d.getDate() + 7);
+    } else if (type === '2weeks') {
+      d.setDate(d.getDate() + 14);
+    } else if (type === '1month') {
+      d.setMonth(d.getMonth() + 1);
+    } else if (type === '3months') {
+      d.setMonth(d.getMonth() + 3);
+    } else if (type === 'endOfMonth') {
+      d.setMonth(d.getMonth() + 1, 0);
+    }
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return y + '-' + m + '-' + day;
+  };
+
+  const [editingCampaign, setEditingCampaign] = useState(null);
+  const [editDateValue, setEditDateValue] = useState('');
+
+  const handleOpenEditDate = (camp) => {
+    setEditingCampaign(camp);
+    const converted = toDateInputValue(camp.deadline);
+    if (converted) {
+      setEditDateValue(converted);
+    } else {
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = String(today.getMonth() + 1).padStart(2, '0');
+      const d = String(today.getDate()).padStart(2, '0');
+      setEditDateValue(y + '-' + m + '-' + d);
     }
   };
+
+  const handleCloseEditDate = () => {
+    setEditingCampaign(null);
+  };
+
+  const handleSaveDate = (e) => {
+    if (e) e.preventDefault();
+    if (!editingCampaign || !editDateValue) return;
+    const formatted = formatTargetDate(editDateValue);
+    if (updateCampaignDeadline) {
+      updateCampaignDeadline(editingCampaign.id, formatted);
+    }
+    setEditingCampaign(null);
+  };
+
+  // Close modal on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && editingCampaign) {
+        setEditingCampaign(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [editingCampaign]);
 
   return (
     <div className="campaigns-page-container">
@@ -616,28 +684,409 @@ export default function Campaigns() {
           min-width: 0;
         }
 
+        
+        /* Edit Target Date Button & Hover */
+        .campaign-detail-header-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 6px;
+          width: 100%;
+        }
+
         .campaign-detail-item.editable-date {
           cursor: pointer;
           border-radius: 8px;
-          padding: 3px 6px;
-          margin: -3px -6px;
-          transition: background 0.15s ease, transform 0.15s ease;
+          padding: 4px 6px;
+          margin: -4px -6px;
+          transition: all 0.18s ease;
+          border: 1px solid transparent;
         }
 
         .campaign-detail-item.editable-date:hover {
-          background: rgba(245, 158, 11, 0.1);
+          background: ${isLight ? 'rgba(245, 158, 11, 0.08)' : 'rgba(245, 158, 11, 0.12)'};
+          border-color: ${isLight ? 'rgba(245, 158, 11, 0.25)' : 'rgba(245, 158, 11, 0.35)'};
           transform: translateY(-1px);
         }
 
-        .campaign-detail-edit-badge {
+        .campaign-edit-date-btn {
           display: inline-flex;
           align-items: center;
           gap: 3px;
-          font-size: 0.62rem;
+          font-size: 0.64rem;
+          font-weight: 700;
           color: #f59e0b;
+          background: ${isLight ? 'rgba(245, 158, 11, 0.12)' : 'rgba(245, 158, 11, 0.18)'};
+          border: 1px solid ${isLight ? 'rgba(245, 158, 11, 0.3)' : 'rgba(245, 158, 11, 0.4)'};
+          border-radius: 6px;
+          padding: 1px 6px;
+          cursor: pointer;
+          transition: all 0.15s ease;
+          line-height: 1.2;
+        }
+
+        .campaign-edit-date-btn:hover {
+          background: #f59e0b;
+          color: #ffffff;
+          border-color: #f59e0b;
+          box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+          transform: translateY(-1px);
+        }
+
+        /* Edit Target Date Modal Styles */
+        .campaign-date-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0, 0, 0, 0.72);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          z-index: 1000;
+          animation: dateModalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes dateModalFadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+
+        .campaign-date-modal-dialog {
+          background: ${isLight ? '#ffffff' : '#111827'};
+          border: 1px solid ${isLight ? '#e2e8f0' : '#1f2937'};
+          border-radius: 20px;
+          width: 100%;
+          max-width: 480px;
+          box-shadow: ${isLight ? '0 20px 40px -10px rgba(0, 0, 0, 0.2)' : '0 25px 50px -12px rgba(0, 0, 0, 0.7)'};
+          overflow: hidden;
+          animation: dateModalSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes dateModalSlideUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px) scale(0.97);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        .campaign-date-modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 18px 22px;
+          border-bottom: 1px solid ${isLight ? '#f1f5f9' : '#1f2937'};
+        }
+
+        .campaign-date-modal-title-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .campaign-date-modal-icon-badge {
+          width: 40px;
+          height: 40px;
+          border-radius: 12px;
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: #ffffff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+          flex-shrink: 0;
+        }
+
+        .campaign-date-modal-title {
+          font-size: 1.08rem;
+          font-weight: 800;
+          color: ${isLight ? '#0f172a' : '#f8fafc'};
+          margin: 0;
+          line-height: 1.25;
+        }
+
+        .campaign-date-modal-subtitle {
+          font-size: 0.75rem;
+          color: ${isLight ? '#64748b' : '#94a3b8'};
+          margin: 2px 0 0 0;
+        }
+
+        .campaign-date-modal-close {
+          background: none;
+          border: none;
+          color: ${isLight ? '#94a3b8' : '#64748b'};
+          cursor: pointer;
+          padding: 6px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.15s ease;
+        }
+
+        .campaign-date-modal-close:hover {
+          color: ${isLight ? '#0f172a' : '#f8fafc'};
+          background: ${isLight ? '#f1f5f9' : 'rgba(255, 255, 255, 0.08)'};
+        }
+
+        /* Summary Preview Card */
+        .campaign-date-modal-summary {
+          background: ${isLight ? '#f8fafc' : '#1e293b'};
+          border-top: 1px solid ${isLight ? '#e2e8f0' : '#334155'};
+          border-bottom: 1px solid ${isLight ? '#e2e8f0' : '#334155'};
+          padding: 14px 22px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .campaign-date-summary-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+        }
+
+        .campaign-date-summary-brand {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 0.72rem;
+          font-weight: 700;
+          color: ${isLight ? '#475569' : '#cbd5e1'};
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .campaign-date-summary-status {
+          font-size: 0.68rem;
+          font-weight: 700;
+          padding: 2px 7px;
+          border-radius: 9999px;
+          background: ${isLight ? '#ecfdf5' : 'rgba(16, 185, 129, 0.15)'};
+          color: #10b981;
+          border: 1px solid ${isLight ? '#a7f3d0' : 'rgba(16, 185, 129, 0.3)'};
+        }
+
+        .campaign-date-summary-title {
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: ${isLight ? '#0f172a' : '#f8fafc'};
+          margin: 0;
+          line-height: 1.3;
+        }
+
+        .campaign-date-summary-meta {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 0.76rem;
+          color: ${isLight ? '#64748b' : '#94a3b8'};
+          margin-top: 2px;
+        }
+
+        .campaign-date-summary-celeb {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .campaign-date-summary-current {
+          font-size: 0.72rem;
+        }
+
+        .campaign-date-summary-current strong {
+          color: #f59e0b;
+        }
+
+        /* Modal Body */
+        .campaign-date-modal-body {
+          padding: 20px 22px;
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .campaign-date-input-group {
+          display: flex;
+          flex-direction: column;
+          gap: 7px;
+        }
+
+        .campaign-date-input-label {
+          font-size: 0.78rem;
+          font-weight: 700;
+          color: ${isLight ? '#334155' : '#cbd5e1'};
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .campaign-date-required {
+          color: #ef4444;
+        }
+
+        .campaign-date-input-wrap {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+
+        .campaign-date-calendar-icon {
+          position: absolute;
+          left: 12px;
+          color: #f59e0b;
+          pointer-events: none;
+        }
+
+        .campaign-date-picker-input {
+          width: 100%;
+          padding: 10px 14px 10px 40px;
+          border-radius: 12px;
+          font-size: 0.90rem;
           font-weight: 600;
-          margin-left: 5px;
-          opacity: 0.85;
+          font-family: inherit;
+          background: ${isLight ? '#ffffff' : '#0f172a'};
+          border: 1.5px solid ${isLight ? '#cbd5e1' : '#334155'};
+          color: ${isLight ? '#0f172a' : '#f8fafc'};
+          outline: none;
+          transition: all 0.2s ease;
+          box-sizing: border-box;
+        }
+
+        .campaign-date-picker-input:focus {
+          border-color: #f59e0b;
+          box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+        }
+
+        .campaign-date-preview-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.74rem;
+          color: ${isLight ? '#475569' : '#94a3b8'};
+          background: ${isLight ? '#f1f5f9' : 'rgba(255, 255, 255, 0.04)'};
+          border: 1px solid ${isLight ? '#e2e8f0' : 'rgba(255, 255, 255, 0.08)'};
+          padding: 4px 10px;
+          border-radius: 8px;
+          margin-top: 2px;
+        }
+
+        .campaign-date-preview-badge strong {
+          color: ${isLight ? '#0f172a' : '#f8fafc'};
+        }
+
+        /* Presets Section */
+        .campaign-date-presets-section {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .campaign-date-presets-label {
+          font-size: 0.72rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: ${isLight ? '#64748b' : '#94a3b8'};
+        }
+
+        .campaign-date-presets-grid {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          gap: 6px;
+        }
+
+        @media (max-width: 480px) {
+          .campaign-date-presets-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        .campaign-date-preset-pill {
+          padding: 6px 4px;
+          font-size: 0.70rem;
+          font-weight: 700;
+          text-align: center;
+          border-radius: 8px;
+          background: ${isLight ? '#f1f5f9' : '#1e293b'};
+          border: 1px solid ${isLight ? '#e2e8f0' : '#334155'};
+          color: ${isLight ? '#475569' : '#cbd5e1'};
+          cursor: pointer;
+          transition: all 0.15s ease;
+          white-space: nowrap;
+        }
+
+        .campaign-date-preset-pill:hover {
+          background: #f59e0b;
+          color: #ffffff;
+          border-color: #f59e0b;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Modal Footer */
+        .campaign-date-modal-footer {
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          gap: 10px;
+          padding: 16px 22px;
+          border-top: 1px solid ${isLight ? '#f1f5f9' : '#1f2937'};
+          background: ${isLight ? '#fafafa' : '#0f172a'};
+        }
+
+        .campaign-date-btn-cancel {
+          padding: 9px 18px;
+          font-size: 0.82rem;
+          font-weight: 600;
+          border-radius: 10px;
+          background: ${isLight ? '#ffffff' : '#1e293b'};
+          border: 1px solid ${isLight ? '#cbd5e1' : '#334155'};
+          color: ${isLight ? '#475569' : '#cbd5e1'};
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+
+        .campaign-date-btn-cancel:hover {
+          background: ${isLight ? '#f1f5f9' : '#334155'};
+          color: ${isLight ? '#0f172a' : '#ffffff'};
+        }
+
+        .campaign-date-btn-save {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 9px 20px;
+          font-size: 0.82rem;
+          font-weight: 700;
+          border-radius: 10px;
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          color: #ffffff;
+          border: none;
+          cursor: pointer;
+          box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+          transition: all 0.15s ease;
+        }
+
+        .campaign-date-btn-save:hover:not(:disabled) {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
+        }
+
+        .campaign-date-btn-save:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          box-shadow: none;
         }
 
         .campaign-detail-icon {
@@ -1036,8 +1485,8 @@ export default function Campaigns() {
 
                     <div
                       className="campaign-detail-item editable-date"
-                      onClick={() => handleEditTargetDate(camp)}
-                      title="Click to change target date"
+                      onClick={() => handleOpenEditDate(camp)}
+                      title="Click to edit target date"
                     >
                       <div
                         className="campaign-detail-icon"
@@ -1049,11 +1498,20 @@ export default function Campaigns() {
                         <Calendar size={15} />
                       </div>
                       <div className="campaign-detail-text">
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div className="campaign-detail-header-row">
                           <span className="campaign-detail-label">Target Date</span>
-                          <span className="campaign-detail-edit-badge" title="Click to edit">
-                            <Edit2 size={10} /> Edit
-                          </span>
+                          <button
+                            type="button"
+                            className="campaign-edit-date-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenEditDate(camp);
+                            }}
+                            title="Edit Target Date"
+                          >
+                            <Edit2 size={10} />
+                            <span>Edit</span>
+                          </button>
                         </div>
                         <span className="campaign-detail-val" title={camp.deadline || 'N/A'}>
                           {camp.deadline || 'TBD'}
