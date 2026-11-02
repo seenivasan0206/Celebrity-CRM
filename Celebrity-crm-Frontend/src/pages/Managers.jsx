@@ -209,12 +209,8 @@ export default function Managers() {
     });
   }, [managers, selectedAgency, search]);
 
-<<<<<<< HEAD
-=======
   const handleInviteLiaison = () => {
     setIsInviteModalOpen(true);
-<<<<<<< HEAD
-=======
   };
 
   const handleAddNewManager = (newManager) => {
@@ -224,25 +220,10 @@ export default function Managers() {
       localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
       if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
     }
-    // Automatically reset agency filter and clear search so new manager is immediately visible at the top!
-    setSelectedAgency('All');
-    setSearch('');
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
-  };
-
-  const handleAddNewManager = (newManager) => {
-    if (addManager) {
-      addManager(newManager);
-    } else {
-      localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
-      if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
-    }
-    // Automatically reset agency filter and clear search so new manager is immediately visible at the top!
     setSelectedAgency('All');
     setSearch('');
   };
 
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
   const handleCopyEmail = (e, mgr) => {
     e.stopPropagation();
     if (!mgr?.email) return;
@@ -261,12 +242,6 @@ export default function Managers() {
       setGlobalSearchQuery(celebName);
     }
     navigate('/celebrities');
-  };
-
-  const handleInviteLiaison = () => {
-    if (addToast) {
-      addToast('Agency manager onboarding form initiated', 'info');
-    }
   };
 
   return (

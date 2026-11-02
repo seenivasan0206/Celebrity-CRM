@@ -58,7 +58,15 @@ export default function OttProjects() {
     description: p.description || ''
   });
 
-  const [projects, setProjects] = useState(defaultProjects);
+  const [projects, setProjects] = useState(() => {
+    try {
+      const saved = localStorage.getItem('zenve_ott_projects');
+      return saved ? JSON.parse(saved) : defaultProjects;
+    } catch {
+      return defaultProjects;
+    }
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newProject, setNewProject] = useState({
     title: '',
@@ -71,14 +79,16 @@ export default function OttProjects() {
     status: 'Pre-Production'
   });
 
-  // Fetch live OTT projects from backend
+  // Fetch live OTT projects from backend on mount
   useEffect(() => {
     let isMounted = true;
     const fetchProjects = async () => {
       try {
         const live = await api.ott.getAll();
         if (isMounted && Array.isArray(live) && live.length > 0) {
-          setProjects(live.map(normalizeProject));
+          const normalized = live.map(normalizeProject);
+          setProjects(normalized);
+          localStorage.setItem('zenve_ott_projects', JSON.stringify(normalized));
         }
       } catch (err) {
         console.warn('Backend unavailable, using cached OTT projects:', err.message);
@@ -99,11 +109,13 @@ export default function OttProjects() {
     else if (target.status === 'Post-Production') nextStatus = 'Streaming Live';
     else nextStatus = 'Pre-Production';
 
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, status: nextStatus } : p));
+    const updated = projects.map(p => p.id === id ? { ...p, status: nextStatus } : p);
+    setProjects(updated);
+    localStorage.setItem('zenve_ott_projects', JSON.stringify(updated));
 
     try {
       await api.ott.updateStatus(id, nextStatus);
-      addToast(`Status updated to "${nextStatus}"`, 'info');
+      addToast(`Status updated to "${nextStatus}" in database!`, 'success');
     } catch (err) {
       console.warn('Backend status update failed:', err.message);
       addToast(`Status updated locally (${nextStatus})`, 'info');
@@ -112,11 +124,13 @@ export default function OttProjects() {
 
   const handleDeleteProject = async (id, e) => {
     e.stopPropagation();
-    setProjects(prev => prev.filter(p => p.id !== id));
+    const updated = projects.filter(p => p.id !== id);
+    setProjects(updated);
+    localStorage.setItem('zenve_ott_projects', JSON.stringify(updated));
 
     try {
       await api.ott.delete(id);
-      addToast('OTT project removed', 'info');
+      addToast('OTT project removed from database', 'info');
     } catch (err) {
       console.warn('Backend delete failed:', err.message);
       addToast('OTT project removed locally', 'info');
@@ -133,17 +147,20 @@ export default function OttProjects() {
     const payload = {
       title: newProject.title.trim(),
       platform: newProject.platform,
-      genre: newProject.genre.trim(),
+      genre: newProject.genre.trim() || 'Entertainment',
       leadStar: newProject.leadStar.trim(),
       episodes: Number(newProject.episodes) || 8,
       budget: Number(newProject.budget) || 4000000,
-      expectedRelease: newProject.expectedRelease.trim(),
-      status: newProject.status
+      expectedRelease: newProject.expectedRelease.trim() || 'Late 2026',
+      status: newProject.status || 'Pre-Production'
     };
 
     try {
       const created = await api.ott.create(payload);
-      setProjects(prev => [normalizeProject(created), ...prev]);
+      const normalized = normalizeProject(created);
+      const updated = [normalized, ...projects.filter(p => p.id !== normalized.id)];
+      setProjects(updated);
+      localStorage.setItem('zenve_ott_projects', JSON.stringify(updated));
       setIsModalOpen(false);
       setNewProject({
         title: '',
@@ -155,17 +172,10 @@ export default function OttProjects() {
         expectedRelease: 'Late 2026',
         status: 'Pre-Production'
       });
-      addToast(`OTT Project "${created.title}" launched successfully!`, 'success');
+      addToast(`OTT Project "${created.title}" saved to MySQL database!`, 'success');
     } catch (err) {
-      console.warn('Backend create failed, storing locally:', err.message);
-      const fallback = {
-        id: Date.now(),
-        ...payload,
-        budget: `$${Number(payload.budget).toLocaleString()}`
-      };
-      setProjects(prev => [fallback, ...prev]);
-      setIsModalOpen(false);
-      addToast(`OTT Project "${fallback.title}" created locally!`, 'success');
+      console.error('Backend create failed:', err);
+      addToast(err.message || 'Failed to save OTT project to database', 'danger');
     }
   };
 
@@ -196,7 +206,7 @@ export default function OttProjects() {
               <div
                 onClick={(e) => handleStatusCycle(proj.id, e)}
                 style={{ cursor: 'pointer' }}
-                title="Click to cycle status"
+                title="Click to cycle status in database"
               >
                 <span className="badge-primary">{proj.status}</span>
               </div>

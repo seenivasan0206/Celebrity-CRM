@@ -31,6 +31,7 @@ public class OttProjectResponseDto {
     private String leadStar;
     private Long celebrityId;
     private Integer episodes;
+    private String expectedRelease;
 
     public OttProjectResponseDto() {
     }
@@ -134,6 +135,9 @@ public class OttProjectResponseDto {
     }
 
     public String getExpectedRelease() {
+        if (expectedRelease != null && !expectedRelease.isBlank()) {
+            return expectedRelease;
+        }
         return releaseDate != null ? releaseDate.toString() : null;
     }
 
@@ -179,5 +183,9 @@ public class OttProjectResponseDto {
 
     public void setEpisodes(Integer episodes) {
         this.episodes = episodes;
+    }
+
+    public void setExpectedRelease(String expectedRelease) {
+        this.expectedRelease = expectedRelease;
     }
 }

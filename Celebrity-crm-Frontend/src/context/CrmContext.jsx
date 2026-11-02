@@ -966,36 +966,6 @@ export const CrmProvider = ({ children }) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, unread: false } : n)));
   };
 
-<<<<<<< HEAD
-=======
-  const updateManagerPhoto = (id, newPhoto) => {
-    setManagers(prev => {
-      const updated = prev.map(m => {
-        if (m.id === id) {
-          return { ...m, photo: newPhoto, avatar: newPhoto };
-        }
-        return m;
-      });
-      localStorage.setItem('zenve_managers', JSON.stringify(updated));
-      return updated;
-    });
-    const target = managers.find(m => m.id === id);
-    addToast('Profile photo updated for ' + (target?.name || 'Manager') + '!', 'success');
-  };
-
-  const addManager = (newManager) => {
-    setManagers(prev => {
-      const updated = [newManager, ...(prev || [])];
-      localStorage.setItem('zenve_managers', JSON.stringify(updated));
-      return updated;
-    });
-    if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
-  };
-
-<<<<<<< HEAD
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
-=======
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
   return (
     <CrmContext.Provider
       value={{
@@ -1035,17 +1005,7 @@ export const CrmProvider = ({ children }) => {
         updateManagerPhoto,
         addAgency,
         addActivity,
-<<<<<<< HEAD
-<<<<<<< HEAD
         backendConnected
-=======
-        updateManagerPhoto,
-        addManager
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
-=======
-        updateManagerPhoto,
-        addManager
->>>>>>> cad7f9deadd543bef7681d36b832c7457ca3dacf
       }}
     >
       {children}

@@ -24,8 +24,9 @@ public class OttProjectRequestDto {
     private BigDecimal budget;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @JsonAlias({"expectedRelease", "expectedReleaseDate"})
+    @JsonAlias({"expectedReleaseDate", "release_date"})
     private LocalDate releaseDate;
+    private String expectedRelease;
 
     // Optional compatibility fields
     @JsonAlias({"celebrityName", "actor", "star"})
@@ -145,5 +146,13 @@ public class OttProjectRequestDto {
 
     public void setEpisodes(Integer episodes) {
         this.episodes = episodes;
+    }
+
+    public String getExpectedRelease() {
+        return expectedRelease;
+    }
+
+    public void setExpectedRelease(String expectedRelease) {
+        this.expectedRelease = expectedRelease;
     }
 }

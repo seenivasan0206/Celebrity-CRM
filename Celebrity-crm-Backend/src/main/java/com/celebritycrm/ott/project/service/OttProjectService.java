@@ -42,6 +42,7 @@ public class OttProjectService {
         project.setLeadStar(request.getLeadStar());
         project.setCelebrityId(request.getCelebrityId());
         project.setEpisodes(request.getEpisodes());
+        project.setExpectedRelease(request.getExpectedRelease());
 
         OttProject saved = ottProjectRepository.save(project);
         return mapToResponseDto(saved);
@@ -155,6 +156,7 @@ public class OttProjectService {
         dto.setLeadStar(project.getLeadStar());
         dto.setCelebrityId(project.getCelebrityId());
         dto.setEpisodes(project.getEpisodes());
+        dto.setExpectedRelease(project.getExpectedRelease());
 
         return dto;
     }
