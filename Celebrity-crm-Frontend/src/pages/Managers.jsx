@@ -361,16 +361,16 @@ export default function Managers() {
         }
 
         .manager-filter-pill-btn:hover {
-          border-color: #f59e0b;
+          border-color: var(--border-medium);
           color: var(--text-main);
           background: ${isLight ? '#f8fafc' : '#172033'};
         }
 
         .manager-filter-pill-btn.active {
-          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+          background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
           color: #ffffff;
-          border: 1px solid #f59e0b;
-          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+          border-color: transparent;
+          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
         }
 
         /* Search Box */
@@ -461,7 +461,7 @@ export default function Managers() {
 
         .manager-profile-card:hover {
           transform: translateY(-4px);
-          border-color: #f59e0b;
+          border-color: ${isLight ? '#cbd5e1' : '#374151'};
           box-shadow: ${isLight ? '0 12px 28px rgba(0, 0, 0, 0.1)' : '0 16px 36px rgba(0, 0, 0, 0.55)'};
         }
 
@@ -567,9 +567,9 @@ export default function Managers() {
           font-size: 0.68rem;
           font-weight: 700;
           border-radius: 9999px;
-          background: ${isLight ? '#fffbeb' : 'rgba(245, 158, 11, 0.12)'};
-          color: #f59e0b;
-          border: 1px solid #f59e0b;
+          background: ${isLight ? '#ecfdf5' : 'rgba(16, 185, 129, 0.12)'};
+          color: #10b981;
+          border: 1px solid ${isLight ? '#a7f3d0' : 'rgba(16, 185, 129, 0.3)'};
           letter-spacing: 0.04em;
           flex-shrink: 0;
         }
@@ -706,24 +706,6 @@ export default function Managers() {
           justify-content: center;
           gap: 12px;
         }
-
-        .managers-page-wrapper .btn-primary,
-        .manager-invite-btn {
-          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
-          border-color: #f59e0b !important;
-          border: 1px solid #f59e0b !important;
-          color: #ffffff !important;
-          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
-          transition: all 0.2s ease;
-        }
-
-        .managers-page-wrapper .btn-primary:hover,
-        .manager-invite-btn:hover {
-          background: #d97706 !important;
-          border-color: #d97706 !important;
-          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
-          transform: translateY(-1px);
-        }
       `}</style>
 
       {/* Header Row */}
@@ -734,7 +716,7 @@ export default function Managers() {
         </div>
         <button
           type="button"
-          className="btn-primary manager-invite-btn"
+          className="btn-primary"
           onClick={handleInviteLiaison}
         >
           <UserPlus size={16} /> Invite Liaison
