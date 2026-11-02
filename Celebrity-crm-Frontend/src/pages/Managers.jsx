@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCrm } from '../context/CrmContext';
 import { useNavigate } from 'react-router-dom';
 import ChangeManagerPhotoModal from '../components/ChangeManagerPhotoModal';
+import InviteManagerModal from '../components/InviteManagerModal';
 import { MANAGER_PHOTOS_MAP, getManagerPhoto } from '../data/managerPhotos';
 import {
   Users,
@@ -70,7 +71,7 @@ export const ONLINE_BACKUP_PHOTOS = {
 };
 
 export const resolvePhoto = (mgr) => {
-  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:'))) {
+  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:') || mgr.photo.startsWith('http') || mgr.photo.startsWith('/images/'))) {
     return mgr.photo;
   }
   if (mgr?.id && MANAGER_PHOTOS_MAP[mgr.id]) {
@@ -177,7 +178,8 @@ export default function Managers() {
     managers,
     addToast,
     setSearchQuery: setGlobalSearchQuery,
-    updateManagerPhoto
+    updateManagerPhoto,
+    addManager
   } = useCrm();
 
   const [selectedAgency, setSelectedAgency] = useState('All');
@@ -185,6 +187,7 @@ export default function Managers() {
   const [copiedId, setCopiedId] = useState(null);
   const [selectedManagerForPhoto, setSelectedManagerForPhoto] = useState(null);
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   // Distinct agencies
   const agencies = useMemo(() => {
@@ -220,11 +223,15 @@ export default function Managers() {
   }, [managers, selectedAgency, search]);
 
   const handleInviteLiaison = () => {
-    if (navigator?.clipboard?.writeText) {
-      navigator.clipboard.writeText('https://zenvecrm.io/invite/join-agency-team');
-    }
-    if (addToast) {
-      addToast('Manager invitation link generated & copied to clipboard!', 'info');
+    setIsInviteModalOpen(true);
+  };
+
+  const handleAddNewManager = (newManager) => {
+    if (addManager) {
+      addManager(newManager);
+    } else {
+      localStorage.setItem('zenve_managers', JSON.stringify([newManager, ...(managers || [])]));
+      if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
     }
   };
 
@@ -975,6 +982,15 @@ export default function Managers() {
           })}
         </div>
       )}
+
+      {/* Invite / Add Manager Modal */}
+      <InviteManagerModal
+        isOpen={isInviteModalOpen}
+        onClose={() => setIsInviteModalOpen(false)}
+        onAddManager={handleAddNewManager}
+        currentAgency={selectedAgency}
+        existingAgencies={agencies}
+      />
 
       {/* Change Photo Modal */}
       {isPhotoModalOpen && selectedManagerForPhoto && (

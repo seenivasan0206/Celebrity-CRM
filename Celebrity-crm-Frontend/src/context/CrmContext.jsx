@@ -66,7 +66,7 @@ export const CrmProvider = ({ children }) => {
         const existingIds = new Set(parsed.map((m) => m.id));
         const hydrated = parsed.map((m) => {
           const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
-          const resolvedPhoto = (m.photo && m.photo.startsWith('/images/')) ? m.photo : (defaultMatch.photo || `/images/managers/${m.id || 1}.jpg`);
+          const resolvedPhoto = (m.photo && (m.photo.startsWith('/images/') || m.photo.startsWith('data:') || m.photo.startsWith('http'))) ? m.photo : (defaultMatch.photo || `/images/managers/${m.id || 1}.jpg`);
           return {
             ...defaultMatch,
             ...m,
@@ -346,6 +346,15 @@ export const CrmProvider = ({ children }) => {
     addToast('Profile photo updated for ' + (target?.name || 'Manager') + '!', 'success');
   };
 
+  const addManager = (newManager) => {
+    setManagers(prev => {
+      const updated = [newManager, ...(prev || [])];
+      localStorage.setItem('zenve_managers', JSON.stringify(updated));
+      return updated;
+    });
+    if (addToast) addToast(`Manager ${newManager.name} added successfully!`, 'success');
+  };
+
   return (
     <CrmContext.Provider
       value={{
@@ -379,7 +388,8 @@ export const CrmProvider = ({ children }) => {
         deleteCampaign,
         addContract,
         addActivity,
-        updateManagerPhoto
+        updateManagerPhoto,
+        addManager
       }}
     >
       {children}
