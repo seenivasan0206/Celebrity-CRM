@@ -3,7 +3,7 @@ import { useCrm } from '../context/CrmContext';
 import { UserPlus, Megaphone, FileText, CalendarPlus, Zap } from 'lucide-react';
 
 export default function QuickActions() {
-  const { setActiveModal } = useCrm();
+  const { openModal } = useCrm();
 
   return (
     <div className="crm-card" style={{ flex: 1 }}>
@@ -16,9 +16,10 @@ export default function QuickActions() {
 
       <div className="quick-actions-panel">
         <button
+          type="button"
           className="quick-action-button"
           style={{ '--action-color': '#6366F1' }}
-          onClick={() => setActiveModal('addCelebrity')}
+          onClick={() => openModal('addCelebrity')}
         >
           <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #6366F1 0%, #4338CA 100%)' }}>
             <UserPlus size={18} />
@@ -27,9 +28,10 @@ export default function QuickActions() {
         </button>
 
         <button
+          type="button"
           className="quick-action-button"
           style={{ '--action-color': '#10B981' }}
-          onClick={() => setActiveModal('createCampaign')}
+          onClick={() => openModal('createCampaign')}
         >
           <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}>
             <Megaphone size={18} />
@@ -38,9 +40,10 @@ export default function QuickActions() {
         </button>
 
         <button
+          type="button"
           className="quick-action-button"
           style={{ '--action-color': '#F59E0B' }}
-          onClick={() => setActiveModal('createContract')}
+          onClick={() => openModal('createContract')}
         >
           <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)' }}>
             <FileText size={18} />
@@ -49,9 +52,10 @@ export default function QuickActions() {
         </button>
 
         <button
+          type="button"
           className="quick-action-button"
           style={{ '--action-color': '#EC4899' }}
-          onClick={() => setActiveModal('scheduleShoot')}
+          onClick={() => openModal('scheduleShoot')}
         >
           <div className="quick-action-icon" style={{ background: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)' }}>
             <CalendarPlus size={18} />
@@ -62,4 +66,3 @@ export default function QuickActions() {
     </div>
   );
 }
-

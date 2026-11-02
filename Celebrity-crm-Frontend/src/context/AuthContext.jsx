@@ -15,10 +15,10 @@ const DEFAULT_USER = {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
-      const stored = localStorage.getItem('zenve_auth_user');
-      return stored ? JSON.parse(stored) : DEFAULT_USER;
+      const stored = sessionStorage.getItem('zenve_auth_user');
+      return stored ? JSON.parse(stored) : null;
     } catch {
-      return DEFAULT_USER;
+      return null;
     }
   });
 
@@ -66,6 +66,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     setUser(loggedUser);
+    sessionStorage.setItem('zenve_auth_user', JSON.stringify(loggedUser));
     localStorage.setItem('zenve_auth_user', JSON.stringify(loggedUser));
     return { success: true, user: loggedUser };
   };
@@ -87,18 +88,21 @@ export const AuthProvider = ({ children }) => {
     };
 
     setUser(newUser);
+    sessionStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
     localStorage.setItem('zenve_auth_user', JSON.stringify(newUser));
     return { success: true, user: newUser };
   };
 
   const logout = () => {
     setUser(null);
+    sessionStorage.removeItem('zenve_auth_user');
     localStorage.removeItem('zenve_auth_user');
   };
 
   const updateProfile = (updates) => {
     setUser(prev => {
       const updated = { ...prev, ...updates };
+      sessionStorage.setItem('zenve_auth_user', JSON.stringify(updated));
       localStorage.setItem('zenve_auth_user', JSON.stringify(updated));
       return updated;
     });

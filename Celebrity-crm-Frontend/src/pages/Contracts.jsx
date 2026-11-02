@@ -1,18 +1,22 @@
 import React from 'react';
 import { useCrm } from '../context/CrmContext';
-import { FileText, Plus, ShieldCheck, DollarSign, Clock } from 'lucide-react';
+import { Plus, ShieldCheck, DollarSign, Clock, RefreshCw, Download } from 'lucide-react';
 
 export default function Contracts() {
-  const { contracts, setActiveModal } = useCrm();
+  const { contracts, openModal, renewContract, addToast } = useCrm();
 
   return (
     <div>
       <div className="page-header-row">
         <div>
-          <h2>Legal & Commercial Contracts</h2>
+          <h2>Legal & Commercial Contracts ({(contracts || []).length})</h2>
           <p>Endorsement agreements, terms, compensation clauses, and duration ledgers</p>
         </div>
-        <button className="btn-primary" onClick={() => setActiveModal('createContract')}>
+        <button
+          type="button"
+          className="btn-primary"
+          onClick={() => openModal && openModal('createContract')}
+        >
           <Plus size={16} /> Execute New Contract
         </button>
       </div>
@@ -34,7 +38,7 @@ export default function Contracts() {
           </div>
           <div>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>Fully Executed</span>
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)' }}>{contracts.length} Agreements</h3>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)' }}>{(contracts || []).length} Agreements</h3>
           </div>
         </div>
 
@@ -61,10 +65,11 @@ export default function Contracts() {
                 <th>Value</th>
                 <th>Duration</th>
                 <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {contracts.map((c) => (
+              {(contracts || []).map((c) => (
                 <tr key={c.id}>
                   <td style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--primary)' }}>
                     {c.id}
@@ -81,6 +86,28 @@ export default function Contracts() {
                       {c.status}
                     </span>
                   </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        title="Renew Contract for 1 Year"
+                        onClick={() => renewContract && renewContract(c.id)}
+                      >
+                        <RefreshCw size={12} color="#10B981" /> Renew
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        style={{ padding: '4px 8px', fontSize: '0.74rem' }}
+                        title="Download Contract PDF"
+                        onClick={() => addToast && addToast(`Downloaded legal brief for ${c.id} (PDF)`, 'info')}
+                      >
+                        <Download size={12} />
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -90,4 +117,3 @@ export default function Contracts() {
     </div>
   );
 }
-

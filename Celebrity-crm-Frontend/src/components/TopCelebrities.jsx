@@ -1,10 +1,10 @@
 import React from 'react';
 import { useCrm } from '../context/CrmContext';
-import { Crown } from 'lucide-react';
+import { Crown, CalendarPlus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function TopCelebrities() {
-  const { celebrities } = useCrm();
+  const { celebrities, openModal } = useCrm();
 
   // Sort celebrities by campaigns count descending
   const sorted = [...celebrities].sort((a, b) => (b.campaignsCount || 0) - (a.campaignsCount || 0));
@@ -39,13 +39,18 @@ export default function TopCelebrities() {
               <span className="top-celeb-name">{celeb.name}</span>
               <span className="top-celeb-campaigns">{celeb.campaignsCount} campaigns</span>
             </div>
-            {idx === 0 && (
-              <Crown size={16} color="#F59E0B" style={{ marginLeft: 'auto' }} />
-            )}
+            <button
+              type="button"
+              className="btn-secondary"
+              style={{ padding: '4px 8px', fontSize: '0.7rem' }}
+              title={`Book shoot for ${celeb.name}`}
+              onClick={() => openModal('scheduleShoot', { celebrity: celeb.name })}
+            >
+              <CalendarPlus size={12} />
+            </button>
           </div>
         ))}
       </div>
     </div>
   );
 }
-

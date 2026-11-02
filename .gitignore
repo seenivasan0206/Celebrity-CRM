@@ -1,6 +1,7 @@
-@"
 node_modules/
 dist/
 .env
 target/
-"@ | Set-Content .gitignore
+.DS_Store
+Thumbs.db
+Celebrity-CRM/

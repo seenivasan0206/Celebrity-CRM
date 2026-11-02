@@ -3,7 +3,7 @@ import { useCrm } from '../../context/CrmContext';
 import { X, UserPlus, Sparkles } from 'lucide-react';
 
 export default function AddCelebrityModal() {
-  const { activeModal, setActiveModal, addCelebrity } = useCrm();
+  const { activeModal, closeModal, addCelebrity } = useCrm();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -22,11 +22,22 @@ export default function AddCelebrityModal() {
     e.preventDefault();
     if (!formData.name.trim()) return;
     addCelebrity(formData);
-    setActiveModal(null);
+    // Reset form
+    setFormData({
+      name: '',
+      category: 'Actor / Superstar',
+      location: 'Chennai',
+      email: '',
+      phone: '',
+      activeContract: '$250,000 / yr',
+      followers: '5.0M',
+      avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80'
+    });
+    closeModal();
   };
 
   return (
-    <div className="modal-overlay" onClick={() => setActiveModal(null)}>
+    <div className="modal-overlay" onClick={closeModal}>
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div className="modal-title-wrap">
@@ -38,7 +49,7 @@ export default function AddCelebrityModal() {
               <p>Onboard an artist or public figure to Zenve CRM</p>
             </div>
           </div>
-          <button className="modal-close-btn" onClick={() => setActiveModal(null)}>
+          <button type="button" className="modal-close-btn" onClick={closeModal}>
             <X size={18} />
           </button>
         </div>
@@ -135,7 +146,7 @@ export default function AddCelebrityModal() {
           </div>
 
           <div className="modal-footer">
-            <button type="button" className="btn-secondary" onClick={() => setActiveModal(null)}>
+            <button type="button" className="btn-secondary" onClick={closeModal}>
               Cancel
             </button>
             <button type="submit" className="btn-primary">
@@ -147,4 +158,3 @@ export default function AddCelebrityModal() {
     </div>
   );
 }
-

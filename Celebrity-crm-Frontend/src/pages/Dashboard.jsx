@@ -13,7 +13,15 @@ import { Users, Megaphone, FileText, Camera, Plus, Sparkles } from 'lucide-react
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const { celebrities, campaigns, contracts, shoots, setActiveModal } = useCrm();
+  const { celebrities, campaigns, contracts, shoots, openModal, setActiveModal } = useCrm();
+
+  const handleOpenModal = (name) => {
+    if (openModal) {
+      openModal(name);
+    } else if (setActiveModal) {
+      setActiveModal(name);
+    }
+  };
 
   return (
     <div className="dashboard-container">
@@ -27,14 +35,16 @@ export default function Dashboard() {
         </div>
         <div className="greeting-actions">
           <button
+            type="button"
             className="btn-primary"
-            onClick={() => setActiveModal('scheduleShoot')}
+            onClick={() => handleOpenModal('scheduleShoot')}
           >
             <Plus size={16} /> New Shoot Call
           </button>
           <button
+            type="button"
             className="btn-secondary"
-            onClick={() => setActiveModal('addCelebrity')}
+            onClick={() => handleOpenModal('addCelebrity')}
           >
             <Sparkles size={16} /> Onboard Talent
           </button>
@@ -45,7 +55,7 @@ export default function Dashboard() {
       <div className="stat-cards-grid">
         <StatCard
           title="Total Celebrities"
-          value={celebrities.length}
+          value={celebrities?.length || 0}
           change="↑ 12%"
           isPositive={true}
           icon={Users}
@@ -54,7 +64,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Active Campaigns"
-          value={campaigns.length}
+          value={campaigns?.length || 0}
           change="↑ 33%"
           isPositive={true}
           icon={Megaphone}
@@ -63,7 +73,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Total Contracts"
-          value={contracts.length}
+          value={contracts?.length || 0}
           change="↑ 25%"
           isPositive={true}
           icon={FileText}
@@ -72,7 +82,7 @@ export default function Dashboard() {
         />
         <StatCard
           title="Ongoing Shoots"
-          value={shoots.length}
+          value={shoots?.length || 0}
           change="↑ 67%"
           isPositive={true}
           icon={Camera}
@@ -99,9 +109,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Bottom Row: Module Overview 8 Tiles */}
+      {/* 8-Card Module Quick-Access Overview Grid */}
       <ModuleOverview />
     </div>
   );
 }
-

@@ -2,10 +2,24 @@
    ZENVE CRM — AUTHENTICATION (LOGIN & REGISTER) STYLES
    ======================================================== */
 
-.auth-page-wrapper {
+.auth-page-wrapper,
+[data-theme="light"] .auth-page-wrapper {
   min-height: 100vh;
+  width: 100%;
   display: flex;
-  background-color: var(--bg-app);
+  align-items: center;
+  justify-content: flex-end; /* Pushes the login form to the right */
+  padding: 40px 8% 40px 40px; /* Space from right margin */
+  background: 
+    /* Bright luminous white-frosted editorial overlay */
+    linear-gradient(
+      to right, 
+      rgba(255, 255, 255, 0.25) 0%, 
+      rgba(248, 250, 252, 0.48) 38%, 
+      rgba(241, 245, 249, 0.80) 68%, 
+      rgba(255, 255, 255, 0.94) 100%
+    ),
+    url('/login-bg.jpeg') no-repeat left center / cover !important;
   position: relative;
   overflow: hidden;
 }
@@ -44,19 +58,18 @@
 }
 
 /* Left Hero Showcase */
-.auth-hero-pane {
+.auth-hero-pane,
+[data-theme="light"] .auth-hero-pane {
   flex: 1.1;
-  background: linear-gradient(145deg, rgba(15, 21, 35, 0.95) 0%, rgba(9, 13, 22, 0.98) 100%);
-  border-right: 1px solid var(--border-subtle);
+  background: linear-gradient(145deg, rgba(15, 21, 35, 0.78) 0%, rgba(9, 13, 22, 0.88) 100%) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 60px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-}
-
-[data-theme="light"] .auth-hero-pane {
-  background: linear-gradient(145deg, #f8fafc 0%, #edf2f7 100%);
 }
 
 .auth-hero-top {
@@ -237,18 +250,38 @@
   position: relative;
 }
 
-.auth-form-card {
+.auth-form-card,
+[data-theme="light"] .auth-form-card {
   width: 100%;
-  max-width: 460px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-medium);
+  max-width: 430px;
+  background: linear-gradient(155deg, rgba(13, 18, 30, 0.88) 0%, rgba(6, 9, 17, 0.96) 100%) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: var(--radius-xl);
-  padding: 40px;
-  box-shadow: var(--shadow-lg);
+  padding: 38px 34px;
+  box-shadow: 
+    0 25px 70px -10px rgba(15, 23, 42, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 45px -10px rgba(99, 102, 241, 0.25) !important;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   position: relative;
+  z-index: 20;
+  margin: 0; /* Pushed to the right */
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-form-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #818cf8 40%, #06b6d4 60%, transparent);
+  border-radius: 9999px;
 }
 
 .auth-header-block {
@@ -257,51 +290,51 @@
 
 .auth-header-block h3 {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.55rem;
   font-weight: 800;
-  color: var(--text-main);
+  color: #ffffff !important;
   letter-spacing: -0.02em;
 }
 
 .auth-header-block p {
-  font-size: 0.86rem;
-  color: var(--text-muted);
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.75) !important;
   margin-top: 4px;
 }
 
 /* Quick Demo Login Bar */
-.demo-login-box {
-  background: var(--bg-card-alt);
-  border: 1px dashed var(--border-medium);
+.auth-form-card .demo-login-box {
+  background: rgba(0, 0, 0, 0.38) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--radius-md);
-  padding: 12px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.demo-login-label {
+.auth-form-card .demo-login-label {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-dim);
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
-.demo-buttons-row {
+.auth-form-card .demo-buttons-row {
   display: flex;
   gap: 8px;
 }
 
-.btn-demo-quick {
+.auth-form-card .btn-demo-quick {
   flex: 1;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  font-size: 0.76rem;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  font-size: 0.78rem;
   font-weight: 600;
-  color: var(--text-muted);
+  color: #ffffff !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -309,10 +342,76 @@
   transition: all var(--transition-fast);
 }
 
-.btn-demo-quick:hover {
-  background: var(--bg-hover);
-  border-color: var(--primary);
-  color: var(--primary);
+.auth-form-card .btn-demo-quick:hover {
+  background: rgba(99, 102, 241, 0.45) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.auth-form-card .zenve-input {
+  background: rgba(5, 8, 16, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: var(--radius-md);
+  padding: 13px 14px 13px 44px;
+  font-size: 0.9rem;
+  color: #ffffff !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.auth-form-card .zenve-input:focus {
+  background: rgba(5, 8, 16, 0.95) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35), inset 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Fix browser autofill turning inputs white/yellow */
+.auth-form-card input:-webkit-autofill,
+.auth-form-card input:-webkit-autofill:hover, 
+.auth-form-card input:-webkit-autofill:focus,
+.auth-form-card input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #060912 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 0 0 1000px #060912 inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.auth-form-card .form-label {
+  color: #ffffff !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  font-weight: 700;
+}
+
+.auth-form-card .remember-check {
+  color: #ffffff !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+}
+
+.auth-form-card .forgot-link {
+  color: #a5b4fc !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  font-weight: 700;
+}
+
+.auth-form-card .btn-submit-auth {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5), 0 0 25px var(--primary-glow);
+}
+
+.auth-form-card .auth-switch-footer {
+  color: #ffffff !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  font-weight: 600;
+}
+
+.auth-form-card .auth-switch-footer a {
+  color: #a5b4fc !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.85);
+  font-weight: 800;
 }
 
 /* Form Groups */
@@ -485,6 +584,19 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 900px) {
+  .auth-page-wrapper {
+    justify-content: center;
+    padding: 30px 20px;
+    background: 
+      linear-gradient(rgba(9, 13, 22, 0.6), rgba(9, 13, 22, 0.8)),
+      url('/login-bg.jpeg') no-repeat center center / cover;
+  }
+  .auth-form-card {
+    margin: auto;
+  }
+}
+
 @media (max-width: 1024px) {
   .auth-hero-pane {
     display: none;
