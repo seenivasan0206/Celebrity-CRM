@@ -1,0 +1,417 @@
+{
+  "info": {
+    "_postman_id": "745a59f0-edb2-4124-ac98-b435cd361807",
+    "name": "New Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58999342",
+    "_collection_link": "https://go.postman.co/collection/58999342-745a59f0-edb2-4124-ac98-b435cd361807?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "casting",
+      "item": [
+        {
+          "name": "post castingcalls",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectTitle\": \"Leo - Tamil Feature Film\",\n  \"roleName\": \"Lead Actor\",\n  \"roleDescription\": \"Looking for a talented actor for the lead role in a Tamil feature film.\",\n  \"characterAgeMin\": 25,\n  \"characterAgeMax\": 35,\n  \"gender\": \"Male\",\n  \"location\": \"Chennai, India\",\n  \"deadline\": \"2026-12-31\",\n  \"status\": \"OPEN\",\n  \"compensation\": \"₹5,00,000\",\n  \"contactEmail\": \"casting@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/casting/calls",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "calls"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/calls",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "calls"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/calls/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "calls",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"projectTitle\": \"Leo - Updated Tamil Feature Film\",\n    \"roleName\": \"Supporting Actor\",\n    \"roleDescription\": \"Looking for an experienced actor for a supporting role.\",\n    \"characterAgeMin\": 28,\n    \"characterAgeMax\": 40,\n    \"gender\": \"Male\",\n    \"location\": \"Chennai, India\",\n    \"deadline\": \"2026-12-31\",\n    \"status\": \"OPEN\",\n    \"compensation\": \"₹7,00,000\",\n    \"contactEmail\": \"casting@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/casting/calls/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "calls",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/calls/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "calls",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "ott",
+      "item": [
+        {
+          "name": "create ott",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Leo - The OTT Special\",\n  \"description\": \"Exclusive behind-the-scenes and director's cut series\",\n  \"platform\": \"Netflix\",\n  \"genre\": \"Action / Thriller\",\n  \"status\": \"IN_PRODUCTION\",\n  \"director\": \"Lokesh Kanagaraj\",\n  \"producer\": \"Seven Screen Studio\",\n  \"budget\": 75000000.0,\n  \"releaseDate\": \"2027-04-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ott/projects",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ott",
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/ott/projects",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ott",
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/ott/projects/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ott",
+                "projects",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Leo - OTT Director's Cut\",\n  \"description\": \"Updated exclusive behind-the-scenes and extended director's cut series\",\n  \"platform\": \"Amazon Prime Video\",\n  \"genre\": \"Action / Thriller / Drama\",\n  \"status\": \"COMPLETED\",\n  \"director\": \"Lokesh Kanagaraj\",\n  \"producer\": \"Seven Screen Studio\",\n  \"budget\": 85000000.0,\n  \"releaseDate\": \"2027-04-14\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/ott/projects/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ott",
+                "projects",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/ott/projects/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "ott",
+                "projects",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "casting application",
+      "item": [
+        {
+          "name": "post castapp",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"castingCallId\": 2,\n  \"applicantName\": \"Arun Kumar\",\n  \"applicantEmail\": \"arun@example.com\",\n  \"applicantPhone\": \"+919876543210\",\n  \"portfolioUrl\": \"https://example.com/portfolio/arun\",\n  \"experienceYears\": 3,\n  \"notes\": \"I have experience in Tamil films and short films. Interested in this role.\",\n  \"status\": \"SUBMITTED\",\n  \"auditionDate\": \"2026-11-15T10:30:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/casting/applications",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "applications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get all",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/applications",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "applications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/applications/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "applications",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "patch",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"SHORTLISTED\",\n    \"auditionDate\": \"2026-11-20T11:00:00\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/casting/applications/2/status",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "applications",
+                "2",
+                "status"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/casting/applications/2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "casting",
+                "applications",
+                "2"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "create token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}
+

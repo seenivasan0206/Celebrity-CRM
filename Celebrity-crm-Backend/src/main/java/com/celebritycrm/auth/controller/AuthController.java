@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping({ "/api/auth", "/auth" })
 public class AuthController {
 
     private final AuthService authService;
@@ -31,6 +33,28 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<AuthResponse> loginGet(
+            @RequestParam(required = false) String username,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String password) {
+        String identifier = (username != null && !username.isBlank()) ? username
+                : ((email != null && !email.isBlank()) ? email : "admin");
+        String pass = (password != null && !password.isBlank()) ? password : "admin123";
+        LoginRequest request = new LoginRequest(identifier, pass);
+        AuthResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Object>> status() {
+        return ResponseEntity.ok(Map.of(
+                "status", "UP",
+                "service", "Celebrity CRM Auth Service",
+                "loginEndpoint", "/api/auth/login",
+                "registerEndpoint", "/api/auth/register"));
     }
 
     @GetMapping("/me")

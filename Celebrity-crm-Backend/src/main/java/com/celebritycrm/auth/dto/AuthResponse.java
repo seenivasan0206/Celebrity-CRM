@@ -5,22 +5,30 @@ public class AuthResponse {
     private String token;
     private String tokenType = "Bearer";
     private Long id;
+    private Long userId;
     private String username;
     private String email;
     private String fullName;
     private String role;
+    private String message;
 
     public AuthResponse() {
     }
 
     public AuthResponse(String token, Long id, String username, String email, String fullName, String role) {
+        this(token, id, username, email, fullName, role, "Login successful");
+    }
+
+    public AuthResponse(String token, Long id, String username, String email, String fullName, String role, String message) {
         this.token = token;
         this.tokenType = "Bearer";
         this.id = id;
+        this.userId = id;
         this.username = username;
         this.email = email;
         this.fullName = fullName;
         this.role = role;
+        this.message = message;
     }
 
     public String getToken() {
@@ -45,6 +53,16 @@ public class AuthResponse {
 
     public void setId(Long id) {
         this.id = id;
+        this.userId = id;
+    }
+
+    public Long getUserId() {
+        return userId != null ? userId : id;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+        this.id = userId;
     }
 
     public String getUsername() {
@@ -77,6 +95,14 @@ public class AuthResponse {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
 

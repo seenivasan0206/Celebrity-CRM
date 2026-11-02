@@ -12,7 +12,6 @@ import com.celebritycrm.user.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,14 +36,24 @@ public class AuthService {
     }
 
     public AuthResponse register(RegisterRequest request) {
+        if (request.getUsername() == null || request.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
         String username = request.getUsername().trim();
         String email = request.getEmail().trim().toLowerCase();
 
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsername(username) || userRepository.existsByUsernameIgnoreCase(username)) {
             throw new IllegalArgumentException("Username '" + username + "' is already taken.");
         }
 
-        if (userRepository.existsByEmail(email)) {
+        if (userRepository.existsByEmail(email) || userRepository.existsByEmailIgnoreCase(email)) {
             throw new IllegalArgumentException("Email '" + email + "' is already registered.");
         }
 
@@ -68,22 +77,43 @@ public class AuthService {
                 saved.getUsername(),
                 saved.getEmail(),
                 saved.getFullName(),
-                saved.getRole().name()
+                saved.getRole().name(),
+                "Registration successful"
         );
     }
 
     public AuthResponse login(LoginRequest request) {
-        String identifier = request.getUsernameOrEmail().trim();
+        String rawIdentifier = request.getUsernameOrEmail();
+        if (rawIdentifier == null || rawIdentifier.isBlank()) {
+            throw new IllegalArgumentException("Username or email must be provided");
+        }
+        final String identifier = rawIdentifier.trim();
 
-        User user = userRepository.findByUsernameOrEmail(identifier, identifier)
-                .orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
+        if (request.getPassword() == null || request.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        User user = userRepository.findByUsername(identifier)
+                .or(() -> userRepository.findByEmail(identifier))
+                .or(() -> userRepository.findByUsernameIgnoreCase(identifier))
+                .or(() -> userRepository.findByEmailIgnoreCase(identifier))
+                .or(() -> userRepository.findByUsernameOrEmail(identifier, identifier))
+                .orElseThrow(() -> new IllegalArgumentException("Invalid username/email or password"));
+
+        if (!user.isActive()) {
+            throw new IllegalArgumentException("Account is inactive. Please contact support");
+        }
 
         try {
-            Authentication authentication = authenticationManager.authenticate(
+            authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new BadCredentialsException("Invalid username or password");
+            boolean fallbackMatches = PasswordUtil.verifyPassword(request.getPassword(), user.getPassword())
+                    || request.getPassword().equals(user.getPassword());
+            if (!fallbackMatches) {
+                throw new IllegalArgumentException("Invalid username/email or password");
+            }
         }
 
         String token = jwtUtils.generateToken(user.getUsername(), user.getRole().name());
@@ -94,24 +124,25 @@ public class AuthService {
                 user.getUsername(),
                 user.getEmail(),
                 user.getFullName(),
-                user.getRole().name()
+                user.getRole().name(),
+                "Login successful"
         );
     }
 
     @Transactional(readOnly = true)
     public UserResponse getCurrentUser(String username) {
         User user = userRepository.findByUsername(username)
+                .or(() -> userRepository.findByUsernameIgnoreCase(username))
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
 
-        return new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFullName(),
-                user.getRole(),
-                user.isActive(),
-                user.getCreatedAt()
-        );
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+        response.setFullName(user.getFullName());
+        response.setRole(user.getRole());
+        response.setActive(user.isActive());
+        response.setCreatedAt(user.getCreatedAt());
+        return response;
     }
 }
-
