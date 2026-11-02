@@ -361,7 +361,7 @@ export default function Managers() {
         }
 
         .manager-filter-pill-btn:hover {
-          border-color: var(--border-medium);
+          border-color: #f59e0b;
           color: var(--text-main);
           background: ${isLight ? '#f8fafc' : '#172033'};
         }
@@ -369,7 +369,7 @@ export default function Managers() {
         .manager-filter-pill-btn.active {
           background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
           color: #ffffff;
-          border-color: transparent;
+          border: 1px solid #f59e0b;
           box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
         }
 
@@ -461,7 +461,7 @@ export default function Managers() {
 
         .manager-profile-card:hover {
           transform: translateY(-4px);
-          border-color: ${isLight ? '#cbd5e1' : '#374151'};
+          border-color: #f59e0b;
           box-shadow: ${isLight ? '0 12px 28px rgba(0, 0, 0, 0.1)' : '0 16px 36px rgba(0, 0, 0, 0.55)'};
         }
 
@@ -567,9 +567,9 @@ export default function Managers() {
           font-size: 0.68rem;
           font-weight: 700;
           border-radius: 9999px;
-          background: ${isLight ? '#ecfdf5' : 'rgba(16, 185, 129, 0.12)'};
-          color: #10b981;
-          border: 1px solid ${isLight ? '#a7f3d0' : 'rgba(16, 185, 129, 0.3)'};
+          background: ${isLight ? '#fffbeb' : 'rgba(245, 158, 11, 0.12)'};
+          color: #f59e0b;
+          border: 1px solid #f59e0b;
           letter-spacing: 0.04em;
           flex-shrink: 0;
         }
@@ -706,6 +706,11 @@ export default function Managers() {
           justify-content: center;
           gap: 12px;
         }
+
+        .manager-invite-btn {
+          border: 1px solid #f59e0b !important;
+          box-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
+        }
       `}</style>
 
       {/* Header Row */}
@@ -716,7 +721,7 @@ export default function Managers() {
         </div>
         <button
           type="button"
-          className="btn-primary"
+          className="btn-primary manager-invite-btn"
           onClick={handleInviteLiaison}
         >
           <UserPlus size={16} /> Invite Liaison
