@@ -1,5 +1,6 @@
 package com.celebritycrm.user.entity;
 
+import com.celebritycrm.agencies.entity.Agency;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -29,6 +30,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "agency_id")
+    private Agency agency;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -116,6 +121,14 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Agency getAgency() {
+        return agency;
+    }
+
+    public void setAgency(Agency agency) {
+        this.agency = agency;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,13 +1,15 @@
 package com.celebritycrm.auth.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonAlias;
 
 public class LoginRequest {
 
-    @NotBlank(message = "Username or email is required")
+    @JsonAlias({ "username", "email", "identifier" })
     private String usernameOrEmail;
 
-    @NotBlank(message = "Password is required")
+    private String username;
+    private String email;
+
     private String password;
 
     public LoginRequest() {
@@ -19,11 +21,46 @@ public class LoginRequest {
     }
 
     public String getUsernameOrEmail() {
-        return usernameOrEmail;
+        if (usernameOrEmail != null && !usernameOrEmail.isBlank()) {
+            return usernameOrEmail.trim();
+        }
+        if (username != null && !username.isBlank()) {
+            return username.trim();
+        }
+        if (email != null && !email.isBlank()) {
+            return email.trim();
+        }
+        return "";
     }
 
     public void setUsernameOrEmail(String usernameOrEmail) {
         this.usernameOrEmail = usernameOrEmail;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        if (this.usernameOrEmail == null || this.usernameOrEmail.isBlank()) {
+            this.usernameOrEmail = username;
+        }
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+        if (this.usernameOrEmail == null || this.usernameOrEmail.isBlank()) {
+            this.usernameOrEmail = email;
+        }
+    }
+
+    public String getIdentifier() {
+        return getUsernameOrEmail();
     }
 
     public String getPassword() {

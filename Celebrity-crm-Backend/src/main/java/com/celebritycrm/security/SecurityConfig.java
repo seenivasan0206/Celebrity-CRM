@@ -55,12 +55,14 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // Public auth endpoints
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/auth/**").permitAll()
                         // Public CORS pre-flight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public casting, OTT, contracts, and files endpoints matching Postman collections
+                        .requestMatchers("/api/casting/**", "/api/ott/**", "/api/contracts/**", "/api/files/**").permitAll()
                         // Public read-only GET endpoints (allows viewing without login)
-                        .requestMatchers(HttpMethod.GET, "/api/celebrities/**", "/api/campaigns/**", "/api/managers/**", "/api/agencies/**", "/api/shoots/**", "/api/reports/**").permitAll()
-                        // All write operations (POST, PUT, PATCH, DELETE) require valid JWT Bearer token
+                        .requestMatchers(HttpMethod.GET, "/api/celebrities/**", "/api/campaigns/**", "/api/managers/**", "/api/agencies/**", "/api/shoots/**", "/api/reports/**", "/api/contracts/**", "/api/files/**").permitAll()
+                        // All other write operations require valid JWT Bearer token
                         .anyRequest().authenticated()
                 );
 

@@ -1,6 +1,7 @@
 package com.celebritycrm.auth.dto;
 
 import com.celebritycrm.user.entity.Role;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -34,6 +35,14 @@ public class RegisterRequest {
         this.password = password;
         this.fullName = fullName;
         this.role = (role != null) ? role : Role.ROLE_USER;
+    }
+
+    public RegisterRequest(String username, String email, String password, String fullName, String roleStr) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+        setRoleString(roleStr);
     }
 
     public String getUsername() {
@@ -73,7 +82,25 @@ public class RegisterRequest {
     }
 
     public void setRole(Role role) {
-        this.role = role;
+        this.role = role != null ? role : Role.ROLE_USER;
+    }
+
+    @JsonProperty("role")
+    public void setRoleString(String roleStr) {
+        if (roleStr == null || roleStr.isBlank()) {
+            this.role = Role.ROLE_USER;
+            return;
+        }
+        String normalized = roleStr.trim().toUpperCase();
+        try {
+            this.role = Role.valueOf(normalized);
+        } catch (IllegalArgumentException e1) {
+            try {
+                this.role = Role.valueOf("ROLE_" + normalized);
+            } catch (IllegalArgumentException e2) {
+                this.role = Role.ROLE_USER;
+            }
+        }
     }
 }
 

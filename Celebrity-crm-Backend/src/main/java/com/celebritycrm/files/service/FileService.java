@@ -2,11 +2,15 @@ package com.celebritycrm.files.service;
 
 import com.celebritycrm.common.ResourceNotFoundException;
 import com.celebritycrm.files.dto.FileResponse;
+import com.celebritycrm.files.entity.FileEntity;
+import com.celebritycrm.files.repository.FileRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,7 +23,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class FileService {
@@ -28,6 +31,11 @@ public class FileService {
     private String uploadDir;
 
     private Path fileStorageLocation;
+    private final FileRepository fileRepository;
+
+    public FileService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
 
     @PostConstruct
     public void init() {
@@ -39,7 +47,8 @@ public class FileService {
         }
     }
 
-    public FileResponse storeFile(MultipartFile file) {
+    @Transactional
+    public FileResponse storeFile(MultipartFile file, String description, String category) {
         if (file == null || file.isEmpty()) {
             throw new IllegalArgumentException("Cannot upload an empty file.");
         }
@@ -70,22 +79,55 @@ public class FileService {
                 .path(targetFileName)
                 .toUriString();
 
-        return new FileResponse(
+        FileEntity entity = new FileEntity(
                 targetFileName,
                 originalFileName,
                 fileDownloadUri,
                 file.getContentType(),
-                file.getSize()
+                file.getSize(),
+                description,
+                category
         );
+
+        FileEntity saved = fileRepository.save(entity);
+        return FileResponse.fromEntity(saved);
     }
 
-    public List<FileResponse> storeFiles(MultipartFile[] files) {
+    public FileResponse storeFile(MultipartFile file) {
+        return storeFile(file, null, null);
+    }
+
+    @Transactional
+    public List<FileResponse> storeFiles(MultipartFile[] files, String description, String category) {
         if (files == null || files.length == 0) {
             return Collections.emptyList();
         }
         return Arrays.stream(files)
-                .map(this::storeFile)
+                .map(f -> storeFile(f, description, category))
                 .collect(Collectors.toList());
+    }
+
+    public List<FileResponse> storeFiles(MultipartFile[] files) {
+        return storeFiles(files, null, null);
+    }
+
+    public List<FileResponse> getAllFiles() {
+        return fileRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+                .stream()
+                .map(FileResponse::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public FileResponse getFileById(Long id) {
+        FileEntity entity = fileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("File record not found with id: " + id));
+        return FileResponse.fromEntity(entity);
+    }
+
+    public FileResponse getFileByFileName(String fileName) {
+        FileEntity entity = fileRepository.findByFileName(fileName)
+                .orElseThrow(() -> new ResourceNotFoundException("File record not found with name: " + fileName));
+        return FileResponse.fromEntity(entity);
     }
 
     public Resource loadFileAsResource(String fileName) {
@@ -95,49 +137,44 @@ public class FileService {
             if (resource.exists() && resource.isReadable()) {
                 return resource;
             } else {
-                throw new ResourceNotFoundException("File not found: " + fileName);
+                throw new ResourceNotFoundException("Physical file not found: " + fileName);
             }
         } catch (MalformedURLException ex) {
+            throw new ResourceNotFoundException("Physical file not found: " + fileName);
+        }
+    }
+
+    @Transactional
+    public void deleteFile(String fileName) {
+        Optional<FileEntity> entityOpt = fileRepository.findByFileName(fileName);
+        Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+
+        boolean physicalDeleted = false;
+        try {
+            physicalDeleted = Files.deleteIfExists(filePath);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not delete file from disk: " + fileName, ex);
+        }
+
+        if (entityOpt.isPresent()) {
+            fileRepository.delete(entityOpt.get());
+        } else if (!physicalDeleted) {
             throw new ResourceNotFoundException("File not found: " + fileName);
         }
     }
 
-    public boolean deleteFile(String fileName) {
-        try {
-            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-            if (!Files.exists(filePath)) {
-                throw new ResourceNotFoundException("File not found: " + fileName);
-            }
-            return Files.deleteIfExists(filePath);
-        } catch (IOException ex) {
-            throw new RuntimeException("Could not delete file: " + fileName, ex);
-        }
-    }
+    @Transactional
+    public void deleteFileById(Long id) {
+        FileEntity entity = fileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("File record not found with id: " + id));
 
-    public List<FileResponse> getAllFiles() {
-        try (Stream<Path> stream = Files.list(this.fileStorageLocation)) {
-            return stream.filter(Files::isRegularFile)
-                    .map(path -> {
-                        String name = path.getFileName().toString();
-                        long size = 0L;
-                        try {
-                            size = Files.size(path);
-                        } catch (IOException ignored) {
-                        }
-                        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                                .path("/api/files/download/")
-                                .path(name)
-                                .toUriString();
-                        String contentType = null;
-                        try {
-                            contentType = Files.probeContentType(path);
-                        } catch (IOException ignored) {
-                        }
-                        return new FileResponse(name, name, uri, contentType, size);
-                    })
-                    .collect(Collectors.toList());
+        Path filePath = this.fileStorageLocation.resolve(entity.getFileName()).normalize();
+        try {
+            Files.deleteIfExists(filePath);
         } catch (IOException ex) {
-            return Collections.emptyList();
+            throw new RuntimeException("Could not delete file from disk: " + entity.getFileName(), ex);
         }
+
+        fileRepository.delete(entity);
     }
 }

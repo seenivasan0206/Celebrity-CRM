@@ -32,7 +32,18 @@ export const CrmProvider = ({ children }) => {
   const [campaigns, setCampaigns] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_campaigns');
-      return saved ? JSON.parse(saved) : initialCampaigns;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((c) => c.id));
+        const missing = initialCampaigns.filter((c) => !existingIds.has(c.id));
+        if (missing.length > 0) {
+          const merged = [...parsed, ...missing];
+          localStorage.setItem('zenve_campaigns', JSON.stringify(merged));
+          return merged;
+        }
+        return parsed;
+      }
+      return initialCampaigns;
     } catch {
       return initialCampaigns;
     }
@@ -52,9 +63,10 @@ export const CrmProvider = ({ children }) => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        const existingIds = new Set(parsed.map((m) => m.id));
         const hydrated = parsed.map((m) => {
           const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
-          const resolvedPhoto = m.photo || m.avatar || defaultMatch.photo;
+          const resolvedPhoto = (m.photo && m.photo.startsWith('/images/')) ? m.photo : (defaultMatch.photo || `/images/managers/${m.id || 1}.jpg`);
           return {
             ...defaultMatch,
             ...m,
@@ -64,8 +76,10 @@ export const CrmProvider = ({ children }) => {
             representedTalents: m.representedTalents || m.assignedCelebrities || defaultMatch.representedTalents || []
           };
         });
-        localStorage.setItem('zenve_managers', JSON.stringify(hydrated));
-        return hydrated;
+        const missing = initialManagers.filter((im) => !existingIds.has(im.id));
+        const allManagers = [...hydrated, ...missing];
+        localStorage.setItem('zenve_managers', JSON.stringify(allManagers));
+        return allManagers;
       } catch {
         return initialManagers;
       }
@@ -246,6 +260,14 @@ export const CrmProvider = ({ children }) => {
     addToast(`Campaign status updated to "${newStatus}"`, 'info');
   };
 
+  // Update Campaign Target Date / Deadline
+  const updateCampaignDeadline = (id, newDeadline) => {
+    const updated = campaigns.map((c) => (c.id === id ? { ...c, deadline: newDeadline } : c));
+    setCampaigns(updated);
+    localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
+    addToast(`Target date updated to "${newDeadline}"`, 'success');
+  };
+
   // Delete Campaign
   const deleteCampaign = (id) => {
     const updated = campaigns.filter((c) => c.id !== id);
@@ -353,6 +375,7 @@ export const CrmProvider = ({ children }) => {
         deleteShoot,
         addCampaign,
         updateCampaignStatus,
+        updateCampaignDeadline,
         deleteCampaign,
         addContract,
         addActivity,

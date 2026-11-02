@@ -1,3 +1,4 @@
+import { getManagerPhoto } from './managerPhotos';
 // Initial mock data for Zenve CRM Portal
 
 export const initialCelebrities = [
@@ -192,59 +193,114 @@ export const initialShoots = [
 
 export const initialCampaigns = [
   {
-    id: 201,
-    title: 'Summer Fashion 2026',
-    brand: 'Vogue Haute Couture',
-    celebrity: 'Nayanthara',
-    budget: '$120,000',
-    status: 'Ongoing',
-    progress: 65,
-    deadline: '15 Jan 2026',
-    reach: '14.2M Impressions'
+      "id": 201,
+      "title": "Summer Fashion 2026",
+      "brand": "Vogue Haute Couture",
+      "celebrity": "Nayanthara",
+      "budget": "$120,000",
+      "status": "Ongoing",
+      "progress": 65,
+      "deadline": "15 Jan 2026",
+      "reach": "14.2M Impressions"
   },
   {
-    id: 202,
-    title: 'Velocity Electric Superbike',
-    brand: 'Apex Motors EV',
-    celebrity: 'Ajith Kumar',
-    budget: '$250,000',
-    status: 'Ongoing',
-    progress: 40,
-    deadline: '28 Feb 2026',
-    reach: '22.8M Impressions'
+      "id": 202,
+      "title": "Velocity Electric Superbike",
+      "brand": "Apex Motors EV",
+      "celebrity": "Ajith Kumar",
+      "budget": "$250,000",
+      "status": "Ongoing",
+      "progress": 40,
+      "deadline": "28 Feb 2026",
+      "reach": "22.8M Impressions"
   },
   {
-    id: 203,
-    title: 'Global Luxury Chrono Watch',
-    brand: 'Chrono Elite Swiss',
-    celebrity: 'Vijay',
-    budget: '$320,000',
-    status: 'Completed',
-    progress: 100,
-    deadline: '10 Nov 2025',
-    reach: '38.5M Impressions'
+      "id": 203,
+      "title": "Global Luxury Chrono Watch",
+      "brand": "Chrono Elite Swiss",
+      "celebrity": "Vijay",
+      "budget": "$320,000",
+      "status": "Completed",
+      "progress": 100,
+      "deadline": "10 Nov 2025",
+      "reach": "38.5M Impressions"
   },
   {
-    id: 204,
-    title: 'Monsoon Pure Aqua Campaign',
-    brand: 'AquaPure Beverages',
-    celebrity: 'Suriya',
-    budget: '$180,000',
-    status: 'Planned',
-    progress: 20,
-    deadline: '20 Mar 2026',
-    reach: '11.0M Impressions'
+      "id": 204,
+      "title": "Monsoon Pure Aqua Campaign",
+      "brand": "AquaPure Beverages",
+      "celebrity": "Suriya",
+      "budget": "$180,000",
+      "status": "Planned",
+      "progress": 20,
+      "deadline": "20 Mar 2026",
+      "reach": "11.0M Impressions"
   },
   {
-    id: 205,
-    title: 'Sound of Thunder World Tour',
-    brand: 'SonicMaster Global',
-    celebrity: 'Anirudh Ravichander',
-    budget: '$350,000',
-    status: 'Ongoing',
-    progress: 80,
-    deadline: '30 Dec 2025',
-    reach: '45.0M Impressions'
+      "id": 205,
+      "title": "Sound of Thunder World Tour",
+      "brand": "SonicMaster Global",
+      "celebrity": "Anirudh Ravichander",
+      "budget": "$350,000",
+      "status": "Ongoing",
+      "progress": 80,
+      "deadline": "30 Dec 2025",
+      "reach": "45.0M Impressions"
+  },
+  {
+      "id": 206,
+      "title": "Royal Heritage Jewelry Gala",
+      "brand": "Tanishq Imperial Jewels",
+      "celebrity": "Trisha",
+      "budget": "$210,000",
+      "status": "Ongoing",
+      "progress": 75,
+      "deadline": "18 Apr 2026",
+      "reach": "18.6M Impressions"
+  },
+  {
+      "id": 207,
+      "title": "Urban Streetwear & Denim Campaign",
+      "brand": "Leviathan Denim Works",
+      "celebrity": "Dhanush",
+      "budget": "$195,000",
+      "status": "Planned",
+      "progress": 15,
+      "deadline": "10 May 2026",
+      "reach": "16.4M Impressions"
+  },
+  {
+      "id": 208,
+      "title": "Glow Botanical Skincare Series",
+      "brand": "Kiehl’s Apothecary Naturals",
+      "celebrity": "Samantha Ruth Prabhu",
+      "budget": "$275,000",
+      "status": "Ongoing",
+      "progress": 55,
+      "deadline": "25 Mar 2026",
+      "reach": "24.1M Impressions"
+  },
+  {
+      "id": 209,
+      "title": "Titanium Ultra Smartphone Pro",
+      "brand": "NovaTech Global Electronics",
+      "celebrity": "Vijay",
+      "budget": "$420,000",
+      "status": "Planned",
+      "progress": 10,
+      "deadline": "12 Jun 2026",
+      "reach": "52.0M Impressions"
+  },
+  {
+      "id": 210,
+      "title": "Signature Perfume & Fragrance Ad",
+      "brand": "Maison De Luxe Paris",
+      "celebrity": "Nayanthara",
+      "budget": "$230,000",
+      "status": "Completed",
+      "progress": 100,
+      "deadline": "05 Jan 2026",
+      "reach": "31.5M Impressions"
   }
 ];
 
@@ -308,60 +364,284 @@ export const initialContracts = [
 
 export const initialManagers = [
   {
-    id: 1,
-    name: 'John Doe',
-    role: 'Senior VP of Talent',
-    title: 'Senior VP of Talent',
-    agency: 'Elite Talent Management',
-    email: 'john.doe@celebrityagency.com',
-    phone: '+1-555-0199',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Vijay', 'Anirudh Ravichander'],
-    assignedCelebrities: ['Vijay', 'Anirudh Ravichander'],
-    status: 'Active'
+      "id": 1,
+      "name": "John Doe",
+      "role": "Senior VP of Talent",
+      "title": "Senior VP of Talent",
+      "agency": "Elite Talent Management",
+      "email": "john.doe@celebrityagency.com",
+      "phone": "+1-555-0199",
+      "photo": "/images/managers/1.jpg",
+      "avatar": "/images/managers/1.jpg",
+      "representedTalents": [
+          "Vijay",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
   },
   {
-    id: 2,
-    name: 'Sarah Jenkins',
-    role: 'Director of Brand Endorsements',
-    title: 'Director of Brand Endorsements',
-    agency: 'Global Talent & Media',
-    email: 'sarah.j@globaltalent.com',
-    phone: '+1-555-0245',
-    photo: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Nayanthara', 'Trisha'],
-    assignedCelebrities: ['Nayanthara', 'Trisha'],
-    status: 'Active'
+      "id": 2,
+      "name": "Sarah Jenkins",
+      "role": "Director of Brand Endorsements",
+      "title": "Director of Brand Endorsements",
+      "agency": "Global Talent & Media",
+      "email": "sarah.j@globaltalent.com",
+      "phone": "+1-555-0245",
+      "photo": "/images/managers/2.jpg",
+      "avatar": "/images/managers/2.jpg",
+      "representedTalents": [
+          "Nayanthara",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Trisha"
+      ],
+      "status": "Active"
   },
   {
-    id: 3,
-    name: 'Vikram Rathore',
-    role: 'Executive Talent Producer',
-    title: 'Executive Talent Producer',
-    agency: 'Apex Studio Representations',
-    email: 'vikram.r@apexstudio.in',
-    phone: '+91 98200 45678',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Ajith Kumar', 'Suriya'],
-    assignedCelebrities: ['Ajith Kumar', 'Suriya'],
-    status: 'Active'
+      "id": 3,
+      "name": "Vikram Rathore",
+      "role": "Executive Talent Producer",
+      "title": "Executive Talent Producer",
+      "agency": "Apex Studio Representations",
+      "email": "vikram.r@apexstudio.in",
+      "phone": "+91 98200 45678",
+      "photo": "/images/managers/3.jpg",
+      "avatar": "/images/managers/3.jpg",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Suriya"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Suriya"
+      ],
+      "status": "Active"
   },
   {
-    id: 4,
-    name: 'Priya Sunder',
-    role: 'Casting & Contract Relations Head',
-    title: 'Casting & Contract Relations Head',
-    agency: 'Zenve Talent Network',
-    email: 'priya.s@zenvetalent.com',
-    phone: '+91 98450 11223',
-    photo: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80',
-    representedTalents: ['Dhanush', 'Samantha Ruth Prabhu'],
-    assignedCelebrities: ['Dhanush', 'Samantha Ruth Prabhu'],
-    status: 'Active'
+      "id": 4,
+      "name": "Priya Sunder",
+      "role": "Casting & Contract Relations Head",
+      "title": "Casting & Contract Relations Head",
+      "agency": "Zenve Talent Network",
+      "email": "priya.s@zenvetalent.com",
+      "phone": "+91 98450 11223",
+      "photo": "/images/managers/4.jpg",
+      "avatar": "/images/managers/4.jpg",
+      "representedTalents": [
+          "Dhanush",
+          "Samantha Ruth Prabhu"
+      ],
+      "assignedCelebrities": [
+          "Dhanush",
+          "Samantha Ruth Prabhu"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 5,
+      "name": "Arjun Verma",
+      "role": "VP of Brand Alliances & Partnerships",
+      "title": "VP of Brand Alliances & Partnerships",
+      "agency": "Apex Studio Representations",
+      "email": "arjun.v@apexstudio.in",
+      "phone": "+91 98201 55670",
+      "photo": "/images/managers/5.jpg",
+      "avatar": "/images/managers/5.jpg",
+      "representedTalents": [
+          "Vijay",
+          "Suriya"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Suriya"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 6,
+      "name": "Ananya Sen",
+      "role": "Head of Artist Endorsements & OTT",
+      "title": "Head of Artist Endorsements & OTT",
+      "agency": "Global Talent & Media",
+      "email": "ananya.sen@globaltalent.in",
+      "phone": "+91 98112 33445",
+      "photo": "/images/managers/6.jpg",
+      "avatar": "/images/managers/6.jpg",
+      "representedTalents": [
+          "Nayanthara",
+          "Samantha Ruth Prabhu"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Samantha Ruth Prabhu"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 7,
+      "name": "Rohan Mehta",
+      "role": "Executive Director of Talent Booking",
+      "title": "Executive Director of Talent Booking",
+      "agency": "Elite Talent Management",
+      "email": "rohan.m@elitetalent.com",
+      "phone": "+91 22 2640 9911",
+      "photo": "/images/managers/7.jpg",
+      "avatar": "/images/managers/7.jpg",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 8,
+      "name": "Meera Nambiar",
+      "role": "Music & Performing Arts Liaison",
+      "title": "Music & Performing Arts Liaison",
+      "agency": "Zenve Talent Network",
+      "email": "meera.n@zenvetalent.com",
+      "phone": "+91 80 4123 8899",
+      "photo": "/images/managers/8.jpg",
+      "avatar": "/images/managers/8.jpg",
+      "representedTalents": [
+          "Anirudh Ravichander",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Anirudh Ravichander",
+          "Trisha"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 9,
+      "name": "Kavita Krishnan",
+      "role": "Chief Casting Director & Talent Strategist",
+      "title": "Chief Casting Director & Talent Strategist",
+      "agency": "Elite Talent Management",
+      "email": "kavita.k@elitetalent.com",
+      "phone": "+91 22 2640 7722",
+      "photo": "/images/managers/9.jpg",
+      "avatar": "/images/managers/9.jpg",
+      "representedTalents": [
+          "Vijay",
+          "Trisha"
+      ],
+      "assignedCelebrities": [
+          "Vijay",
+          "Trisha"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 10,
+      "name": "Devendra Singhania",
+      "role": "Global Commercial Brand Agent",
+      "title": "Global Commercial Brand Agent",
+      "agency": "Apex Studio Representations",
+      "email": "devendra.s@apexstudio.in",
+      "phone": "+91 98203 88990",
+      "photo": "/images/managers/10.jpg",
+      "avatar": "/images/managers/10.jpg",
+      "representedTalents": [
+          "Suriya",
+          "Dhanush"
+      ],
+      "assignedCelebrities": [
+          "Suriya",
+          "Dhanush"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 11,
+      "name": "Tara Alagappan",
+      "role": "International Media & PR Director",
+      "title": "International Media & PR Director",
+      "agency": "Global Talent & Media",
+      "email": "tara.a@globaltalent.in",
+      "phone": "+91 44 2811 7700",
+      "photo": "/images/managers/11.jpg",
+      "avatar": "/images/managers/11.jpg",
+      "representedTalents": [
+          "Nayanthara",
+          "Ajith Kumar"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Ajith Kumar"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 12,
+      "name": "Karthik Sundaram",
+      "role": "Digital Influencer & OTT Contract Head",
+      "title": "Digital Influencer & OTT Contract Head",
+      "agency": "Zenve Talent Network",
+      "email": "karthik.s@zenvetalent.com",
+      "phone": "+91 80 4123 9933",
+      "photo": "/images/managers/12.jpg",
+      "avatar": "/images/managers/12.jpg",
+      "representedTalents": [
+          "Samantha Ruth Prabhu",
+          "Anirudh Ravichander"
+      ],
+      "assignedCelebrities": [
+          "Samantha Ruth Prabhu",
+          "Anirudh Ravichander"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 13,
+      "name": "Rhea Chawla",
+      "role": "Senior VP of Endorsement Strategy",
+      "title": "Senior VP of Endorsement Strategy",
+      "agency": "Elite Talent Management",
+      "email": "rhea.c@elitetalent.com",
+      "phone": "+91 22 2640 4455",
+      "photo": "/images/managers/13.jpg",
+      "avatar": "/images/managers/13.jpg",
+      "representedTalents": [
+          "Nayanthara",
+          "Vijay"
+      ],
+      "assignedCelebrities": [
+          "Nayanthara",
+          "Vijay"
+      ],
+      "status": "Active"
+  },
+  {
+      "id": 14,
+      "name": "Siddharth Roy",
+      "role": "Lead Production Coordinator & Talent Escort",
+      "title": "Lead Production Coordinator & Talent Escort",
+      "agency": "Apex Studio Representations",
+      "email": "siddharth.r@apexstudio.in",
+      "phone": "+91 98205 66778",
+      "photo": "/images/managers/14.jpg",
+      "avatar": "/images/managers/14.jpg",
+      "representedTalents": [
+          "Ajith Kumar",
+          "Dhanush"
+      ],
+      "assignedCelebrities": [
+          "Ajith Kumar",
+          "Dhanush"
+      ],
+      "status": "Active"
   }
 ];
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { useCrm } from '../context/CrmContext';
 import { Building2, Plus, MapPin, Users, Globe, Phone, Mail } from 'lucide-react';
 
+const DEFAULT_AGENCY_IMAGE = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80';
+
 export default function Agencies() {
   const { addToast } = useCrm();
 
@@ -16,7 +18,8 @@ export default function Agencies() {
       website: 'www.elitetalent.com',
       email: 'partners@elitetalent.com',
       phone: '+91 22 2640 8899',
-      status: 'Verified Partner'
+      status: 'Verified Partner',
+      image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80'
     },
     {
       id: 2,
@@ -28,7 +31,8 @@ export default function Agencies() {
       website: 'www.globaltalent.in',
       email: 'contact@globaltalent.in',
       phone: '+91 44 2811 5566',
-      status: 'Verified Partner'
+      status: 'Verified Partner',
+      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80'
     },
     {
       id: 3,
@@ -40,7 +44,8 @@ export default function Agencies() {
       website: 'www.apexstudio.in',
       email: 'connect@apexstudio.in',
       phone: '+91 40 2355 4433',
-      status: 'Premium Partner'
+      status: 'Premium Partner',
+      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=400&q=80'
     },
     {
       id: 4,
@@ -52,7 +57,8 @@ export default function Agencies() {
       website: 'www.zenvetalent.com',
       email: 'roster@zenvetalent.com',
       phone: '+91 80 4123 7788',
-      status: 'Direct Network'
+      status: 'Direct Network',
+      image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=400&q=80'
     }
   ];
 
@@ -78,19 +84,38 @@ export default function Agencies() {
             <div className="celeb-card-top">
               <div
                 style={{
-                  width: '54px',
-                  height: '54px',
+                  position: 'relative',
+                  width: '58px',
+                  height: '58px',
+                  minWidth: '58px',
+                  minHeight: '58px',
                   borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#ffffff',
-                  fontSize: '1.2rem',
-                  fontWeight: 800
+                  overflow: 'hidden',
+                  flexShrink: 0,
+                  border: '1.5px solid var(--border-medium)',
+                  background: 'var(--bg-secondary, #1e293b)',
+                  boxShadow: 'var(--shadow-sm)'
                 }}
               >
-                <Building2 size={26} />
+                <img
+                  src={agency.image || DEFAULT_AGENCY_IMAGE}
+                  alt={agency.name}
+                  referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
+                  onError={(e) => {
+                    if (!e.target.dataset.fallbackTried) {
+                      e.target.dataset.fallbackTried = 'true';
+                      e.target.src = DEFAULT_AGENCY_IMAGE;
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                  loading="lazy"
+                />
               </div>
               <div className="celeb-card-meta">
                 <h3>{agency.name}</h3>
@@ -149,4 +174,3 @@ export default function Agencies() {
     </div>
   );
 }
-

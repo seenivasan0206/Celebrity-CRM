@@ -1,10 +1,8 @@
 {
   "info": {
     "_postman_id": "c1f78a2e-4d56-4c91-912f-98ab98e9b62c",
-    "name": "Celebrity CRM API",
-    "description": "API collection for Celebrity CRM modules: Authentication, Celebrities, Managers, and Campaigns.\nBase URL: http://localhost:8080",
     "name": "Celebrity CRM API Collection",
-    "description": "API collection for Celebrity CRM backend modules: Campaigns, Managers, Contracts, and Files.\nBase URL: http://localhost:8080",
+    "description": "API collection for Celebrity CRM backend modules: Authentication, Celebrities, Managers, Campaigns, Agencies, Contracts, Files, Shoots, and Reports.\nBase URL: http://localhost:8080",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -785,84 +783,57 @@
       "item": [
         {
           "name": "1. Create Agency",
-          "name": "Contracts",
-          "item": [
-            {
-              "name": "1. Create Contract",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"name\": \"Creative Artists Agency (CAA)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2000\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 10.00,\n  \"description\": \"Global talent and sports agency representing leading actors, musicians, and athletes.\",\n  \"status\": \"ACTIVE\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/agencies",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "agencies"
-                  ]
-                },
-                "description": "Registers a new talent agency. Requires Bearer authentication.""raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2027-10-31\",\n  \"totalValue\": 15000000.00,\n  \"status\": \"DRAFT\",\n  \"terms\": \"Exclusive sports and lifestyle footwear endorsement agreement for 12 months with TVC, OTT, and print rights.\",\n  \"managerId\": 1\n}"
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               },
-              "url": {
-                "raw": "{{baseUrl}}/api/contracts",
-                "host": [
-                  "{{baseUrl}}"
-                ],
-                "path": [
-                  "api",
-                  "contracts"
-                ]
-              },
-              "description": "Creates a new contract. If contractNumber is omitted, a unique one is auto-generated."
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creative Artists Agency (CAA)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2000\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 10.00,\n  \"description\": \"Global talent and sports agency representing leading actors, musicians, and athletes.\",\n  \"status\": \"ACTIVE\"\n}"
             },
-            "response": []
-          },
-          {
-            "name": "2. Get All Agencies",
-            "name": "2. Get All Contracts",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{baseUrl}}/api/agencies",
-                "host": [
-                  "{{baseUrl}}"
-                ],
-                "path": [
-                  "api",
-                  "agencies"
-                ]
-              },
-              "description": "Retrieves all talent agencies (public read-only).""raw": "{{baseUrl}}/api/contracts",
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
-                "contracts"
+                "agencies"
               ]
             },
-            "description": "Retrieves all contracts."
+            "description": "Registers a new talent agency. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Agencies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies"
+              ]
+            },
+            "description": "Retrieves all talent agencies (public read-only)."
           },
           "response": []
         },
         {
           "name": "3. Search Agencies by Name or Country",
-          "name": "3. Filter Contracts By Status",
           "request": {
             "method": "GET",
             "header": [],
@@ -882,245 +853,320 @@
                 }
               ]
             },
-            "description": "Searches agencies by name or country.""raw": "{{baseUrl}}/api/contracts?status=DRAFT",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "contracts"
-            ],
-            "query": [
-              {
-                "key": "status",
-                "value": "DRAFT"
-              }
-            ]
+            "description": "Searches agencies by name or country."
           },
-          "description": "Filter contracts by status: DRAFT, PENDING, ACTIVE, COMPLETED, TERMINATED."
+          "response": []
         },
-        "response": []
-      },
-      {
-        "name": "4. Filter Agencies by Status",
-        "name": "4. Get Contract By ID",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": {
-            "raw": "{{baseUrl}}/api/agencies?status=ACTIVE",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "agencies"
-            ],
-            "raw": "{{baseUrl}}/api/contracts/1",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "contracts",
-              "1"
-            ]
-          },
-          "description": "Retrieves a specific contract by primary ID."
-        },
-        "response": []
-      },
-      {
-        "name": "5. Get Contracts By Celebrity ID",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": {
-            "raw": "{{baseUrl}}/api/contracts/celebrity/1",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "contracts",
-              "celebrity",
-              "1"
-            ]
-          },
-          "description": "Retrieves all contracts associated with a specific celebrity ID."
-        },
-        "response": []
-      },
-      {
-        "name": "6. Update Contract",
-        "request": {
-          "method": "PUT",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement (Renewed)\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2028-10-31\",\n  \"totalValue\": 28000000.00,\n  \"status\": \"ACTIVE\",\n  \"terms\": \"Extended endorsement term for 24 months covering global multi-media rights.\",\n  \"managerId\": 1\n}"
-          },
-          "url": {
-            "raw": "{{baseUrl}}/api/contracts/1",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "contracts",
-              "1"
-            ]
-          },
-          "description": "Updates full contract details."
-        },
-        "response": []
-      },
-      {
-        "name": "7. Quick Update Contract Status",
-        "request": {
-          "method": "PATCH",
-          "header": [],
-          "url": {
-            "raw": "{{baseUrl}}/api/contracts/1/status?status=ACTIVE",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "contracts",
-              "1",
-              "status"
-            ],
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
+        {
+          "name": "4. Filter Agencies by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies?status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies"
+              ],
               "query": [
-              {
-                "key": "status",
-                "value": "ACTIVE"
-              }
-            ]
-          },
-<<<<<<< HEAD
-            "description": "Filters agencies by status (ACTIVE, INACTIVE)."
-=======
-            "description": "Updates the contract status (e.g. DRAFT -> ACTIVE -> COMPLETED)."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-        },
-        "response": []
-      },
-      {
-<<<<<<< HEAD
-          "name": "5. Get Agency By ID",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": {
-            "raw": "{{baseUrl}}/api/agencies/1",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "agencies",
-              "1"
-            ]
-          },
-          "description": "Retrieves specific agency details by primary ID."
-        },
-        "response": []
-      },
-      {
-        "name": "6. Update Agency",
-        "request": {
-          "method": "PUT",
-          "header": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
             },
-            {
-              "key": "Authorization",
-              "value": "Bearer {{token}}"
-            }
-          ],
-          "body": {
-            "mode": "raw",
-            "raw": "{\n  \"name\": \"Creative Artists Agency (CAA Worldwide)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2999\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 12.50,\n  \"description\": \"Expanded worldwide global talent and sports representation agency.\",\n  \"status\": \"ACTIVE\"\n}"
+            "description": "Filters agencies by status (ACTIVE, INACTIVE)."
           },
-          "url": {
-            "raw": "{{baseUrl}}/api/agencies/1",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "agencies",
-              "1"
-            ]
-          },
-          "description": "Updates agency details. Requires Bearer authentication."
+          "response": []
         },
-        "response": []
-      },
-      {
-        "name": "7. Update Agency Status",
-        "request": {
-          "method": "PATCH",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{token}}"
-            }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/api/agencies/1/status?status=INACTIVE",
-            "host": [
-              "{{baseUrl}}"
-            ],
-            "path": [
-              "api",
-              "agencies",
-              "1",
-              "status"
-            ],
-            "query": [
+        {
+          "name": "5. Get Agency By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "1"
+              ]
+            },
+            "description": "Retrieves specific agency details by primary ID."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Agency",
+          "request": {
+            "method": "PUT",
+            "header": [
               {
-                "key": "status",
-                "value": "INACTIVE"
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
-            ]
-          },
-          "description": "Quickly updates the status of an agency."
-        },
-        "response": []
-      },
-      {
-        "name": "8. Delete Agency",
-        "request": {
-          "method": "DELETE",
-          "header": [
-            {
-              "key": "Authorization",
-              "value": "Bearer {{token}}"
-            }
-          ],
-          "url": {
-            "raw": "{{baseUrl}}/api/agencies/1",
-            "host": [
-              "{{baseUrl}}"
             ],
-            "path": [
-              "api",
-              "agencies",
-              "1"
-            ]
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Creative Artists Agency (CAA Worldwide)\",\n  \"email\": \"contact@caa.com\",\n  \"phone\": \"+1-424-288-2999\",\n  \"website\": \"https://www.caa.com\",\n  \"address\": \"2000 Avenue of the Stars, Los Angeles, CA\",\n  \"country\": \"United States\",\n  \"commissionRate\": 12.50,\n  \"description\": \"Expanded worldwide global talent and sports representation agency.\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "1"
+              ]
+            },
+            "description": "Updates agency details. Requires Bearer authentication."
           },
-          "description": "Deletes an agency by ID. Requires Bearer authentication."
-=======
+          "response": []
+        },
+        {
+          "name": "7. Update Agency Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1/status?status=INACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "1",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "INACTIVE"
+                }
+              ]
+            },
+            "description": "Quickly updates the status of an agency."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Agency",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/agencies/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "agencies",
+                "1"
+              ]
+            },
+            "description": "Deletes an agency by ID. Requires Bearer authentication."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contracts",
+      "item": [
+        {
+          "name": "1. Create Contract",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2027-10-31\",\n  \"totalValue\": 15000000.00,\n  \"status\": \"DRAFT\",\n  \"terms\": \"Exclusive sports and lifestyle footwear endorsement agreement for 12 months with TVC, OTT, and print rights.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ]
+            },
+            "description": "Creates a new contract. If contractNumber is omitted, a unique one is auto-generated."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Get All Contracts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ]
+            },
+            "description": "Retrieves all contracts."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Filter Contracts By Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts?status=DRAFT",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "DRAFT"
+                }
+              ]
+            },
+            "description": "Filter contracts by status: DRAFT, PENDING, ACTIVE, COMPLETED, TERMINATED."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get Contract By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1"
+              ]
+            },
+            "description": "Retrieves a specific contract by primary ID."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Contracts By Celebrity ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/celebrity/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "celebrity",
+                "1"
+              ]
+            },
+            "description": "Retrieves all contracts associated with a specific celebrity ID."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Contract",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contractNumber\": \"CNT-2026-001\",\n  \"title\": \"Global Brand Ambassador Agreement (Renewed)\",\n  \"celebrityId\": 1,\n  \"celebrityName\": \"Vijay Deverakonda\",\n  \"clientName\": \"Puma Sports India\",\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2028-10-31\",\n  \"totalValue\": 28000000.00,\n  \"status\": \"ACTIVE\",\n  \"terms\": \"Extended endorsement term for 24 months covering global multi-media rights.\",\n  \"managerId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1"
+              ]
+            },
+            "description": "Updates full contract details."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Quick Update Contract Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/contracts/1/status?status=ACTIVE",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "contracts",
+                "1",
+                "status"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Updates the contract status (e.g. DRAFT -> ACTIVE -> COMPLETED)."
+          },
+          "response": []
+        },
+        {
           "name": "8. Delete Contract",
           "request": {
             "method": "DELETE",
@@ -1137,14 +1183,240 @@
               ]
             },
             "description": "Deletes a contract by ID."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
           },
           "response": []
         }
       ]
     },
     {
-<<<<<<< HEAD
+      "name": "Files",
+      "item": [
+        {
+          "name": "1. Upload File (Stores in DB & Disk)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                },
+                {
+                  "key": "description",
+                  "value": "Official Endorsement Agreement",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "CONTRACT",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/files/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "upload"
+              ]
+            },
+            "description": "Uploads a file, saves to uploads/ directory, and stores record metadata in the MySQL database."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "description",
+                  "value": "Celebrity Portfolio Documents",
+                  "type": "text"
+                },
+                {
+                  "key": "category",
+                  "value": "PORTFOLIO",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/files/upload-multiple",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "upload-multiple"
+              ]
+            },
+            "description": "Uploads multiple files and stores all metadata records in MySQL."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Get All Files (From Database)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files"
+              ]
+            },
+            "description": "Retrieves all file records from MySQL database sorted by newest first."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Get File Record By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "1"
+              ]
+            },
+            "description": "Retrieves metadata of a specific file by its primary key ID in MySQL."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Download File Attachment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/download/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "download",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
+                  "description": "The unique fileName stored in DB"
+                }
+              ]
+            },
+            "description": "Downloads the physical file from the server as an attachment."
+          },
+          "response": []
+        },
+        {
+          "name": "6. View File Inline (Image / PDF Preview)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/view/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "view",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
+                  "description": "The unique fileName stored in DB"
+                }
+              ]
+            },
+            "description": "Streams file inline for frontend image preview or PDF view in browser."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Delete File by FileName",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/:fileName",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                ":fileName"
+              ],
+              "variable": [
+                {
+                  "key": "fileName",
+                  "value": "f02323a0-1e85-4000-b890-24d64d251cf8.xml",
+                  "description": "The unique fileName to delete"
+                }
+              ]
+            },
+            "description": "Deletes the file from disk and its metadata row from the MySQL database (HTTP 204)."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete File by Database ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/files/id/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "files",
+                "id",
+                "1"
+              ]
+            },
+            "description": "Deletes the file from disk and database by its database primary ID (HTTP 204)."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "Shoots",
       "item": [
         {
@@ -1224,445 +1496,572 @@
               ]
             },
             "description": "Filters shoots by type (PHOTOSHOOT, COMMERCIAL, MOVIE, OTT) and status."
-=======
-      "name": "Files",
-            "item": [
-              {
-                "name": "1. Upload Single File",
-                "request": {
-                  "method": "POST",
-                  "header": [],
-                  "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                      {
-                        "key": "file",
-                        "type": "file",
-                        "src": ""
-                      }
-                    ]
-                  },
-                  "url": {
-                    "raw": "{{baseUrl}}/api/files/upload",
-                    "host": [
-                      "{{baseUrl}}"
-                    ],
-                    "path": [
-                      "api",
-                      "files",
-                      "upload"
-                    ]
-                  },
-                  "description": "Uploads a single file (image, PDF, contract, headshot, document). In Postman, select 'form-data', key 'file' of type File, and choose a file from your computer."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-                },
-                "response": []
-              },
-              {
-<<<<<<< HEAD
-          "name": "4. Get Shoot By ID",
-=======
-          "name": "2. Upload Multiple Files",
-                "request": {
-                  "method": "POST",
-                  "header": [],
-                  "body": {
-                    "mode": "formdata",
-                    "formdata": [
-                      {
-                        "key": "files",
-                        "type": "file",
-                        "src": []
-                      }
-                    ]
-                  },
-                  "url": {
-                    "raw": "{{baseUrl}}/api/files/upload-multiple",
-                    "host": [
-                      "{{baseUrl}}"
-                    ],
-                    "path": [
-                      "api",
-                      "files",
-                      "upload-multiple"
-                    ]
-                  },
-                  "description": "Uploads multiple files at once. Key is 'files' of type File."
-                },
-                "response": []
-              },
-              {
-                "name": "3. Get All Files List",
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-          "request": {
-                  "method": "GET",
-                  "header": [],
-                  "url": {
-<<<<<<< HEAD
-              "raw": "{{baseUrl}}/api/shoots/1",
-                    "host": [
-                      "{{baseUrl}}"
-                    ],
-                    "path": [
-                      "api",
-                      "shoots",
-                      "1"
-                    ]
-                  },
-                  "description": "Retrieves shoot details by ID."
-=======
-              "raw": "{{baseUrl}}/api/files",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "files"
-                  ]
-                },
-                "description": "Retrieves the list of all uploaded files with their download URIs and sizes."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-              },
-              "response": []
-            },
-            {
-<<<<<<< HEAD
-          "name": "5. Get Shoots By Celebrity ID",
-=======
-          "name": "4. Download File",
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-          "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-<<<<<<< HEAD
-              "raw": "{{baseUrl}}/api/shoots/celebrity/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "shoots",
-                    "celebrity",
-                    "1"
-                  ]
-                },
-                "description": "Retrieves all shoots for a specific celebrity."
-=======
-              "raw": "{{baseUrl}}/api/files/download/:fileName",
-                "host": [
-                  "{{baseUrl}}"
-                ],
-                "path": [
-                  "api",
-                  "files",
-                  "download",
-                  ":fileName"
-                ],
-                "variable": [
-                  {
-                    "key": "fileName",
-                    "value": "your-file-name-here.pdf",
-                    "description": "The unique fileName returned from upload response"
-                  }
-                ]
-              },
-              "description": "Downloads the specified file as an attachment."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-            },
-            "response": []
           },
-          {
-<<<<<<< HEAD
-          "name": "6. Update Shoot",
-            "request": {
-              "method": "PUT",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                },
-                {
-                  "key": "Authorization",
-                  "value": "Bearer {{token}}"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"title\": \"Vogue India Cover Shoot 2026 - Extended\",\n  \"shootType\": \"PHOTOSHOOT\",\n  \"location\": \"Film City Studio 3 & Outdoor Garden, Mumbai\",\n  \"shootDate\": \"2026-11-15\",\n  \"startTime\": \"08:30:00\",\n  \"endTime\": \"19:00:00\",\n  \"budget\": 95000.00,\n  \"status\": \"SCHEDULED\",\n  \"notes\": \"Extended full day shoot including cover and inside spreads.\",\n  \"celebrityId\": 1,\n  \"campaignId\": 1\n}"
-              },
-              "url": {
-                "raw": "{{baseUrl}}/api/shoots/1",
-                "host": [
-                  "{{baseUrl}}"
-                ],
-                "path": [
-                  "api",
-                  "shoots",
-                  "1"
-                ]
-              },
-              "description": "Updates full details of a shoot. Requires Bearer authentication."
-=======
-          "name": "5. View File Inline",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/files/view/:fileName",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "files",
-                    "view",
-                    ":fileName"
-                  ],
-                  "variable": [
-                    {
-                      "key": "fileName",
-                      "value": "your-file-name-here.jpg",
-                      "description": "The unique fileName returned from upload response"
-                    }
-                  ]
-                },
-                "description": "Views/streams the file inline (ideal for rendering images, avatars, or PDF previews in frontend)."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-              },
-              "response": []
-            },
-            {
-<<<<<<< HEAD
-          "name": "7. Update Shoot Status",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"status\": \"COMPLETED\"\n}"
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/shoots/1/status",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "shoots",
-                    "1",
-                    "status"
-                  ]
-                },
-                "description": "Updates shoot status (SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED). Can also pass ?status=COMPLETED in query string."
-              },
-              "response": []
-            },
-            {
-              "name": "8. Delete Shoot",
-              "request": {
-                "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{baseUrl}}/api/shoots/1",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "shoots",
-                    "1"
-                  ]
-                },
-                "description": "Deletes a shoot by ID. Requires Bearer authentication."
-              },
-              "response": []
-            }
-          ]
+          "response": []
         },
         {
-          "name": "Reports",
-          "item": [
-            {
-              "name": "1. Dashboard Overview Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/dashboard",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "dashboard"
-                  ]
-                },
-                "description": "Provides unified dashboard analytics: total counts, active entities, budgets, upcoming shoots."
-              },
-              "response": []
+          "name": "4. Get Shoot By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shoots",
+                "1"
+              ]
             },
-            {
-              "name": "2. Celebrity Analytics Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/celebrities",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "celebrities"
-                  ]
-                },
-                "description": "Celebrity statistics: category breakdown, status breakdown, total followers, average fee."
-              },
-              "response": []
+            "description": "Retrieves shoot details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Get Shoots By Celebrity ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/celebrity/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shoots",
+                "celebrity",
+                "1"
+              ]
             },
-            {
-              "name": "3. Agency Analytics Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/agencies",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "agencies"
-                  ]
-                },
-                "description": "Agency statistics: active counts, country breakdown, average commission rate."
+            "description": "Retrieves all shoots for a specific celebrity."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Update Shoot",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
               },
-              "response": []
-            },
-            {
-              "name": "4. Campaign Analytics Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/campaigns",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "campaigns"
-                  ]
-                },
-                "description": "Campaign statistics: status breakdown, total budget, average budget."
-              },
-              "response": []
-            },
-            {
-              "name": "5. Shoot Analytics Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/shoots",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "shoots"
-                  ]
-                },
-                "description": "Shoot statistics: status breakdown, shoot type breakdown, total budget."
-              },
-              "response": []
-            },
-            {
-              "name": "6. Contract Analytics Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/contracts",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "contracts"
-                  ]
-                },
-                "description": "Contract and commercial agreements statistics: total value, status breakdown."
-              },
-              "response": []
-            },
-            {
-              "name": "7. OTT Projects Report",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/reports/ott-projects",
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "path": [
-                    "api",
-                    "reports",
-                    "ott-projects"
-                  ]
-                },
-                "description": "OTT media and streaming projects report: platform breakdown, status, budget."
-=======
-          "name": "6. Delete File",
-                "request": {
-                  "method": "DELETE",
-                  "header": [],
-                  "url": {
-                    "raw": "{{baseUrl}}/api/files/:fileName",
-                    "host": [
-                      "{{baseUrl}}"
-                    ],
-                    "path": [
-                      "api",
-                      "files",
-                      ":fileName"
-                    ],
-                    "variable": [
-                      {
-                        "key": "fileName",
-                        "value": "your-file-name-here.pdf",
-                        "description": "The unique fileName to delete"
-                      }
-                    ]
-                  },
-                  "description": "Permanently deletes the file from the uploads directory."
->>>>>>> f53722ec11e997ac8adbe1be4dea8d72007d3fe7
-                },
-                "response": []
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
               }
-            ]
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Vogue India Cover Shoot 2026 - Extended\",\n  \"shootType\": \"PHOTOSHOOT\",\n  \"location\": \"Film City Studio 3 & Outdoor Garden, Mumbai\",\n  \"shootDate\": \"2026-11-15\",\n  \"startTime\": \"08:30:00\",\n  \"endTime\": \"19:00:00\",\n  \"budget\": 95000.00,\n  \"status\": \"SCHEDULED\",\n  \"notes\": \"Extended full day shoot including cover and inside spreads.\",\n  \"celebrityId\": 1,\n  \"campaignId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shoots",
+                "1"
+              ]
+            },
+            "description": "Updates full details of a shoot. Requires Bearer authentication."
+          },
+          "response": []
+        },
+        {
+          "name": "7. Update Shoot Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shoots",
+                "1",
+                "status"
+              ]
+            },
+            "description": "Updates shoot status (SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED). Can also pass ?status=COMPLETED in query string."
+          },
+          "response": []
+        },
+        {
+          "name": "8. Delete Shoot",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/shoots/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shoots",
+                "1"
+              ]
+            },
+            "description": "Deletes a shoot by ID. Requires Bearer authentication."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "1. Dashboard Overview Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "dashboard"
+              ]
+            },
+            "description": "Provides unified dashboard analytics: total counts, active entities, budgets, upcoming shoots."
+          },
+          "response": []
+        },
+        {
+          "name": "2. Celebrity Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/celebrities",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "celebrities"
+              ]
+            },
+            "description": "Celebrity statistics: category breakdown, status breakdown, total followers, average fee."
+          },
+          "response": []
+        },
+        {
+          "name": "3. Agency Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/agencies",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "agencies"
+              ]
+            },
+            "description": "Agency statistics: active counts, country breakdown, average commission rate."
+          },
+          "response": []
+        },
+        {
+          "name": "4. Campaign Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/campaigns",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "campaigns"
+              ]
+            },
+            "description": "Campaign statistics: status breakdown, total budget, average budget."
+          },
+          "response": []
+        },
+        {
+          "name": "5. Shoot Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/shoots",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "shoots"
+              ]
+            },
+            "description": "Shoot statistics: status breakdown, shoot type breakdown, total budget."
+          },
+          "response": []
+        },
+        {
+          "name": "6. Contract Analytics Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/contracts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "contracts"
+              ]
+            },
+            "description": "Contract and commercial agreements statistics: total value, status breakdown."
+          },
+          "response": []
+        },
+        {
+          "name": "7. OTT Projects Report",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/reports/ott-projects",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "reports",
+                "ott-projects"
+              ]
+            },
+            "description": "OTT media and streaming projects report: platform breakdown, status, budget."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Settings & Preferences",
+      "item": [
+        {
+          "name": "1. Get Overview Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings"
+              ]
+            },
+            "description": "Retrieve complete portal settings summary across profile, theme, notifications, and subscription."
           }
-        ]
-      }
+        },
+        {
+          "name": "2. Get Executive Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "profile"
+              ]
+            },
+            "description": "Retrieve current executive user profile and agency details."
+          }
+        },
+        {
+          "name": "3. Update Executive Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"System Administrator\",\n  \"name\": \"System Administrator\",\n  \"email\": \"admin@zenvecrm.io\",\n  \"role\": \"ROLE_ADMIN\",\n  \"agencyName\": \"Zenve Global Entertainment\",\n  \"agency\": \"Zenve Global Entertainment\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/profile",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "profile"
+              ]
+            },
+            "description": "Update executive profile details including name, email, role, and agency affiliation."
+          }
+        },
+        {
+          "name": "4. Get Theme & Display Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/theme",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "theme"
+              ]
+            },
+            "description": "Retrieve current UI theme preference (DARK_LUXE or LIGHT_FROST)."
+          }
+        },
+        {
+          "name": "5. Update Theme & Display Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"DARK_LUXE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/theme",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "theme"
+              ]
+            },
+            "description": "Update UI theme preference (accepts DARK_LUXE or LIGHT_FROST)."
+          }
+        },
+        {
+          "name": "6. Get Notification Preferences",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "notifications"
+              ]
+            },
+            "description": "Retrieve alerts and notification preferences."
+          }
+        },
+        {
+          "name": "7. Update Notification Preferences",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shootScheduleReminders\": true,\n  \"contractMilestoneAlerts\": true,\n  \"campaignProgressReports\": true,\n  \"castingCallSubmissions\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "notifications"
+              ]
+            },
+            "description": "Update alerts and notification triggers for shoots, contracts, campaigns, and castings."
+          }
+        },
+        {
+          "name": "8. Update Security Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"admin123\",\n  \"newPassword\": \"newSecurePassword456!\",\n  \"confirmPassword\": \"newSecurePassword456!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "password"
+              ]
+            },
+            "description": "Change user account security password with verification."
+          }
+        },
+        {
+          "name": "9. Get Subscription Tier",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/subscription",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "subscription"
+              ]
+            },
+            "description": "Retrieve enterprise CRM license, plan name, active status, and renewal date."
+          }
+        },
+        {
+          "name": "10. Upgrade / Update Subscription Tier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planName\": \"VIP Platinum Enterprise\",\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/settings/subscription",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "settings",
+                "subscription"
+              ]
+            },
+            "description": "Upgrade or update enterprise subscription license plan tier."
+          }
+        }
+      ]
+    }
+  ]
+}
