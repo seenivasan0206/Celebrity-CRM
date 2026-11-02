@@ -367,10 +367,10 @@ export default function Managers() {
         }
 
         .manager-filter-pill-btn.active {
-          background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
           color: #ffffff;
           border: 1px solid #f59e0b;
-          box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
         }
 
         /* Search Box */
@@ -707,9 +707,22 @@ export default function Managers() {
           gap: 12px;
         }
 
+        .managers-page-wrapper .btn-primary,
         .manager-invite-btn {
+          background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+          border-color: #f59e0b !important;
           border: 1px solid #f59e0b !important;
-          box-shadow: 0 2px 10px rgba(245, 158, 11, 0.25);
+          color: #ffffff !important;
+          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+          transition: all 0.2s ease;
+        }
+
+        .managers-page-wrapper .btn-primary:hover,
+        .manager-invite-btn:hover {
+          background: #d97706 !important;
+          border-color: #d97706 !important;
+          box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+          transform: translateY(-1px);
         }
       `}</style>
 
