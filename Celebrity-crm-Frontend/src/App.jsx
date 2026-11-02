@@ -57,6 +57,7 @@ export default function App() {
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="shoots" element={<Shoots />} />
               <Route path="ott-projects" element={<OttProjects />} />
+              <Route path="ott" element={<OttProjects />} />
               <Route path="casting" element={<CastingCalls />} />
               <Route path="applications" element={<Applications />} />
               <Route path="files" element={<Files />} />
