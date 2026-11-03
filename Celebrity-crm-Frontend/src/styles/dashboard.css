@@ -11,6 +11,322 @@
   margin: 0 auto;
 }
 
+/* ========================================================
+   DASHBOARD HERO BANNER (LIGHT & DARK THEME ADAPTIVE)
+   ======================================================== */
+.dashboard-hero-banner {
+  position: relative;
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  min-height: 190px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+/* Elegant luminous accent line along top edge */
+.dashboard-hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 35%, #8b5cf6 70%, #ec4899 100%);
+  z-index: 4;
+}
+
+/* Hero Banner Background — Hover scale completely removed per requirement */
+.hero-banner-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+/* Default / Dark Theme Overlay (Vivid negative space on left, crystal clear right) */
+.hero-banner-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(
+    90deg,
+    rgba(11, 15, 23, 0.94) 0%,
+    rgba(11, 15, 23, 0.82) 32%,
+    rgba(11, 15, 23, 0.38) 58%,
+    rgba(11, 15, 23, 0.08) 82%,
+    rgba(11, 15, 23, 0.0) 100%
+  );
+  pointer-events: none;
+}
+
+/* Light Theme Adaptive Overlay — Adjusted so celebrity image is vibrant & 100% visible */
+[data-theme="light"] .hero-banner-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 250, 252, 0.94) 0%,
+    rgba(248, 250, 252, 0.80) 30%,
+    rgba(248, 250, 252, 0.35) 55%,
+    rgba(248, 250, 252, 0.06) 80%,
+    rgba(248, 250, 252, 0.0) 100%
+  );
+}
+
+[data-theme="light"] .hero-banner-bg {
+  filter: contrast(1.08) saturate(1.15) brightness(1.02);
+  opacity: 1;
+}
+
+.hero-banner-content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.hero-banner-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 660px;
+}
+
+.hero-banner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  width: fit-content;
+}
+
+.hero-live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: #10b981;
+  display: inline-block;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: heroPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+@keyframes heroPulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.hero-tag-sparkle {
+  color: var(--primary);
+}
+
+.hero-tag-status {
+  font-size: 0.62rem;
+  padding: 1px 6px;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-left: 2px;
+}
+
+.hero-banner-title {
+  font-family: var(--font-display);
+  font-size: 1.62rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.hero-wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  transition: transform 0.2s ease;
+}
+
+.hero-banner-title:hover .hero-wave {
+  transform: rotate(14deg);
+}
+
+.hero-banner-subtitle {
+  color: var(--text-muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.hero-num-badge {
+  color: var(--text-main);
+  font-weight: 700;
+  background: var(--primary-subtle);
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--primary-border);
+  font-feature-settings: "tnum";
+}
+
+.hero-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.hero-btn-primary {
+  padding: 8px 18px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35) !important;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast) !important;
+}
+
+.hero-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(59, 130, 246, 0.45) !important;
+}
+
+.hero-btn-secondary {
+  padding: 8px 18px !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  border-radius: var(--radius-md) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform var(--transition-fast), background var(--transition-fast) !important;
+}
+
+.hero-btn-secondary:hover {
+  transform: translateY(-1px);
+}
+
+.hero-banner-right-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.hero-stat-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  min-width: 125px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+[data-theme="light"] .hero-stat-pill {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(226, 232, 240, 0.95);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="dark"] .hero-stat-pill,
+:root:not([data-theme="light"]) .hero-stat-pill {
+  background: rgba(18, 24, 38, 0.78);
+  border-color: rgba(100, 116, 139, 0.28);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.hero-stat-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.hero-stat-pill-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hero-stat-pill-icon.stars {
+  background: rgba(245, 158, 11, 0.14);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.hero-stat-pill-icon.shoots {
+  background: rgba(59, 130, 246, 0.14);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.hero-stat-pill-icon.deals {
+  background: rgba(16, 185, 129, 0.14);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.hero-stat-pill-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-stat-num {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-family: var(--font-display);
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.hero-stat-lbl {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+@media (max-width: 960px) {
+  .hero-banner-right-badges {
+    display: none;
+  }
+  .hero-banner-content {
+    padding: 18px 20px;
+  }
+}
+
+
 /* Greeting Section */
 .dashboard-greeting {
   display: flex;

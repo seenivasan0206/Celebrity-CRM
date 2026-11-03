@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useCrm } from '../context/CrmContext';
 import {
   LayoutDashboard,
   Users,
@@ -25,17 +24,16 @@ import {
 
 export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
   const { user, openLogoutModal } = useAuth();
-  const { celebrities, shoots, campaigns, contracts, managers } = useCrm();
   const navigate = useNavigate();
 
   const navItems = [
     { label: 'Dashboard', path: '/', icon: LayoutDashboard },
-    { label: 'Celebrities', path: '/celebrities', icon: Users, badge: (celebrities || []).length },
-    { label: 'Managers', path: '/managers', icon: UserCheck, badge: (managers || []).length },
+    { label: 'Celebrities', path: '/celebrities', icon: Users },
+    { label: 'Managers', path: '/managers', icon: UserCheck },
     { label: 'Agencies', path: '/agencies', icon: Building2 },
-    { label: 'Contracts', path: '/contracts', icon: FileText, badge: (contracts || []).length },
-    { label: 'Campaigns', path: '/campaigns', icon: Megaphone, badge: (campaigns || []).length },
-    { label: 'Shoots', path: '/shoots', icon: Camera, badge: (shoots || []).length },
+    { label: 'Contracts', path: '/contracts', icon: FileText },
+    { label: 'Campaigns', path: '/campaigns', icon: Megaphone },
+    { label: 'Shoots', path: '/shoots', icon: Camera },
     { label: 'OTT Projects', path: '/ott-projects', icon: Tv },
     { label: 'Casting Calls', path: '/casting', icon: Sparkles },
     { label: 'Applications', path: '/applications', icon: Inbox },
@@ -109,9 +107,6 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
               >
                 <Icon size={18} className="nav-icon-only" />
                 <span>{item.label}</span>
-                {item.badge !== undefined && !collapsed && (
-                  <span className="nav-badge">{item.badge}</span>
-                )}
               </NavLink>
             );
           })}
