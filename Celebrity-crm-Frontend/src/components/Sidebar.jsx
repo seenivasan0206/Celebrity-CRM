@@ -18,9 +18,9 @@ import {
   Crown,
   ChevronRight,
   LogOut,
-  Star,
   X
 } from 'lucide-react';
+import logoImg from '../assets/loopstreamx-logo.png';
 
 export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
   const { user, openLogoutModal } = useAuth();
@@ -62,12 +62,10 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
 
       <aside className={`crm-sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-header">
-          <Link to="/" className="brand-wrapper" onClick={handleNavClick}>
-            <div className="brand-icon">
-              <Star size={20} fill="#ffffff" />
-            </div>
+          <Link to="/" className="brand-wrapper" onClick={handleNavClick} title="Loop Stream X">
+            <img src={logoImg} alt="Loop Stream X" className="brand-logo-img" />
             <div className="brand-title">
-              <h1>Zenve CRM</h1>
+              <h1>Loop Stream X</h1>
               <span>Talent Portal</span>
             </div>
           </Link>
