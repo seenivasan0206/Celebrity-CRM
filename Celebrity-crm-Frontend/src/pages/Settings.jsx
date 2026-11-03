@@ -8,6 +8,9 @@ export default function Settings() {
   const { user, updateProfile, theme, toggleTheme } = useAuth();
   const { addToast } = useCrm();
 
+  const userRole = (user?.role || '').toUpperCase();
+  const isAdmin = userRole === 'ROLE_ADMIN' || userRole === 'ADMIN';
+
   const [activeTab, setActiveTab] = useState('profile');
 
   // Profile Form state
@@ -83,21 +86,23 @@ export default function Settings() {
 
   const handleSaveProfile = async (e) => {
     e.preventDefault();
+    const effectiveRole = isAdmin ? profileData.role : (user?.role || profileData.role);
+    const updatedPayload = {
+      fullName: profileData.name,
+      email: profileData.email,
+      agencyName: profileData.agency,
+      role: effectiveRole
+    };
     try {
-      await api.settings.updateProfile({
-        fullName: profileData.name,
-        email: profileData.email,
-        agencyName: profileData.agency,
-        role: profileData.role
-      });
+      await api.settings.updateProfile(updatedPayload);
       if (updateProfile) {
-        updateProfile(profileData);
+        updateProfile({ ...profileData, role: effectiveRole });
       }
       addToast('Profile information successfully saved to backend database!', 'success');
     } catch (err) {
       console.warn('Backend update failed:', err.message);
       if (updateProfile) {
-        updateProfile(profileData);
+        updateProfile({ ...profileData, role: effectiveRole });
       }
       addToast('Profile information saved locally!', 'info');
     }
@@ -247,12 +252,22 @@ export default function Settings() {
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Executive Role</label>
+                    <label className="form-label" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span>Executive Role</span>
+                      {!isAdmin && (
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          <Lock size={11} /> Locked by Administrator
+                        </span>
+                      )}
+                    </label>
                     <input
                       type="text"
                       className="zenve-input"
                       value={profileData.role}
-                      onChange={(e) => setProfileData({ ...profileData, role: e.target.value })}
+                      disabled={!isAdmin}
+                      readOnly={!isAdmin}
+                      style={!isAdmin ? { opacity: 0.75, cursor: 'not-allowed', background: 'var(--bg-card-alt)' } : {}}
+                      onChange={(e) => isAdmin && setProfileData({ ...profileData, role: e.target.value })}
                     />
                   </div>
 

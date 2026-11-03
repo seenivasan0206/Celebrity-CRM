@@ -17,7 +17,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 export default function Header({ toggleSidebar }) {
-  const { user, logout, theme, toggleTheme } = useAuth();
+  const { user, openLogoutModal, theme, toggleTheme } = useAuth();
   const { searchQuery, setSearchQuery, notifications, markAllNotificationsRead } = useCrm();
   const navigate = useNavigate();
 
@@ -63,9 +63,15 @@ export default function Header({ toggleSidebar }) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const formatRole = (role) => {
+    if (!role) return 'Administrator';
+    const clean = role.replace(/^ROLE_/, '').replace(/_/g, ' ');
+    return clean.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+  };
+
   const handleLogout = () => {
-    logout();
-    navigate('/login');
+    setShowUserMenu(false);
+    openLogoutModal();
   };
 
   return (
@@ -185,7 +191,7 @@ export default function Header({ toggleSidebar }) {
             </div>
             <div className="user-meta-header">
               <span className="user-name-header">{user?.name || 'Admin'}</span>
-              <span className="user-role-header">{user?.role || 'Administrator'}</span>
+              <span className="user-role-header">{formatRole(user?.role)}</span>
             </div>
             <ChevronDown size={14} color="var(--text-dim)" />
           </button>

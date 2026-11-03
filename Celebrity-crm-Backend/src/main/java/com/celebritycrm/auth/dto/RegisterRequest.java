@@ -1,11 +1,13 @@
 package com.celebritycrm.auth.dto;
 
 import com.celebritycrm.user.entity.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RegisterRequest {
 
     @NotBlank(message = "Username is required")
@@ -23,6 +25,8 @@ public class RegisterRequest {
 
     @Size(max = 150, message = "Full name must not exceed 150 characters")
     private String fullName;
+
+    private String agency;
 
     private Role role = Role.ROLE_USER;
 
@@ -77,8 +81,16 @@ public class RegisterRequest {
         this.fullName = fullName;
     }
 
+    public String getAgency() {
+        return agency;
+    }
+
+    public void setAgency(String agency) {
+        this.agency = agency;
+    }
+
     public Role getRole() {
-        return role;
+        return role != null ? role : Role.ROLE_USER;
     }
 
     public void setRole(Role role) {
@@ -91,16 +103,23 @@ public class RegisterRequest {
             this.role = Role.ROLE_USER;
             return;
         }
-        String normalized = roleStr.trim().toUpperCase();
+        String clean = roleStr.trim().toUpperCase().replace(" ", "_");
         try {
-            this.role = Role.valueOf(normalized);
+            this.role = Role.valueOf(clean);
         } catch (IllegalArgumentException e1) {
             try {
-                this.role = Role.valueOf("ROLE_" + normalized);
+                this.role = Role.valueOf("ROLE_" + clean);
             } catch (IllegalArgumentException e2) {
-                this.role = Role.ROLE_USER;
+                if (clean.contains("ADMIN") || clean.contains("PARTNER")) {
+                    this.role = Role.ROLE_ADMIN;
+                } else if (clean.contains("MANAGER") || clean.contains("HEAD") || clean.contains("PRODUCER")) {
+                    this.role = Role.ROLE_MANAGER;
+                } else if (clean.contains("CASTING")) {
+                    this.role = Role.ROLE_CASTING_DIRECTOR;
+                } else {
+                    this.role = Role.ROLE_USER;
+                }
             }
         }
     }
 }
-

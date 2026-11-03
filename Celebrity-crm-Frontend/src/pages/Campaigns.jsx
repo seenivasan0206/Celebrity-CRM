@@ -1,12 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCrm } from '../context/CrmContext';
-import { Megaphone, Calendar, TrendingUp, Plus, Edit2, Check, X } from 'lucide-react';
+import {
+  Megaphone,
+  Calendar,
+  TrendingUp,
+  Plus,
+  Edit2,
+  Check,
+  X,
+  DollarSign,
+  User,
+  ShieldCheck,
+  Trash2,
+  Video
+} from 'lucide-react';
 
 export default function Campaigns() {
-  const { campaigns, setActiveModal, updateCampaignDeadline, addToast } = useCrm();
+  const {
+    campaigns,
+    openModal,
+    setActiveModal,
+    updateCampaignDeadline,
+    updateCampaignStatus,
+    deleteCampaign,
+    addToast
+  } = useCrm();
 
   const [editingId, setEditingId] = useState(null);
   const [tempDate, setTempDate] = useState('');
+  const [selectedCampaign, setSelectedCampaign] = useState(null);
+
+  // Lock body scroll and prevent background shifting when modal is open
+  useEffect(() => {
+    if (selectedCampaign) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPaddingRight = document.body.style.paddingRight;
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+      document.body.style.overflow = 'hidden';
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.paddingRight = originalPaddingRight;
+      };
+    }
+  }, [selectedCampaign]);
 
   // Helper to parse '15 Jan 2026' into 'YYYY-MM-DD' for date picker
   const toDateInputValue = (dateStr) => {
@@ -55,17 +96,9 @@ export default function Campaigns() {
     const formatted = formatTargetDate(tempDate);
     if (updateCampaignDeadline) {
       updateCampaignDeadline(campId, formatted);
-    } else {
-      try {
-        const saved = localStorage.getItem('zenve_campaigns');
-        if (saved) {
-          const list = JSON.parse(saved);
-          const updated = list.map((c) => (c.id === campId ? { ...c, deadline: formatted } : c));
-          localStorage.setItem('zenve_campaigns', JSON.stringify(updated));
-        }
-      } catch (err) {
-        console.error(err);
-      }
+    }
+    if (selectedCampaign && selectedCampaign.id === campId) {
+      setSelectedCampaign((prev) => ({ ...prev, deadline: formatted }));
     }
     if (addToast) {
       addToast(`Target date updated to "${formatted}"`, 'success');
@@ -77,13 +110,16 @@ export default function Campaigns() {
     <div>
       <div className="page-header-row">
         <div>
-          <h2>Brand Campaigns & Endorsements</h2>
+          <h2>Brand Campaigns & Endorsements ({(campaigns || []).length})</h2>
           <p>Track active commercial contracts, milestones, and deliverable execution</p>
         </div>
         <button
           type="button"
           className="btn-primary"
-          onClick={() => setActiveModal && setActiveModal('createCampaign')}
+          onClick={() => {
+            if (openModal) openModal('createCampaign');
+            else if (setActiveModal) setActiveModal('createCampaign');
+          }}
         >
           <Plus size={16} /> New Campaign
         </button>
@@ -95,7 +131,13 @@ export default function Campaigns() {
             <div className="campaign-card-header">
               <div>
                 <span className="campaign-brand-tag">{camp.brand}</span>
-                <h3>{camp.title}</h3>
+                <h3
+                  onClick={() => setSelectedCampaign(camp)}
+                  style={{ cursor: 'pointer' }}
+                  title="Click to view campaign dossier"
+                >
+                  {camp.title}
+                </h3>
               </div>
               <span className={`badge ${camp.status === 'Completed' ? 'badge-accent' : 'badge-primary'}`}>
                 {camp.status}
@@ -104,23 +146,29 @@ export default function Campaigns() {
 
             <div className="campaign-talent-pill">
               <span style={{ color: 'var(--text-dim)' }}>Star:</span>
-              <span>{camp.celebrity}</span>
+              <span style={{ fontWeight: 600 }}>{camp.celebrity}</span>
             </div>
 
             <div className="campaign-progress-bar-wrap">
               <div className="progress-header">
                 <span>Deliverables Progress</span>
-                <span>{camp.progress}%</span>
+                <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>{camp.progress}%</span>
               </div>
               <div className="progress-track">
-                <div className="progress-fill" style={{ width: `${camp.progress}%` }} />
+                <div
+                  className="progress-fill"
+                  style={{
+                    width: `${camp.progress}%`,
+                    background: camp.progress === 100 ? 'var(--accent)' : 'var(--primary)'
+                  }}
+                />
               </div>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <TrendingUp size={14} color="var(--primary)" />
-                <span>Estimated Reach: <strong>{camp.reach}</strong></span>
+                <span>Estimated Reach: <strong>{camp.reach || '12.5M Impressions'}</strong></span>
               </div>
 
               {/* Target Date with Inline Edit Option */}
@@ -213,18 +261,179 @@ export default function Campaigns() {
                 <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>Campaign Budget</span>
                 <span className="campaign-budget">{camp.budget}</span>
               </div>
-              <button
-                type="button"
-                className="btn-secondary"
-                style={{ padding: '6px 12px', fontSize: '0.76rem' }}
-                onClick={() => setActiveModal && setActiveModal('scheduleShoot')}
-              >
-                Book Shoot
-              </button>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ padding: '6px 10px', fontSize: '0.76rem' }}
+                  onClick={() => setSelectedCampaign(camp)}
+                >
+                  View Details
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  style={{ padding: '6px 12px', fontSize: '0.76rem' }}
+                  onClick={() => {
+                    if (openModal) openModal('scheduleShoot', { celebrity: camp.celebrity });
+                    else if (setActiveModal) setActiveModal('scheduleShoot');
+                  }}
+                >
+                  Book Shoot
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
+
+      {/* ========================================================
+          CAMPAIGN DETAILS & PROGRESS DOSSIER POP-UP MODAL
+          ======================================================== */}
+      {selectedCampaign && (
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedCampaign(null)}
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div
+            className="modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            style={{ maxWidth: '580px', overscrollBehavior: 'contain' }}
+          >
+            <div className="modal-header">
+              <div className="modal-title-wrap">
+                <div className="modal-icon-badge">
+                  <Megaphone size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0 }}>{selectedCampaign.title}</h3>
+                  <p style={{ margin: '2px 0 0' }}>Brand Client: {selectedCampaign.brand}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setSelectedCampaign(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {/* 3-Stat Metric Strip */}
+              <div className="agency-stats-strip">
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--accent)' }}>{selectedCampaign.budget}</strong>
+                  <span>Campaign Budget</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--primary)' }}>{selectedCampaign.celebrity}</strong>
+                  <span>Celebrity Star</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong>{selectedCampaign.deadline || '2026-12-31'}</strong>
+                  <span>Target Date</span>
+                </div>
+              </div>
+
+              {/* Progress Stepper Card */}
+              <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '14px', border: '1px solid var(--border-subtle)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--text-main)', textTransform: 'uppercase' }}>
+                    Deliverables Milestone Execution
+                  </span>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--accent)' }}>
+                    {selectedCampaign.progress}% Done
+                  </span>
+                </div>
+                <div className="progress-track" style={{ height: '7px', marginBottom: '12px' }}>
+                  <div
+                    className="progress-fill"
+                    style={{
+                      width: `${selectedCampaign.progress}%`,
+                      background: selectedCampaign.progress === 100 ? 'var(--accent)' : 'var(--primary)'
+                    }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                    <TrendingUp size={14} color="var(--primary)" />
+                    <span>Projected Exposure: <strong>{selectedCampaign.reach || '14.2M Impressions'}</strong></span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ fontSize: '0.74rem', color: 'var(--text-dim)' }}>Status:</span>
+                    <select
+                      className="zenve-select"
+                      style={{ padding: '3px 8px', fontSize: '0.74rem', width: 'auto' }}
+                      value={selectedCampaign.status}
+                      onChange={(e) => {
+                        const newStatus = e.target.value;
+                        updateCampaignStatus && updateCampaignStatus(selectedCampaign.id, newStatus);
+                        setSelectedCampaign((prev) => ({ ...prev, status: newStatus }));
+                      }}
+                    >
+                      <option value="Ongoing">Ongoing</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Planned">Planned</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Endorsement Scope */}
+              <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '14px', border: '1px solid var(--border-subtle)' }}>
+                <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Campaign Deliverables Scope
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                  <li>Main TV Commercial (TVC) & Pan-India OTT Broadcast Stills</li>
+                  <li>Social Media Brand Ambassador Posts & Product Launch Keynotes</li>
+                  <li>VIP Launch Appearance with Press Conference Attendance</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="modal-footer" style={{ padding: '14px 22px', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{ color: '#EF4444' }}
+                onClick={() => {
+                  deleteCampaign && deleteCampaign(selectedCampaign.id);
+                  setSelectedCampaign(null);
+                }}
+              >
+                <Trash2 size={13} /> Remove Campaign
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setSelectedCampaign(null)}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => {
+                    const celeb = selectedCampaign.celebrity;
+                    setSelectedCampaign(null);
+                    if (openModal) openModal('scheduleShoot', { celebrity: celeb });
+                  }}
+                >
+                  <Video size={13} /> Schedule Shoot
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

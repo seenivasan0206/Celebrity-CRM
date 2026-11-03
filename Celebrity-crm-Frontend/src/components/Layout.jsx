@@ -7,6 +7,7 @@ import AddCelebrityModal from './Modals/AddCelebrityModal';
 import CreateCampaignModal from './Modals/CreateCampaignModal';
 import CreateContractModal from './Modals/CreateContractModal';
 import ScheduleShootModal from './Modals/ScheduleShootModal';
+import LogoutFeedbackModal from './Modals/LogoutFeedbackModal';
 
 export default function Layout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -48,6 +49,7 @@ export default function Layout() {
       <CreateCampaignModal />
       <CreateContractModal />
       <ScheduleShootModal />
+      <LogoutFeedbackModal />
 
       {/* Floating Toast Alerts */}
       <Toast />

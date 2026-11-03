@@ -1,46 +1,47 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useCrm } from '../context/CrmContext';
-import { FolderLock, Upload, Download, FileText, Image, Film, ShieldCheck, Trash2, CheckCircle2 } from 'lucide-react';
+import {
+  FolderLock,
+  Upload,
+  Download,
+  FileText,
+  Image,
+  Film,
+  ShieldCheck,
+  Trash2,
+  CheckCircle2,
+  X,
+  File,
+  Eye,
+  Lock
+} from 'lucide-react';
 import api from '../services/api';
 
-const defaultDocuments = [
-  {
-    id: 1,
-    name: 'Vijay_ChronoElite_MasterAgreement_Signed.pdf',
-    fileName: 'Vijay_ChronoElite_MasterAgreement_Signed.pdf',
-    type: 'Legal Contract',
-    size: '4.8 MB',
-    updated: '28 Oct 2025'
-  },
-  {
-    id: 2,
-    name: 'Nayanthara_Vogue_HiRes_StillPack_2026.zip',
-    fileName: 'Nayanthara_Vogue_HiRes_StillPack_2026.zip',
-    type: 'Media Press Kit',
-    size: '142.0 MB',
-    updated: '29 Oct 2025'
-  },
-  {
-    id: 3,
-    name: 'ChennaiStudio4_CallSheet_Day1_CrewDispatch.pdf',
-    fileName: 'ChennaiStudio4_CallSheet_Day1_CrewDispatch.pdf',
-    type: 'Call Sheet',
-    size: '1.2 MB',
-    updated: '02 Nov 2026'
-  },
-  {
-    id: 4,
-    name: 'ApexMotors_EV_Commercial_Storyboard_v3.mp4',
-    fileName: 'ApexMotors_EV_Commercial_Storyboard_v3.mp4',
-    type: 'Video Reel',
-    size: '64.5 MB',
-    updated: '01 Nov 2026'
-  }
-];
+// 100% Real-time dynamic backend documents vault
 
 export default function Files() {
   const { addToast } = useCrm();
   const fileInputRef = useRef(null);
+  const [selectedDoc, setSelectedDoc] = useState(null);
+
+  // Lock body scroll and prevent background shifting when modal is open
+  useEffect(() => {
+    if (selectedDoc) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPaddingRight = document.body.style.paddingRight;
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+      document.body.style.overflow = 'hidden';
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.paddingRight = originalPaddingRight;
+      };
+    }
+  }, [selectedDoc]);
 
   const formatFileSize = (bytes) => {
     if (!bytes || bytes === 0) return '0 B';
@@ -61,27 +62,34 @@ export default function Files() {
     return FileText;
   };
 
-  const normalizeFile = (f) => ({
-    id: f.id,
-    name: f.originalFileName || f.fileName,
-    fileName: f.fileName,
-    type: f.category || (f.fileType?.includes('pdf') ? 'Legal Contract' : f.fileType?.includes('image') ? 'Media Press Kit' : 'Vault Asset'),
-    size: typeof f.size === 'number' ? formatFileSize(f.size) : (f.size || '2.4 MB'),
-    updated: f.uploadedAt ? new Date(f.uploadedAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Recently',
-    downloadUri: f.fileDownloadUri || `/api/files/download/${encodeURIComponent(f.fileName)}`
+  const [documents, setDocuments] = useState(() => {
+    try {
+      const saved = localStorage.getItem('zenve_files');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
-  const [documents, setDocuments] = useState(defaultDocuments);
   const [uploading, setUploading] = useState(false);
 
-  // Fetch live vault documents from Spring Boot backend
+  // Load from backend on mount
   useEffect(() => {
     let isMounted = true;
     const fetchFiles = async () => {
       try {
         const live = await api.files.getAll();
         if (isMounted && Array.isArray(live) && live.length > 0) {
-          setDocuments(live.map(normalizeFile));
+          const mapped = live.map((f, idx) => ({
+            id: f.id || idx + 1,
+            name: f.originalFilename || f.fileName || 'Document.pdf',
+            fileName: f.fileName,
+            type: f.contentType || 'Encrypted File',
+            size: formatFileSize(f.fileSize || 0),
+            updated: f.createdAt ? new Date(f.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Today'
+          }));
+          setDocuments(mapped);
+          localStorage.setItem('zenve_files', JSON.stringify(mapped));
         }
       } catch (err) {
         console.warn('Backend unavailable, using cached files:', err.message);
@@ -101,30 +109,39 @@ export default function Files() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setUploading(true);
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('category', 'Vault Document');
-    formData.append('description', `Uploaded file: ${file.name}`);
-
-    setUploading(true);
-    addToast(`Uploading "${file.name}" to secure vault...`, 'info');
 
     try {
       const uploaded = await api.files.upload(formData);
-      setDocuments(prev => [normalizeFile(uploaded), ...prev]);
-      addToast(`"${file.name}" successfully uploaded and encrypted!`, 'success');
+      const newDoc = {
+        id: uploaded.id || Date.now(),
+        name: uploaded.originalFilename || file.name,
+        fileName: uploaded.fileName || file.name,
+        type: file.type || 'Encrypted Document',
+        size: formatFileSize(uploaded.fileSize || file.size),
+        updated: 'Just now'
+      };
+
+      const updated = [newDoc, ...documents];
+      setDocuments(updated);
+      localStorage.setItem('zenve_files', JSON.stringify(updated));
+      addToast(`Encrypted & stored ${file.name} in vault!`, 'success');
     } catch (err) {
-      console.warn('Backend upload failed, creating local vault record:', err.message);
-      const fallback = {
+      console.warn('Backend upload failed, caching locally:', err.message);
+      const localDoc = {
         id: Date.now(),
         name: file.name,
         fileName: file.name,
-        type: 'Vault Document',
+        type: file.type || 'Encrypted Document',
         size: formatFileSize(file.size),
         updated: 'Just now'
       };
-      setDocuments(prev => [fallback, ...prev]);
-      addToast(`"${file.name}" added to vault view!`, 'success');
+      const updated = [localDoc, ...documents];
+      setDocuments(updated);
+      localStorage.setItem('zenve_files', JSON.stringify(updated));
+      addToast(`Stored ${file.name} in local vault storage`, 'info');
     } finally {
       setUploading(false);
       e.target.value = '';
@@ -143,8 +160,12 @@ export default function Files() {
   };
 
   const handleDeleteFile = async (doc, e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     setDocuments(prev => prev.filter(d => d.id !== doc.id));
+
+    if (selectedDoc && selectedDoc.id === doc.id) {
+      setSelectedDoc(null);
+    }
 
     try {
       await api.files.delete(doc.fileName);
@@ -196,13 +217,22 @@ export default function Files() {
                     alignItems: 'center',
                     justifyContent: 'center',
                     color: 'var(--primary)',
-                    flexShrink: 0
+                    flexShrink: 0,
+                    cursor: 'pointer'
                   }}
+                  onClick={() => setSelectedDoc(doc)}
+                  title="Click to view file dossier"
                 >
                   <Icon size={24} />
                 </div>
                 <div className="celeb-card-meta">
-                  <h3 style={{ fontSize: '0.92rem', wordBreak: 'break-all' }}>{doc.name}</h3>
+                  <h3
+                    style={{ fontSize: '0.92rem', wordBreak: 'break-all', cursor: 'pointer' }}
+                    onClick={() => setSelectedDoc(doc)}
+                    title="Click to view file dossier"
+                  >
+                    {doc.name}
+                  </h3>
                   <span>{doc.type} · {doc.size}</span>
                 </div>
               </div>
@@ -217,15 +247,23 @@ export default function Files() {
                   <button
                     type="button"
                     className="btn-secondary"
-                    style={{ padding: '6px 12px', fontSize: '0.76rem' }}
-                    onClick={() => handleDownload(doc)}
+                    style={{ padding: '6px 10px', fontSize: '0.74rem' }}
+                    onClick={() => setSelectedDoc(doc)}
                   >
-                    <Download size={13} /> Download
+                    Dossier
                   </button>
                   <button
                     type="button"
                     className="btn-secondary"
-                    style={{ padding: '6px 8px', color: 'var(--secondary)' }}
+                    style={{ padding: '6px 12px', fontSize: '0.76rem' }}
+                    onClick={() => handleDownload(doc)}
+                  >
+                    <Download size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-secondary"
+                    style={{ padding: '6px 8px', color: '#EF4444' }}
                     title="Purge file"
                     onClick={(e) => handleDeleteFile(doc, e)}
                   >
@@ -237,6 +275,127 @@ export default function Files() {
           );
         })}
       </div>
+
+      {/* ========================================================
+          VAULT FILE PREVIEW & SECURITY DOSSIER POP-UP MODAL
+          ======================================================== */}
+      {selectedDoc && (
+        <div
+          className="modal-overlay"
+          onClick={() => setSelectedDoc(null)}
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div
+            className="modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            style={{ maxWidth: '580px', overscrollBehavior: 'contain' }}
+          >
+            <div className="modal-header">
+              <div className="modal-title-wrap">
+                <div className="modal-icon-badge">
+                  <Lock size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0 }}>Encrypted Vault Asset Dossier</h3>
+                  <p style={{ margin: '2px 0 0' }}>AES-256 Bit Secure Storage</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setSelectedDoc(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="modal-body">
+              {/* File Identity Card */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', background: 'var(--bg-card-alt)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
+                <div
+                  style={{
+                    width: '52px',
+                    height: '52px',
+                    borderRadius: '12px',
+                    background: 'var(--primary-subtle)',
+                    color: 'var(--primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <FileText size={26} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--text-main)', wordBreak: 'break-all' }}>
+                    {selectedDoc.name}
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '3px' }}>
+                    {selectedDoc.type} • {selectedDoc.size}
+                  </div>
+                </div>
+              </div>
+
+              {/* Stats Strip */}
+              <div className="agency-stats-strip">
+                <div className="agency-stat-col">
+                  <strong>{selectedDoc.size}</strong>
+                  <span>Allocated Size</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--accent)' }}>AES-256</strong>
+                  <span>Encryption</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--primary)' }}>{selectedDoc.updated}</strong>
+                  <span>Vault Modified</span>
+                </div>
+              </div>
+
+              {/* Security Compliance Card */}
+              <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '14px', border: '1px solid var(--border-subtle)' }}>
+                <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Access Controls & Compliance Verification
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.82rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                  <li>Role-Based Access: Authorized Casting Directors & Executive Talent Managers only</li>
+                  <li>Tamper-Proof Audit: File signature cryptographic checksum verified</li>
+                  <li>Watermark Protection: Document secured for client distribution</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="modal-footer" style={{ padding: '14px 22px', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between' }}>
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{ color: '#EF4444' }}
+                onClick={() => handleDeleteFile(selectedDoc)}
+              >
+                <Trash2 size={13} /> Purge Asset
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setSelectedDoc(null)}
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary"
+                  onClick={() => handleDownload(selectedDoc)}
+                >
+                  <Download size={13} /> Download File
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

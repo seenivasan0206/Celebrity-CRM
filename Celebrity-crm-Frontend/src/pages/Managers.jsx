@@ -17,7 +17,9 @@ import {
   Copy,
   Check,
   Camera,
-  X
+  X,
+  Eye,
+  Lock
 } from 'lucide-react';
 
 export const DEFAULT_MANAGER_PHOTOS = {
@@ -85,7 +87,7 @@ export const resolvePhoto = (mgr) => {
   return getManagerPhoto(mgr?.id || 1);
 };
 
-function ManagerAvatar({ mgr, onAvatarClick }) {
+function ManagerAvatar({ mgr, onAvatarClick, canEdit }) {
   const [photoSrc, setPhotoSrc] = useState(() => resolvePhoto(mgr));
   const [imgFailed, setImgFailed] = useState(false);
 
@@ -115,7 +117,7 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
     <div
       className="manager-photo-wrap"
       onClick={onAvatarClick}
-      title="Click to view or change profile photo"
+      title={canEdit ? 'Click to manage profile photo' : 'Click to view manager dossier'}
     >
       {!imgFailed && photoSrc ? (
         <img
@@ -146,8 +148,17 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
         </div>
       )}
       <div className="manager-photo-hover-overlay">
-        <Camera size={16} />
-        <span>Change</span>
+        {canEdit ? (
+          <>
+            <Camera size={16} />
+            <span>Change</span>
+          </>
+        ) : (
+          <>
+            <Eye size={16} />
+            <span>View</span>
+          </>
+        )}
       </div>
       <span className="manager-online-dot" title="Active Liaison" />
     </div>
@@ -155,15 +166,19 @@ function ManagerAvatar({ mgr, onAvatarClick }) {
 }
 
 export default function Managers() {
-  const { theme } = useAuth();
+  const { user, theme } = useAuth();
   const isLight = theme === 'light';
   const navigate = useNavigate();
+
+  const userRole = (user?.role || '').toUpperCase();
+  const isAdmin = userRole === 'ROLE_ADMIN' || userRole === 'ADMIN';
 
   const {
     managers,
     addToast,
     setSearchQuery: setGlobalSearchQuery,
     updateManagerPhoto,
+    deleteManager,
     addManager
   } = useCrm();
 
@@ -705,13 +720,32 @@ export default function Managers() {
           <h2>Talent Managers & Agency Liaisons ({(managers || []).length})</h2>
           <p>Key agency executives, artist reps, and endorsement agents</p>
         </div>
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={handleInviteLiaison}
-        >
-          <UserPlus size={16} /> Invite Manager
-        </button>
+        {isAdmin ? (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={handleInviteLiaison}
+          >
+            <UserPlus size={16} /> Invite Manager
+          </button>
+        ) : (
+          <div
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 14px',
+              borderRadius: '9999px',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
+              fontSize: '0.74rem',
+              color: 'var(--text-muted)'
+            }}
+          >
+            <Lock size={12} color="var(--primary)" />
+            <span>Directory Managed by Admin</span>
+          </div>
+        )}
       </div>
 
       {/* KPI Metrics Banner */}
@@ -865,6 +899,12 @@ export default function Managers() {
         <div className="managers-cards-grid">
           {filteredManagers.map((mgr) => {
             const talents = mgr.representedTalents || mgr.assignedCelebrities || [];
+            const isSelf = Boolean(
+              (user?.email && mgr?.email && user.email.toLowerCase() === mgr.email.toLowerCase()) ||
+              (user?.name && mgr?.name && user.name.toLowerCase() === mgr.name.toLowerCase()) ||
+              (user?.username && mgr?.email && mgr.email.toLowerCase().includes(user.username.toLowerCase()))
+            );
+            const canEdit = isAdmin || isSelf;
 
             return (
               <div key={mgr.id} className="manager-profile-card">
@@ -873,6 +913,7 @@ export default function Managers() {
                   <div className="manager-card-top">
                     <ManagerAvatar
                       mgr={mgr}
+                      canEdit={canEdit}
                       onAvatarClick={() => {
                         setSelectedManagerForPhoto(mgr);
                         setIsPhotoModalOpen(true);
@@ -881,12 +922,26 @@ export default function Managers() {
 
                     <div className="manager-info-meta">
                       <div className="manager-name-row">
-                        <h3 className="manager-name-text" title={mgr.name}>
+                        <h3 className="manager-name-text" style={{ cursor: "pointer" }} title={`View ${mgr.name}'s profile`} onClick={() => { setSelectedManagerForPhoto(mgr); setIsPhotoModalOpen(true); }}>
                           {mgr.name}
                         </h3>
                         <span className="manager-status-badge">
                           <ShieldCheck size={11} /> ACTIVE
                         </span>
+                        {isSelf && (
+                          <span
+                            style={{
+                              fontSize: '0.64rem',
+                              fontWeight: 700,
+                              color: 'var(--primary)',
+                              background: 'var(--primary-subtle)',
+                              padding: '1px 6px',
+                              borderRadius: '9999px'
+                            }}
+                          >
+                            You
+                          </span>
+                        )}
                       </div>
 
                       <div className="manager-role-text" title={mgr.role || mgr.title}>
@@ -975,7 +1030,7 @@ export default function Managers() {
         existingAgencies={agencies}
       />
 
-      {/* Change Photo Modal */}
+      {/* Change Photo / Dossier Modal */}
       {isPhotoModalOpen && selectedManagerForPhoto && (
         <ChangeManagerPhotoModal
           manager={selectedManagerForPhoto}
@@ -986,10 +1041,12 @@ export default function Managers() {
           }}
           onSavePhoto={(id, newPhotoUrl) => {
             if (updateManagerPhoto) {
-              updateManagerPhoto(id, newPhotoUrl);
+              updateManagerPhoto(id, newPhotoUrl, user);
             }
-            if (addToast) {
-              addToast('Profile photo updated successfully!', 'success');
+          }}
+          onDeleteManager={(id) => {
+            if (deleteManager) {
+              deleteManager(id, user);
             }
           }}
         />

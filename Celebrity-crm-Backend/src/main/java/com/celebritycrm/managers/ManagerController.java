@@ -5,6 +5,7 @@ import com.celebritycrm.managers.dto.ManagerResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class ManagerController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'ROLE_ADMIN') or hasAnyAuthority('ADMIN', 'ROLE_ADMIN')")
     public ResponseEntity<ManagerResponse> createManager(@Valid @RequestBody ManagerRequest request) {
         ManagerResponse response = managerService.createManager(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -36,6 +38,7 @@ public class ManagerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ROLE_ADMIN', 'MANAGER', 'ROLE_MANAGER') or hasAnyAuthority('ADMIN', 'ROLE_ADMIN', 'MANAGER', 'ROLE_MANAGER')")
     public ResponseEntity<ManagerResponse> updateManager(
             @PathVariable Long id,
             @Valid @RequestBody ManagerRequest request) {
@@ -43,6 +46,7 @@ public class ManagerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'ROLE_ADMIN') or hasAnyAuthority('ADMIN', 'ROLE_ADMIN')")
     public ResponseEntity<Void> deleteManager(@PathVariable Long id) {
         managerService.deleteManager(id);
         return ResponseEntity.noContent().build();

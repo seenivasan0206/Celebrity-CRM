@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
-  const { user, logout } = useAuth();
+  const { user, openLogoutModal } = useAuth();
   const { celebrities, shoots, campaigns, contracts, managers } = useCrm();
   const navigate = useNavigate();
 
@@ -142,8 +142,7 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
             className="sidebar-nav-item"
             style={{ width: '100%', justifyContent: collapsed ? 'center' : 'flex-start' }}
             onClick={() => {
-              logout();
-              navigate('/login');
+              openLogoutModal();
               handleNavClick();
             }}
             title={collapsed ? 'Log Out' : undefined}

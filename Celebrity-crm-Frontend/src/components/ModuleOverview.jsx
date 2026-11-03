@@ -4,48 +4,48 @@ import { Users, UserCheck, Building2, FileText, Megaphone, Camera, Tv, Sparkles,
 import { Link } from 'react-router-dom';
 
 export default function ModuleOverview() {
-  const { celebrities, shoots, campaigns, contracts, managers } = useCrm();
+  const { celebrities = [], shoots = [], campaigns = [], contracts = [], managers = [], agencies = [] } = useCrm();
 
   const modules = [
     {
       name: 'Celebrities',
-      count: `${celebrities.length} Total`,
+      count: `${celebrities.length} Roster Stars`,
       link: '/celebrities',
       icon: Users
     },
     {
       name: 'Managers',
-      count: `${managers.length} Total`,
+      count: `${managers.length} Talent Leads`,
       link: '/managers',
       icon: UserCheck
     },
     {
       name: 'Agencies',
-      count: '4 Partnered',
+      count: `${agencies.length} Partner Networks`,
       link: '/agencies',
       icon: Building2
     },
     {
       name: 'Contracts',
-      count: `${contracts.length} Total`,
+      count: `${contracts.length} Legal Accords`,
       link: '/contracts',
       icon: FileText
     },
     {
       name: 'Campaigns',
-      count: `${campaigns.length} Active`,
+      count: `${campaigns.length} Active Deals`,
       link: '/campaigns',
       icon: Megaphone
     },
     {
       name: 'Shoots',
-      count: `${shoots.length} Ongoing`,
+      count: `${shoots.length} Production Calls`,
       link: '/shoots',
       icon: Camera
     },
     {
       name: 'OTT Projects',
-      count: '3 In Production',
+      count: '6 Streaming Slates',
       link: '/ott-projects',
       icon: Tv
     },

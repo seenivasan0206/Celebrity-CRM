@@ -51,3 +51,17 @@ export const getManagerPhoto = (idOrName) => {
   if (MANAGER_PHOTOS_MAP[key]) return MANAGER_PHOTOS_MAP[key];
   return photo1;
 };
+
+export const resolveManagerPhoto = (mgr) => {
+  if (mgr?.photo && (mgr.photo.startsWith('data:') || mgr.photo.startsWith('blob:') || mgr.photo.startsWith('http') || mgr.photo.startsWith('/images/'))) {
+    return mgr.photo;
+  }
+  if (mgr?.id && MANAGER_PHOTOS_MAP[mgr.id]) {
+    return MANAGER_PHOTOS_MAP[mgr.id];
+  }
+  const nameKey = (mgr?.name || '').toLowerCase().trim();
+  if (MANAGER_PHOTOS_MAP[nameKey]) {
+    return MANAGER_PHOTOS_MAP[nameKey];
+  }
+  return getManagerPhoto(mgr?.id || 1);
+};

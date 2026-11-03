@@ -44,7 +44,14 @@ async function request(endpoint, options = {}) {
           msg = details;
         }
       }
-      throw new Error(msg || `Server error (${response.status}: ${response.statusText})`);
+      if (!msg) {
+        if (response.status === 500) {
+          msg = 'Backend server unavailable or encountered an error. Please ensure backend is active on port 8080.';
+        } else {
+          msg = `Request failed with status ${response.status} (${response.statusText})`;
+        }
+      }
+      throw new Error(msg);
     }
     // Return null for 204 No Content
     if (response.status === 204) return null;

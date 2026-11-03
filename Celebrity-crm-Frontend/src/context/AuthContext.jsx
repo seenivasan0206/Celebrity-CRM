@@ -90,12 +90,22 @@ export const AuthProvider = ({ children }) => {
         username = (username + 'user').substring(0, 15);
       }
 
+      // Map role cleanly to Role enum string
+      let mappedRole = 'ROLE_USER';
+      if (role) {
+        const rUpper = role.toUpperCase();
+        if (rUpper.includes('ADMIN') || rUpper.includes('PARTNER')) mappedRole = 'ROLE_ADMIN';
+        else if (rUpper.includes('MANAGER') || rUpper.includes('HEAD') || rUpper.includes('PRODUCER')) mappedRole = 'ROLE_MANAGER';
+        else if (rUpper.includes('CASTING')) mappedRole = 'ROLE_CASTING_DIRECTOR';
+      }
+
       const res = await api.auth.register({
         username,
         email: email.trim().toLowerCase(),
         password,
         fullName: name.trim(),
-        role: role || 'ROLE_USER'
+        role: mappedRole,
+        agency: data.agency || undefined
       });
 
       const token = res.token;
@@ -104,7 +114,7 @@ export const AuthProvider = ({ children }) => {
         username: res.username || username,
         email: res.email || email,
         name: res.fullName || name,
-        role: res.role || 'ROLE_USER',
+        role: res.role || mappedRole,
         agency: data.agency || 'Zenve Talent Agency',
         plan: 'Enterprise Active License',
         avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`
@@ -127,11 +137,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  const openLogoutModal = () => setIsLogoutModalOpen(true);
+  const closeLogoutModal = () => setIsLogoutModalOpen(false);
+
   /**
    * Logout — clears all sessions and tokens
    */
   const logout = () => {
     setUser(null);
+    setIsLogoutModalOpen(false);
     sessionStorage.removeItem('zenve_auth_user');
     localStorage.removeItem('zenve_auth_user');
     sessionStorage.removeItem('zenve_auth_token');
@@ -152,7 +168,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateProfile, theme, toggleTheme }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateProfile, theme, toggleTheme, isLogoutModalOpen, openLogoutModal, closeLogoutModal }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,37 +1,53 @@
 import React, { useState } from 'react';
-import { celebrityStatusData } from '../data/mockData';
+import { useCrm } from '../context/CrmContext';
 import { Trophy } from 'lucide-react';
 
 export default function StatusDonutChart() {
+  const { celebrities = [] } = useCrm();
   const [activeSegment, setActiveSegment] = useState(null);
 
-  const radius = 60;
-  const strokeWidth = 18;
+  const radius = 50;
+  const strokeWidth = 14;
   const circumference = 2 * Math.PI * radius;
-  const totalCount = celebrityStatusData.reduce((acc, curr) => acc + curr.count, 0);
+
+  // Real database calculation from live celebrities list
+  const activeCount = celebrities.filter(c => (c.status || '').toUpperCase() === 'ACTIVE').length;
+  const onHoldCount = celebrities.filter(c => ['ON HOLD', 'ON_HOLD', 'NEGOTIATION'].includes((c.status || '').toUpperCase())).length;
+  const inactiveCount = celebrities.filter(c => (c.status || '').toUpperCase() === 'INACTIVE').length;
+  const pendingCount = Math.max(0, celebrities.length - (activeCount + onHoldCount + inactiveCount));
+
+  const totalCount = celebrities.length || 1;
+
+  const statusItems = [
+    { label: 'Active', count: activeCount },
+    { label: 'On Hold', count: onHoldCount },
+    { label: 'Inactive', count: inactiveCount },
+    { label: 'Pending', count: pendingCount }
+  ];
 
   // Map each status to our clean 5-colour palette
   const statusPalette = {
-    'Active': '#10B981',     // Accent
-    'On Hold': '#3B82F6',    // Primary
-    'Inactive': '#64748B',   // Secondary
-    'Pending': '#94A3B8'     // Muted Secondary
+    'Active': '#10B981',     // Accent (Emerald)
+    'On Hold': '#3B82F6',    // Primary (Blue)
+    'Inactive': '#64748B',   // Secondary (Slate)
+    'Pending': '#94A3B8'     // Muted Slate
   };
 
-  // Calculate SVG stroke offset for each arc
   let accumulatedPercent = 0;
-  const segments = celebrityStatusData.map((item, idx) => {
+  const segments = statusItems.map((item, idx) => {
     const fraction = item.count / totalCount;
     const strokeDasharray = `${fraction * circumference} ${circumference}`;
     const strokeDashoffset = -accumulatedPercent * circumference;
     accumulatedPercent += fraction;
     const color = statusPalette[item.label] || 'var(--secondary)';
+    const pct = totalCount > 0 ? Math.round((item.count / totalCount) * 100) : 0;
 
     return {
       ...item,
       color,
       strokeDasharray,
       strokeDashoffset,
+      percentage: `${pct}%`,
       index: idx
     };
   });
@@ -40,29 +56,30 @@ export default function StatusDonutChart() {
     <div className="crm-card" style={{ flex: 1 }}>
       <div className="analytics-card-header">
         <div className="analytics-card-title">
-          <Trophy size={18} color="var(--primary)" />
+          <Trophy size={16} color="var(--primary)" />
           <span>Celebrity Status</span>
         </div>
       </div>
 
       <div className="donut-card-content">
         <div className="donut-visual-wrap">
-          <svg width="170" height="170" viewBox="0 0 170 170" style={{ transform: 'rotate(-90deg)' }}>
+          <svg width="140" height="140" viewBox="0 0 140 140" style={{ transform: 'rotate(-90deg)' }}>
             <circle
-              cx="85"
-              cy="85"
+              cx="70"
+              cy="70"
               r={radius}
               fill="transparent"
               stroke="var(--bg-card-alt)"
               strokeWidth={strokeWidth}
             />
             {segments.map((seg) => {
+              if (seg.count === 0 && totalCount > 0) return null;
               const isHighlighted = activeSegment === seg.index;
               return (
                 <circle
                   key={seg.label}
-                  cx="85"
-                  cy="85"
+                  cx="70"
+                  cy="70"
                   r={radius}
                   fill="transparent"
                   stroke={seg.color}
@@ -83,7 +100,7 @@ export default function StatusDonutChart() {
           </svg>
 
           <div className="donut-center-metric">
-            <span className="count">{totalCount}</span>
+            <span className="count">{celebrities.length}</span>
             <span className="label">Total</span>
           </div>
         </div>

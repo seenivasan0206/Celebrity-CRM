@@ -1,30 +1,83 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Camera, X, Check, Upload, Link as LinkIcon, Sparkles, RefreshCw } from 'lucide-react';
+import { resolveManagerPhoto } from '../data/managerPhotos';
+import {
+  Camera,
+  X,
+  Check,
+  Upload,
+  Link as LinkIcon,
+  ShieldCheck,
+  Building2,
+  Mail,
+  Phone,
+  Star,
+  Copy,
+  User,
+  RotateCcw,
+  Lock,
+  Eye,
+  Trash2,
+  AlertTriangle
+} from 'lucide-react';
 
-const CURATED_EXECUTIVE_PHOTOS = [
-  { id: 1, label: 'Executive Male (Navy Suit)', url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80' },
-  { id: 2, label: 'Managing Director (Blazer)', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80' },
-  { id: 3, label: 'Creative VP (Studio Portrait)', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-  { id: 4, label: 'Senior Agent (Charcoal)', url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80' },
-  { id: 5, label: 'Head of Endorsements', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80' },
-  { id: 6, label: 'Pan-India Casting Lead', url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80' },
-  { id: 7, label: 'Talent Acquisition VP', url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80' },
-  { id: 8, label: 'Celebrity Publicist', url: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80' }
-];
-
-export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSavePhoto }) {
-  const { theme } = useAuth();
-  const isLight = theme === 'light';
-
-  const [activeTab, setActiveTab] = useState('curated'); // 'curated' | 'upload' | 'url'
-  const [selectedPhoto, setSelectedPhoto] = useState(manager?.photo || CURATED_EXECUTIVE_PHOTOS[0].url);
-  const [customUrl, setCustomUrl] = useState('');
+export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSavePhoto, onDeleteManager }) {
+  const { user, theme } = useAuth();
   const fileInputRef = useRef(null);
+
+  const defaultPhoto = resolveManagerPhoto(manager);
+  const [selectedPhoto, setSelectedPhoto] = useState(defaultPhoto);
+  const [customUrl, setCustomUrl] = useState('');
+  const [isUpdatingPhoto, setIsUpdatingPhoto] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [hasChanged, setHasChanged] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // Role & Ownership Authorization
+  const userRole = (user?.role || '').toUpperCase();
+  const isAdmin = userRole === 'ROLE_ADMIN' || userRole === 'ADMIN';
+  const isSelf = Boolean(
+    (user?.email && manager?.email && user.email.toLowerCase() === manager.email.toLowerCase()) ||
+    (user?.name && manager?.name && user.name.toLowerCase() === manager.name.toLowerCase()) ||
+    (user?.username && manager?.email && manager.email.toLowerCase().includes(user.username.toLowerCase()))
+  );
+  const canEdit = isAdmin || isSelf;
+
+  useEffect(() => {
+    if (manager) {
+      const p = resolveManagerPhoto(manager);
+      setSelectedPhoto(p);
+      setHasChanged(false);
+      setIsUpdatingPhoto(false);
+      setCustomUrl('');
+      setShowDeleteConfirm(false);
+    }
+  }, [manager]);
+
+  // Prevent background scroll
+  useEffect(() => {
+    if (isOpen) {
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isOpen]);
 
   if (!isOpen || !manager) return null;
 
+  const talents = manager.representedTalents || manager.assignedCelebrities || [];
+
   const handleFileUpload = (e) => {
+    if (!canEdit) return;
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -35,278 +88,597 @@ export default function ChangeManagerPhotoModal({ manager, isOpen, onClose, onSa
       reader.onload = (uploadEvent) => {
         const base64Data = uploadEvent.target.result;
         setSelectedPhoto(base64Data);
+        setHasChanged(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
   const handleApplyUrl = () => {
+    if (!canEdit) return;
     if (customUrl.trim()) {
       setSelectedPhoto(customUrl.trim());
+      setHasChanged(true);
       setCustomUrl('');
     }
   };
 
+  const handleResetToDefault = () => {
+    setSelectedPhoto(defaultPhoto);
+    setHasChanged(false);
+    setCustomUrl('');
+  };
+
   const handleSave = () => {
-    onSavePhoto(manager.id, selectedPhoto);
+    if (!canEdit) {
+      alert('Permission Denied: You cannot modify another user\'s profile.');
+      return;
+    }
+    if (onSavePhoto) {
+      onSavePhoto(manager.id, selectedPhoto);
+    }
     onClose();
   };
 
-  const handleResetDefault = () => {
-    const defaultPhoto = CURATED_EXECUTIVE_PHOTOS[0].url;
-    setSelectedPhoto(defaultPhoto);
+  const handleDelete = () => {
+    if (!isAdmin) {
+      alert('Permission Denied: Only administrators can delete manager accounts.');
+      return;
+    }
+    if (onDeleteManager) {
+      onDeleteManager(manager.id);
+    }
+    onClose();
   };
 
+  const handleCopyEmail = (e) => {
+    e.stopPropagation();
+    if (manager.email) {
+      navigator.clipboard.writeText(manager.email);
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 2000);
+    }
+  };
+
+  const initials = (manager.name || 'TM')
+    .split(' ')
+    .filter(Boolean)
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase() || 'TM';
+
   return (
-    <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1000 }}>
-      <div 
+    <div
+      className="modal-overlay"
+      onClick={onClose}
+      style={{
+        zIndex: 1000,
+        overscrollBehavior: 'contain',
+        backdropFilter: 'blur(4px)',
+        WebkitBackdropFilter: 'blur(4px)'
+      }}
+    >
+      <div
         className="modal-dialog"
         onClick={(e) => e.stopPropagation()}
-        style={{ maxWidth: '580px', width: '100%', maxHeight: '90vh' }}
+        style={{
+          maxWidth: '520px',
+          width: '100%',
+          maxHeight: '92vh',
+          overflowY: 'auto',
+          overscrollBehavior: 'contain'
+        }}
       >
-        {/* Header */}
-        <div 
-          className="flex items-center justify-between p-5 border-b"
-          style={{ borderColor: 'var(--border-color)', background: 'var(--bg-card-alt)' }}
+        {/* Modal Header */}
+        <div
+          className="modal-header"
+          style={{
+            padding: '16px 20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            borderBottom: '1px solid var(--border-subtle)'
+          }}
         >
-          <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl flex items-center justify-center"
-              style={{ background: 'var(--c-primary-dim)', color: 'var(--primary)' }}
-            >
-              <Camera size={20} />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>
-                Change Profile Photo
-              </h3>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-dim)' }}>
-                Updating portrait for <span style={{ color: 'var(--primary)', fontWeight: 600 }}>{manager.name}</span> ({manager.agency})
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-1.5 rounded-lg transition-colors"
-            style={{ color: 'var(--text-dim)' }}
-          >
-            <X size={18} />
-          </button>
-        </div>
-
-        {/* Live Preview Bar */}
-        <div 
-          className="p-5 border-b flex items-center gap-4"
-          style={{ borderColor: 'var(--border-color)', background: 'var(--bg-card)' }}
-        >
-          <div 
-            className="relative w-20 h-20 rounded-2xl overflow-hidden border-2 flex-shrink-0"
-            style={{ borderColor: 'var(--primary)', background: 'var(--bg-card-alt)' }}
-          >
-            <img
-              src={selectedPhoto}
-              alt="Preview"
-              className="w-full h-full object-cover"
-              referrerPolicy="no-referrer"
-              crossOrigin="anonymous"
-              onError={(e) => {
-                e.target.src = 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=80';
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div
+              style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                background: 'var(--primary-subtle)',
+                color: 'var(--primary)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
               }}
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <span className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1" style={{ color: 'var(--primary)' }}>
-              <Sparkles size={12} /> Live Preview
-            </span>
-            <p className="text-sm font-bold mt-0.5 truncate" style={{ color: 'var(--text-main)' }}>{manager.name}</p>
-            <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{manager.role || manager.title}</p>
-            <p className="text-[11px] mt-1" style={{ color: 'var(--text-dim)' }}>This portrait will appear on all agency liaison cards.</p>
-          </div>
-        </div>
-
-        {/* Tab Navigation */}
-        <div 
-          className="flex border-b px-5 pt-3 gap-3"
-          style={{ borderColor: 'var(--border-color)', background: 'var(--bg-card-alt)' }}
-        >
-          <button
-            onClick={() => setActiveTab('curated')}
-            className="pb-2.5 text-xs sm:text-sm font-medium border-b-2 transition-colors flex items-center gap-1.5"
-            style={{
-              borderColor: activeTab === 'curated' ? 'var(--primary)' : 'transparent',
-              color: activeTab === 'curated' ? 'var(--primary)' : 'var(--text-muted)'
-            }}
-          >
-            <Sparkles size={14} /> Curated Headshots
-          </button>
-          <button
-            onClick={() => setActiveTab('upload')}
-            className="pb-2.5 text-xs sm:text-sm font-medium border-b-2 transition-colors flex items-center gap-1.5"
-            style={{
-              borderColor: activeTab === 'upload' ? 'var(--primary)' : 'transparent',
-              color: activeTab === 'upload' ? 'var(--primary)' : 'var(--text-muted)'
-            }}
-          >
-            <Upload size={14} /> Upload Device File
-          </button>
-          <button
-            onClick={() => setActiveTab('url')}
-            className="pb-2.5 text-xs sm:text-sm font-medium border-b-2 transition-colors flex items-center gap-1.5"
-            style={{
-              borderColor: activeTab === 'url' ? 'var(--primary)' : 'transparent',
-              color: activeTab === 'url' ? 'var(--primary)' : 'var(--text-muted)'
-            }}
-          >
-            <LinkIcon size={14} /> Image URL
-          </button>
-        </div>
-
-        {/* Tab Content Area */}
-        <div className="p-5 overflow-y-auto flex-1 space-y-4">
-          {activeTab === 'curated' && (
+            >
+              <User size={18} />
+            </div>
             <div>
-              <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
-                Select one of the curated professional headshots optimized for entertainment executives:
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {CURATED_EXECUTIVE_PHOTOS.map((item) => {
-                  const isSelected = selectedPhoto === item.url;
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => setSelectedPhoto(item.url)}
-                      className="group relative rounded-xl overflow-hidden border transition-all text-left aspect-square"
-                      style={{
-                        borderColor: isSelected ? 'var(--primary)' : 'var(--border-color)',
-                        background: 'var(--bg-card-alt)'
-                      }}
-                    >
-                      <img
-                        src={item.url}
-                        alt={item.label}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        referrerPolicy="no-referrer"
-                        crossOrigin="anonymous"
-                      />
-                      {isSelected && (
-                        <div 
-                          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center shadow-md"
-                          style={{ background: 'var(--primary)', color: '#ffffff' }}
-                        >
-                          <Check size={14} />
-                        </div>
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 bg-black/75 p-1.5">
-                        <span className="text-[10px] text-white font-medium block truncate leading-tight">
-                          {item.label}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
+              <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>
+                {canEdit ? 'Manager Profile & Portrait' : 'Manager Profile Dossier'}
+              </h3>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                {canEdit ? (isSelf ? 'Your Account Profile' : 'Administrator Control') : 'Read-Only View • Access Restricted'}
+              </span>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="modal-close-btn"
+            onClick={onClose}
+            style={{ background: 'none', border: 'none', fontSize: '1.4rem', color: 'var(--text-dim)', cursor: 'pointer', lineHeight: 1 }}
+          >
+            &times;
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="modal-body" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          
+          {/* Security Banner if user is not authorized to edit */}
+          {!canEdit && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                background: 'var(--bg-card-alt)',
+                border: '1px solid var(--border-subtle)',
+                fontSize: '0.76rem',
+                color: 'var(--text-muted)'
+              }}
+            >
+              <Lock size={15} color="var(--primary)" style={{ flexShrink: 0 }} />
+              <div>
+                <strong>View-Only Mode:</strong> Signed in as{' '}
+                <span style={{ color: 'var(--text-main)', fontWeight: 600 }}>{user?.name || user?.username || 'User'}</span>{' '}
+                ({user?.role || 'Staff'}). Only <strong>{manager.name}</strong> or an Administrator can modify this profile or delete account records.
               </div>
             </div>
           )}
 
-          {activeTab === 'upload' && (
-            <div className="space-y-4">
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center"
-                style={{
-                  borderColor: 'var(--border-medium)',
-                  background: 'var(--bg-card-alt)'
-                }}
-              >
-                <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-3"
-                  style={{ background: 'var(--c-primary-dim)', color: 'var(--primary)' }}
+          {/* Manager Hero Profile Card */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '18px',
+              padding: '16px',
+              background: 'var(--bg-card-alt)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-subtle)'
+            }}
+          >
+            {/* Manager Avatar / Portrait */}
+            <div style={{ position: 'relative', width: '96px', height: '96px', flexShrink: 0 }}>
+              {selectedPhoto ? (
+                <img
+                  src={selectedPhoto}
+                  alt={manager.name}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '16px',
+                    objectFit: 'cover',
+                    border: '2px solid var(--primary)',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '16px',
+                    background: 'var(--primary-subtle)',
+                    color: 'var(--primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1.6rem',
+                    fontWeight: 800,
+                    border: '2px solid var(--primary)'
+                  }}
                 >
-                  <Upload size={24} />
+                  {initials}
                 </div>
-                <h4 className="text-sm font-bold" style={{ color: 'var(--text-main)' }}>Click to browse your photos</h4>
-                <p className="text-xs mt-1 max-w-xs" style={{ color: 'var(--text-muted)' }}>
-                  Upload high-res PNG, JPG, or WEBP portrait from your computer (up to 5MB).
-                </p>
+              )}
+
+              {/* Photo Change Trigger Badge — ONLY shown if canEdit */}
+              {canEdit && (
                 <button
                   type="button"
-                  className="btn-primary"
-                  style={{ marginTop: '16px', fontSize: '0.78rem', padding: '6px 14px' }}
+                  onClick={() => setIsUpdatingPhoto((prev) => !prev)}
+                  title="Change portrait photo"
+                  style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    right: '-4px',
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    background: 'var(--primary)',
+                    color: '#ffffff',
+                    border: '2px solid var(--bg-card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    boxShadow: 'var(--shadow-sm)'
+                  }}
                 >
-                  Choose File
+                  <Camera size={14} />
                 </button>
+              )}
+            </div>
+
+            {/* Manager Meta Info */}
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>
+                  {manager.name}
+                </h4>
+                <span
+                  style={{
+                    fontSize: '0.66rem',
+                    fontWeight: 700,
+                    color: 'var(--accent)',
+                    background: 'var(--accent-subtle)',
+                    padding: '2px 7px',
+                    borderRadius: 'var(--radius-full)',
+                    border: '1px solid var(--accent-border)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <ShieldCheck size={11} /> ACTIVE
+                </span>
+                {isSelf && (
+                  <span
+                    style={{
+                      fontSize: '0.66rem',
+                      fontWeight: 700,
+                      color: 'var(--primary)',
+                      background: 'var(--primary-subtle)',
+                      padding: '2px 7px',
+                      borderRadius: 'var(--radius-full)'
+                    }}
+                  >
+                    You
+                  </span>
+                )}
+              </div>
+
+              <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--primary)' }}>
+                {manager.role || manager.title || 'Senior VP of Talent'}
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                <Building2 size={13} color="var(--text-dim)" />
+                <span>{manager.agency || 'Zenve Talent Network'}</span>
               </div>
             </div>
-          )}
+          </div>
 
-          {activeTab === 'url' && (
-            <div className="space-y-3">
-              <label className="text-xs font-semibold block" style={{ color: 'var(--text-main)' }}>
-                Direct Image Link (HTTPS)
-              </label>
-              <div className="flex gap-2">
+          {/* Photo Update Section — ONLY accessible when canEdit */}
+          {canEdit && isUpdatingPhoto && (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                padding: '16px',
+                background: 'var(--bg-card)',
+                borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--border-medium)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-main)' }}>
+                  Update Portrait Photo
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsUpdatingPhoto(false)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '0.75rem', cursor: 'pointer' }}
+                >
+                  Cancel
+                </button>
+              </div>
+
+              {/* Upload file from computer */}
+              <div>
                 <input
-                  type="url"
-                  placeholder="https://images.unsplash.com/photo-..."
-                  value={customUrl}
-                  onChange={(e) => setCustomUrl(e.target.value)}
-                  className="zenve-input flex-1"
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  style={{ display: 'none' }}
                 />
                 <button
                   type="button"
+                  className="btn-secondary"
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', padding: '8px 12px', fontSize: '0.8rem' }}
+                >
+                  <Upload size={15} /> Upload Photo from Computer
+                </button>
+              </div>
+
+              {/* Or paste an image URL */}
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+                  <LinkIcon size={14} style={{ position: 'absolute', left: '10px', color: 'var(--text-dim)' }} />
+                  <input
+                    type="url"
+                    placeholder="Or paste direct image URL..."
+                    value={customUrl}
+                    onChange={(e) => setCustomUrl(e.target.value)}
+                    className="zenve-input"
+                    style={{ paddingLeft: '32px', fontSize: '0.8rem', height: '36px' }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn-primary"
                   onClick={handleApplyUrl}
                   disabled={!customUrl.trim()}
-                  className="btn-primary"
-                  style={{ padding: '6px 16px', fontSize: '0.78rem' }}
+                  style={{ padding: '0 14px', fontSize: '0.78rem', height: '36px' }}
                 >
                   Apply
                 </button>
               </div>
-              <p className="text-[11px]" style={{ color: 'var(--text-dim)' }}>
-                Paste any direct image URL. It will instantly preview in the box above.
-              </p>
+
+              {hasChanged && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    type="button"
+                    onClick={handleResetToDefault}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-dim)', fontSize: '0.72rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                  >
+                    <RotateCcw size={12} /> Reset to original
+                  </button>
+                </div>
+              )}
             </div>
           )}
+
+          {/* Contact Details */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <span style={{ fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)' }}>
+              Direct Contact
+            </span>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '9px 12px',
+                  background: 'var(--bg-card-alt)',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--border-subtle)',
+                  fontSize: '0.8rem'
+                }}
+              >
+                <a
+                  href={`mailto:${manager.email}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  title="Send email"
+                >
+                  <Mail size={14} color="var(--primary)" />
+                  <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{manager.email}</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={handleCopyEmail}
+                  title="Copy email"
+                  style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }}
+                >
+                  {copiedEmail ? <Check size={13} color="var(--accent)" /> : <Copy size={13} />}
+                </button>
+              </div>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '9px 12px',
+                  background: 'var(--bg-card-alt)',
+                  borderRadius: 'var(--radius-sm)',
+                  border: '1px solid var(--border-subtle)',
+                  fontSize: '0.8rem'
+                }}
+              >
+                <a
+                  href={`tel:${manager.phone}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-main)', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
+                  title="Call manager"
+                >
+                  <Phone size={14} color="var(--accent)" />
+                  <span>{manager.phone}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Represented Talents */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '0.74rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-dim)' }}>
+                Represented Talents
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--primary)', fontWeight: 600 }}>
+                {talents.length} Assigned Stars
+              </span>
+            </div>
+
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {talents.length > 0 ? (
+                talents.map((celebName) => (
+                  <span
+                    key={celebName}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      padding: '4px 10px',
+                      background: 'var(--bg-card-alt)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.76rem',
+                      fontWeight: 600,
+                      color: 'var(--text-main)'
+                    }}
+                  >
+                    <Star size={11} fill="var(--primary)" color="var(--primary)" />
+                    {celebName}
+                  </span>
+                ))
+              ) : (
+                <span style={{ fontSize: '0.76rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                  No talents currently assigned.
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Admin-only Danger Zone for deleting/deactivating manager */}
+          {isAdmin && (
+            <div
+              style={{
+                marginTop: '10px',
+                padding: '12px 14px',
+                borderRadius: '8px',
+                background: 'rgba(239, 68, 68, 0.05)',
+                border: '1px solid rgba(239, 68, 68, 0.2)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--danger)', fontSize: '0.76rem', fontWeight: 700 }}>
+                  <AlertTriangle size={14} />
+                  <span>Administrator Privilege: Manager Account Management</span>
+                </div>
+                {!showDeleteConfirm ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    style={{
+                      background: 'none',
+                      border: '1px solid var(--danger)',
+                      color: 'var(--danger)',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}
+                  >
+                    <Trash2 size={12} /> Remove Manager
+                  </button>
+                ) : (
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={handleDelete}
+                      style={{
+                        background: 'var(--danger)',
+                        border: 'none',
+                        color: '#fff',
+                        padding: '4px 10px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Confirm Delete
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowDeleteConfirm(false)}
+                      style={{
+                        background: 'var(--bg-card)',
+                        border: '1px solid var(--border-subtle)',
+                        color: 'var(--text-muted)',
+                        padding: '4px 8px',
+                        borderRadius: '6px',
+                        fontSize: '0.72rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+              <span style={{ fontSize: '0.70rem', color: 'var(--text-dim)' }}>
+                Only verified system administrators have authorization to remove manager accounts from the directory.
+              </span>
+            </div>
+          )}
+
         </div>
 
-        {/* Footer Actions */}
-        <div 
-          className="p-5 border-t flex items-center justify-between gap-3"
-          style={{ borderColor: 'var(--border-color)', background: 'var(--bg-card-alt)' }}
+        {/* Modal Footer */}
+        <div
+          className="modal-footer"
+          style={{
+            padding: '12px 20px',
+            borderTop: '1px solid var(--border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            background: 'var(--bg-card-alt)'
+          }}
         >
-          <button
-            type="button"
-            onClick={handleResetDefault}
-            className="btn-secondary"
-            style={{ fontSize: '0.76rem', padding: '6px 12px' }}
-          >
-            <RefreshCw size={13} /> Reset Photo
-          </button>
+          <div>
+            {canEdit && !isUpdatingPhoto && (
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setIsUpdatingPhoto(true)}
+                style={{ fontSize: '0.76rem', padding: '6px 12px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Camera size={13} /> Update Portrait
+              </button>
+            )}
+          </div>
 
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               type="button"
-              onClick={onClose}
               className="btn-secondary"
+              onClick={onClose}
               style={{ fontSize: '0.76rem', padding: '6px 14px' }}
             >
-              Cancel
+              Close
             </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              className="btn-primary"
-              style={{ fontSize: '0.76rem', padding: '6px 16px' }}
-            >
-              <Check size={14} /> Save New Photo
-            </button>
+            {canEdit && hasChanged && (
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleSave}
+                style={{ fontSize: '0.76rem', padding: '6px 16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Check size={14} /> Save New Photo
+              </button>
+            )}
           </div>
         </div>
       </div>

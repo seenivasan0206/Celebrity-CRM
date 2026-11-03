@@ -19,98 +19,7 @@ import {
   DollarSign
 } from 'lucide-react';
 
-const defaultCastingCalls = [
-  {
-    id: 1,
-    role: 'Lead Antagonist (Action Thriller)',
-    production: 'Red Giant & Sun Pictures Co-Production',
-    location: 'Chennai & Hyderabad',
-    ageGroup: '30 - 45 Years',
-    auditionsCount: 142,
-    deadline: '15 Dec 2025',
-    status: 'Open for Auditions',
-    compensation: '₹40L - ₹65L',
-    characterArchetype: 'Ruthless Syndicate Boss',
-    submissionsReviewPct: 65,
-    gender: 'Male / Any',
-    urgency: 'High Priority'
-  },
-  {
-    id: 2,
-    role: 'Female Parallel Lead (Rom-Com)',
-    production: 'Lyca Productions Feature Film',
-    location: 'Bangalore & Chennai',
-    ageGroup: '22 - 28 Years',
-    auditionsCount: 89,
-    deadline: '30 Nov 2025',
-    status: 'Screen Tests Ongoing',
-    compensation: '₹25L - ₹40L',
-    characterArchetype: 'Architect & Free-spirited Traveler',
-    submissionsReviewPct: 82,
-    gender: 'Female',
-    urgency: 'Screen Testing'
-  },
-  {
-    id: 3,
-    role: 'Youth Protagonist (Sports Drama)',
-    production: 'Excel Entertainment Pan-India',
-    location: 'Mumbai & Chennai',
-    ageGroup: '20 - 26 Years',
-    auditionsCount: 215,
-    deadline: '20 Jan 2026',
-    status: 'Open for Auditions',
-    compensation: '₹30L - ₹50L',
-    characterArchetype: 'Underdog National Boxer',
-    submissionsReviewPct: 45,
-    gender: 'Male',
-    urgency: 'Open Call'
-  },
-  {
-    id: 4,
-    role: 'Stern Police Commissioner (Neo-Noir Crime)',
-    production: 'Hombale Films Pan-India',
-    location: 'Bangalore & Kochi',
-    ageGroup: '40 - 55 Years',
-    auditionsCount: 114,
-    deadline: '10 Dec 2025',
-    status: 'Screen Tests Ongoing',
-    compensation: '₹35L - ₹55L',
-    characterArchetype: 'Uncompromising Veteran Cop',
-    submissionsReviewPct: 90,
-    gender: 'Male / Female',
-    urgency: 'Shortlisting'
-  },
-  {
-    id: 5,
-    role: 'Classical Fusion Lead Vocalist',
-    production: 'Madras Talkies Musical Feature',
-    location: 'Chennai & Tirupati',
-    ageGroup: '19 - 30 Years',
-    auditionsCount: 178,
-    deadline: '05 Jan 2026',
-    status: 'Open for Auditions',
-    compensation: '₹20L - ₹30L',
-    characterArchetype: 'Carnatic Prodigy with Modern Twist',
-    submissionsReviewPct: 58,
-    gender: 'Any',
-    urgency: 'Vocal Auditions'
-  },
-  {
-    id: 6,
-    role: 'Tech Billionaire Villain (Cyber Action)',
-    production: 'Mythri Movie Makers Sci-Fi Thriller',
-    location: 'Hyderabad & Dubai',
-    ageGroup: '35 - 50 Years',
-    auditionsCount: 96,
-    deadline: '28 Feb 2026',
-    status: 'Open for Auditions',
-    compensation: '₹50L - ₹80L',
-    characterArchetype: 'Cold & Visionary Tech Mogul',
-    submissionsReviewPct: 35,
-    gender: 'Male / Any',
-    urgency: 'Auditions Open'
-  }
-];
+// 100% Real-time dynamic backend casting calls
 
 export default function CastingCalls() {
   const { addToast } = useCrm();
@@ -137,9 +46,9 @@ export default function CastingCalls() {
   const [castingCalls, setCastingCalls] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_casting_calls');
-      return saved ? JSON.parse(saved) : defaultCastingCalls;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return defaultCastingCalls;
+      return [];
     }
   });
 
@@ -147,6 +56,26 @@ export default function CastingCalls() {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCall, setSelectedCall] = useState(null);
+
+  // Lock body scroll and prevent background shifting when modal is open
+  useEffect(() => {
+    if (isModalOpen || selectedCall) {
+      const originalOverflow = document.body.style.overflow;
+      const originalPaddingRight = document.body.style.paddingRight;
+      const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+      document.body.style.overflow = 'hidden';
+      if (scrollBarWidth > 0) {
+        document.body.style.paddingRight = `${scrollBarWidth}px`;
+      }
+
+      return () => {
+        document.body.style.overflow = originalOverflow;
+        document.body.style.paddingRight = originalPaddingRight;
+      };
+    }
+  }, [isModalOpen, selectedCall]);
 
   const [newCall, setNewCall] = useState({
     role: '',
@@ -737,12 +666,16 @@ export default function CastingCalls() {
           position: fixed;
           inset: 0;
           background: rgba(11, 15, 23, 0.75);
-          backdrop-filter: blur(6px);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 16px;
+          padding: 20px;
           z-index: 1000;
+          overscroll-behavior: contain;
+          touch-action: none;
+          animation: fadeIn 0.18s ease;
         }
 
         .casting-modal-dialog {
@@ -750,33 +683,42 @@ export default function CastingCalls() {
           border: 1px solid var(--border-medium);
           border-radius: var(--radius-lg);
           width: 100%;
-          max-width: 500px;
+          max-width: 540px;
           box-shadow: var(--shadow-lg);
           overflow: hidden;
+          animation: scaleUp 0.2s ease;
+          overscroll-behavior: contain;
+          touch-action: auto;
+          display: flex;
+          flex-direction: column;
+          max-height: 90vh;
         }
 
         .casting-modal-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 20px;
+          padding: 16px 22px;
           border-bottom: 1px solid var(--border-subtle);
+          background: var(--bg-card);
         }
 
         .casting-modal-header h3 {
-          font-size: 1.1rem;
+          font-size: 1.15rem;
           font-weight: 700;
           color: var(--text-main);
           margin: 0;
         }
 
         .casting-modal-body {
-          padding: 18px 20px;
+          padding: 20px 22px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 14px;
           max-height: 75vh;
           overflow-y: auto;
+          overscroll-behavior: contain;
+          -webkit-overflow-scrolling: touch;
         }
 
         .casting-form-group {
@@ -961,7 +903,14 @@ export default function CastingCalls() {
                 </div>
 
                 {/* Role Title */}
-                <h3 className="casting-role-title">{call.role}</h3>
+                <h3
+                    className="casting-role-title"
+                    onClick={() => setSelectedCall(call)}
+                    style={{ cursor: 'pointer' }}
+                    title="Click to view full character breakdown"
+                  >
+                    {call.role}
+                  </h3>
 
                 {/* Character Archetype */}
                 {call.characterArchetype && (
@@ -1035,6 +984,14 @@ export default function CastingCalls() {
                 <div className="casting-actions-group">
                   <button
                     type="button"
+                    className="btn-secondary"
+                    style={{ padding: '6px 10px', fontSize: '0.74rem' }}
+                    onClick={() => setSelectedCall(call)}
+                  >
+                    Breakdown
+                  </button>
+                  <button
+                    type="button"
                     className="casting-btn-review"
                     onClick={() => navigate('/applications')}
                     title="Review audition tapes"
@@ -1059,17 +1016,47 @@ export default function CastingCalls() {
 
       {/* Post Casting Call Modal */}
       {isModalOpen && (
-        <div className="casting-modal-overlay" onClick={() => setIsModalOpen(false)}>
-          <div className="casting-modal-dialog" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="casting-modal-overlay"
+          onClick={() => setIsModalOpen(false)}
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div
+            className="casting-modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+          >
             <div className="casting-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Film size={18} color="var(--primary)" />
-                <h3>Post New Casting Call</h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: 'var(--radius-sm)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--primary)',
+                    background: 'var(--primary-subtle)',
+                    border: '1px solid var(--primary-border)'
+                  }}
+                >
+                  <Film size={18} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.12rem', fontWeight: 700, color: 'var(--text-main)', margin: 0 }}>
+                    Post New Casting Call
+                  </h3>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                    Publish an audition notice & character breakdown
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-dim)' }}
+                className="modal-close-btn"
                 onClick={() => setIsModalOpen(false)}
+                title="Close modal"
               >
                 <X size={18} />
               </button>
@@ -1176,6 +1163,129 @@ export default function CastingCalls() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+    
+      {/* ========================================================
+          CHARACTER BREAKDOWN & CASTING NOTICE POP-UP MODAL
+          ======================================================== */}
+      {selectedCall && (
+        <div
+          className="casting-modal-overlay"
+          onClick={() => setSelectedCall(null)}
+          onWheel={(e) => e.stopPropagation()}
+        >
+          <div
+            className="casting-modal-dialog"
+            onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
+            style={{ maxWidth: '580px' }}
+          >
+            <div className="casting-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: 'var(--radius-sm)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--primary)',
+                    background: 'var(--primary-subtle)',
+                    border: '1px solid var(--primary-border)'
+                  }}
+                >
+                  <Film size={18} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '1.12rem', fontWeight: 700, color: 'var(--text-main)', margin: 0 }}>
+                    {selectedCall.role}
+                  </h3>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: '2px 0 0' }}>
+                    Production: {selectedCall.production}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="modal-close-btn"
+                onClick={() => setSelectedCall(null)}
+                title="Close modal"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="casting-modal-body">
+              {/* Stats Strip */}
+              <div className="agency-stats-strip">
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--accent)' }}>{selectedCall.compensation || '₹30L - ₹50L'}</strong>
+                  <span>Compensation</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong>{selectedCall.ageGroup || '22 - 35 Yrs'}</strong>
+                  <span>Age Criteria</span>
+                </div>
+                <div className="agency-stat-col">
+                  <strong style={{ color: 'var(--primary)' }}>{selectedCall.auditionsCount || 0} Tapes</strong>
+                  <span>Submissions</span>
+                </div>
+              </div>
+
+              {/* Character Archetype */}
+              <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '14px', border: '1px solid var(--border-subtle)' }}>
+                <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Character Archetype & Breakdown
+                </h4>
+                <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+                  {selectedCall.characterArchetype || 'Key character role requiring intense screen presence, nuanced dialogue modulation, and adaptability across physical stunts.'}
+                </p>
+              </div>
+
+              {/* Notice Details Grid */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '12px', border: '1px solid var(--border-subtle)' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                    Audition Location
+                  </span>
+                  <div style={{ fontWeight: 600, color: 'var(--text-main)', marginTop: '2px', fontSize: '0.85rem' }}>
+                    {selectedCall.location || 'Chennai & Mumbai Studios'}
+                  </div>
+                </div>
+
+                <div style={{ background: 'var(--bg-card-alt)', borderRadius: 'var(--radius-md)', padding: '12px', border: '1px solid var(--border-subtle)' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>
+                    Audition Cutoff Date
+                  </span>
+                  <div style={{ fontWeight: 600, color: 'var(--primary)', marginTop: '2px', fontSize: '0.85rem' }}>
+                    {selectedCall.deadline || '28 Feb 2026'}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="casting-modal-footer">
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={() => setSelectedCall(null)}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setSelectedCall(null);
+                  navigate('/applications');
+                }}
+              >
+                <Video size={13} /> Review Audition Tapes ({selectedCall.auditionsCount})
+              </button>
+            </div>
           </div>
         </div>
       )}

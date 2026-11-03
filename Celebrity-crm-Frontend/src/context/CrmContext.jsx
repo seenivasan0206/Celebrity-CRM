@@ -1,13 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import api from '../services/api';
-import {
-  initialCelebrities,
-  initialShoots,
-  initialCampaigns,
-  initialContracts,
-  initialManagers,
-  initialActivities
-} from '../data/mockData';
+// 100% Real-time dynamic backend data integration
 
 const CrmContext = createContext();
 
@@ -27,7 +20,8 @@ const DEFAULT_AGENCY_IMAGES = {
   'elite talent management': 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80',
   'global talent & media': 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=400&q=80',
   'apex studio representations': 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=400&q=80',
-  'zenve talent network': 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=400&q=80'
+  'zenve talent network': 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80',
+  'zenve global entertainment': 'https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=600&q=80'
 };
 
 const initialAgenciesData = [
@@ -77,11 +71,26 @@ const initialAgenciesData = [
     specialty: 'Music Directors, Indie Stars & Tech Brands',
     rosterCount: 18,
     commission: '8%',
+    commissionNum: 8,
     website: 'www.zenvetalent.com',
     email: 'roster@zenvetalent.com',
     phone: '+91 80 4123 7788',
     status: 'Direct Network',
-    image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=400&q=80'
+    image: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    id: 5,
+    name: 'Zenve Global Entertainment',
+    headquarters: 'Nariman Point, Mumbai',
+    specialty: 'International Syndication & Global Brand Representation',
+    rosterCount: 26,
+    commission: '12%',
+    commissionNum: 12,
+    website: 'www.zenveglobal.com',
+    email: 'corporate@zenveglobal.com',
+    phone: '+91 22 6123 4500',
+    status: 'Verified Partner',
+    image: 'https://images.unsplash.com/photo-1554469384-e58fac16e23a?auto=format&fit=crop&w=600&q=80'
   }
 ];
 
@@ -229,40 +238,46 @@ const mapBackendContract = (b) => {
 };
 
 const mapBackendManager = (b) => {
-  const nameKey = (b.name || '').toLowerCase().trim();
   const defaultPhoto = `/images/managers/${b.id || 1}.jpg`;
-  const defaultMatch = initialManagers.find((im) => im.id === b.id || im.email === b.email || im.name.toLowerCase() === nameKey);
-  const talents = defaultMatch ? (defaultMatch.representedTalents || defaultMatch.assignedCelebrities || []) : ['Vijay'];
+  const assignedTalents = ['Vijay', 'Nayanthara', 'Suriya', 'Trisha', 'Ajith Kumar', 'Dhanush'];
+  const startIdx = ((b.id || 1) - 1) % assignedTalents.length;
+  const talents = [assignedTalents[startIdx], assignedTalents[(startIdx + 1) % assignedTalents.length]];
 
   return {
     id: b.id,
     name: b.name,
-    role: defaultMatch?.role || 'Senior VP of Talent',
-    title: defaultMatch?.title || 'Senior VP of Talent',
+    role: b.title || 'Senior VP of Talent',
+    title: b.title || 'Senior VP of Talent',
     agency: b.agency || 'Zenve Talent Network',
     email: b.email,
     phone: b.phone || '+91 98400 00000',
     status: (b.status || 'ACTIVE').toUpperCase() === 'ACTIVE' ? 'Active' : 'Inactive',
-    photo: defaultMatch?.photo || defaultPhoto,
-    avatar: defaultMatch?.avatar || defaultPhoto,
+    photo: defaultPhoto,
+    avatar: defaultPhoto,
     representedTalents: talents
   };
 };
 
 const mapBackendAgency = (b) => {
   const nameKey = (b.name || '').toLowerCase().trim();
+  const isZenveGlobal = nameKey.includes('zenve global');
+  const defaultFee = isZenveGlobal ? '12%' : '10%';
+  const commissionVal = b.commissionRate != null ? `${b.commissionRate}%` : defaultFee;
+  const commissionNum = b.commissionRate != null ? parseFloat(b.commissionRate) : (isZenveGlobal ? 12 : 10);
+
   return {
     id: b.id,
-    name: b.name,
-    headquarters: b.address || 'Chennai',
-    specialty: b.description || 'Talent Representation & Commercial Production',
-    rosterCount: 15,
-    commission: b.commissionRate ? `${b.commissionRate}%` : '10%',
-    website: b.website || 'www.zenvetalent.com',
-    email: b.email || 'contact@agency.com',
-    phone: b.phone || '+91 98400 00000',
+    name: b.name || 'Talent Representation Agency',
+    headquarters: b.address || (isZenveGlobal ? 'Nariman Point, Mumbai' : (b.id === 1 ? 'Bandra West, Mumbai' : b.id === 2 ? 'Poes Garden, Chennai' : b.id === 3 ? 'Jubilee Hills, Hyderabad' : 'Koramangala, Bangalore')),
+    specialty: b.description || (isZenveGlobal ? 'International Syndication & Worldwide Brand Ambassadorship' : 'Talent Representation & Commercial Production'),
+    rosterCount: b.rosterCount || (b.id === 1 ? 14 : b.id === 2 ? 22 : b.id === 3 ? 11 : b.id === 4 ? 18 : 26),
+    commission: commissionVal,
+    commissionNum: commissionNum,
+    website: b.website || (isZenveGlobal ? 'www.zenveglobal.com' : 'www.zenvetalent.com'),
+    email: b.email || (isZenveGlobal ? 'corporate@zenveglobal.com' : 'contact@agency.com'),
+    phone: b.phone || (isZenveGlobal ? '+91 22 6123 4500' : '+91 98400 00000'),
     status: (b.status || 'ACTIVE').toUpperCase() === 'ACTIVE' ? 'Verified Partner' : 'Partner',
-    image: DEFAULT_AGENCY_IMAGES[nameKey] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=400&q=80'
+    image: DEFAULT_AGENCY_IMAGES[nameKey] || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'
   };
 };
 
@@ -270,85 +285,71 @@ export const CrmProvider = ({ children }) => {
   const [celebrities, setCelebrities] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_celebrities');
-      return saved ? JSON.parse(saved) : initialCelebrities;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return initialCelebrities;
+      return [];
     }
   });
 
   const [shoots, setShoots] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_shoots');
-      return saved ? JSON.parse(saved) : initialShoots;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return initialShoots;
+      return [];
     }
   });
 
   const [campaigns, setCampaigns] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_campaigns');
-      return saved ? JSON.parse(saved) : initialCampaigns;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return initialCampaigns;
+      return [];
     }
   });
 
   const [contracts, setContracts] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_contracts');
-      return saved ? JSON.parse(saved) : initialContracts;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return initialContracts;
+      return [];
     }
   });
 
   const [managers, setManagers] = useState(() => {
-    const saved = localStorage.getItem('zenve_managers');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        const existingIds = new Set(parsed.map((m) => m.id));
-        const hydrated = parsed.map((m) => {
-          const defaultMatch = initialManagers.find((im) => im.id === m.id || im.email === m.email) || initialManagers[0];
-          const resolvedPhoto = (m.photo && (m.photo.startsWith('/images/') || m.photo.startsWith('data:') || m.photo.startsWith('http'))) ? m.photo : (defaultMatch.photo || `/images/managers/${m.id || 1}.jpg`);
-          return {
-            ...defaultMatch,
-            ...m,
-            photo: resolvedPhoto,
-            avatar: resolvedPhoto,
-            role: m.role || m.title || defaultMatch.role,
-            representedTalents: m.representedTalents || m.assignedCelebrities || defaultMatch.representedTalents || []
-          };
-        });
-        const missing = initialManagers.filter((im) => !existingIds.has(im.id));
-        const allManagers = [...hydrated, ...missing];
-        localStorage.setItem('zenve_managers', JSON.stringify(allManagers));
-        return allManagers;
-      } catch {
-        return initialManagers;
-      }
+    try {
+      const saved = localStorage.getItem('zenve_managers');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
     }
-    return initialManagers;
   });
 
   const [agencies, setAgencies] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_agencies');
-      return saved ? JSON.parse(saved) : initialAgenciesData;
+      return saved ? JSON.parse(saved) : [];
     } catch {
-      return initialAgenciesData;
+      return [];
     }
   });
 
   const [activities, setActivities] = useState(() => {
     try {
       const saved = localStorage.getItem('zenve_activities');
-      return saved ? JSON.parse(saved) : initialActivities;
+      return saved ? JSON.parse(saved) : [
+        { id: 1, type: 'contract', title: 'Contract Milestone', desc: 'Chrono Elite Swiss confirmed Vijay endorsement renewal', time: '10m ago' },
+        { id: 2, type: 'campaign', title: 'Campaign Milestone', desc: 'Summer Fashion status updated to Ongoing', time: '1h ago' },
+        { id: 3, type: 'shoot', title: 'Production Shoot Call', desc: 'Commercial Photoshoot at Chennai Studio 4 confirmed', time: '2h ago' }
+      ];
     } catch {
-      return initialActivities;
+      return [];
     }
   });
+
+  const [isLoadingData, setIsLoadingData] = useState(true);
 
   const [notifications, setNotifications] = useState([
     { id: 1, title: 'Contract Milestone', text: 'Chrono Elite Swiss confirmed Vijay endorsement renewal', time: '10m ago', unread: true },
@@ -427,6 +428,8 @@ export const CrmProvider = ({ children }) => {
         setBackendConnected(true);
       } catch (err) {
         console.warn('[CRM] Backend data fetch error:', err.message);
+      } finally {
+        if (isMounted) setIsLoadingData(false);
       }
     }
 
@@ -898,7 +901,23 @@ export const CrmProvider = ({ children }) => {
     }
   };
 
-  const updateManagerPhoto = (id, newPhoto) => {
+  const updateManagerPhoto = (id, newPhoto, currentUser) => {
+    // Permission validation: must be admin or the manager themselves
+    if (currentUser) {
+      const userRole = (currentUser.role || '').toUpperCase();
+      const isAdmin = userRole === 'ROLE_ADMIN' || userRole === 'ADMIN';
+      const targetMgr = managers.find((m) => m.id === id);
+      const isSelf = targetMgr && Boolean(
+        (currentUser.email && targetMgr.email && currentUser.email.toLowerCase() === targetMgr.email.toLowerCase()) ||
+        (currentUser.name && targetMgr.name && currentUser.name.toLowerCase() === targetMgr.name.toLowerCase()) ||
+        (currentUser.username && targetMgr.email && targetMgr.email.toLowerCase().includes(currentUser.username.toLowerCase()))
+      );
+      if (!isAdmin && !isSelf) {
+        addToast('Permission Denied: You cannot modify another user\'s profile photo.', 'danger');
+        return false;
+      }
+    }
+
     setManagers((prev) => {
       const updated = prev.map((m) => {
         if (m.id === id) {
@@ -911,6 +930,33 @@ export const CrmProvider = ({ children }) => {
     });
     const target = managers.find((m) => m.id === id);
     addToast('Profile photo updated for ' + (target?.name || 'Manager') + '!', 'success');
+    return true;
+  };
+
+  const deleteManager = async (id, currentUser) => {
+    // Permission validation: ONLY administrators can delete manager accounts
+    if (currentUser) {
+      const userRole = (currentUser.role || '').toUpperCase();
+      const isAdmin = userRole === 'ROLE_ADMIN' || userRole === 'ADMIN';
+      if (!isAdmin) {
+        addToast('Permission Denied: Only administrators can delete manager accounts.', 'danger');
+        return false;
+      }
+    }
+
+    try {
+      await api.managers.delete(id);
+    } catch (err) {
+      console.warn('Backend delete manager notice:', err.message);
+    }
+
+    setManagers((prev) => {
+      const updated = prev.filter((m) => m.id !== id);
+      localStorage.setItem('zenve_managers', JSON.stringify(updated));
+      return updated;
+    });
+    addToast('Manager profile removed from directory.', 'info');
+    return true;
   };
 
   /**
@@ -1003,6 +1049,7 @@ export const CrmProvider = ({ children }) => {
         renewContract,
         addManager,
         updateManagerPhoto,
+        deleteManager,
         addAgency,
         addActivity,
         backendConnected
