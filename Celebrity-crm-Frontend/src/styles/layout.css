@@ -43,6 +43,8 @@
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 .brand-logo-img {
@@ -51,8 +53,9 @@
   max-width: 64px;
   object-fit: contain;
   flex-shrink: 0;
+  background: transparent !important;
+  background-color: transparent !important;
   transition: transform var(--transition-fast);
-  filter: drop-shadow(0 2px 8px rgba(249, 115, 22, 0.22));
 }
 
 .brand-wrapper:hover .brand-logo-img {

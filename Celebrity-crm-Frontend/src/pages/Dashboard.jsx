@@ -39,7 +39,7 @@ export default function Dashboard() {
             <div className="hero-banner-tag">
               <span className="hero-live-pulse-dot" />
               <Sparkles size={12} className="hero-tag-sparkle" />
-              <span>ZENVE TALENT & OTT PRODUCTION SUITE</span>
+              <span>LOOP STREAM X TALENT & OTT PRODUCTION SUITE</span>
               <span className="hero-tag-status">ONLINE</span>
             </div>
 
@@ -48,7 +48,7 @@ export default function Dashboard() {
             </h1>
 
             <p className="hero-banner-subtitle">
-              Overseeing <span className="hero-num-badge">{celebrities.length}</span> Roster Stars, <span className="hero-num-badge">{campaigns.length}</span> Active Brand Deals & <span className="hero-num-badge">{shoots.length}</span> Scheduled Shoots across Pan-India Studios.
+              Overseeing Roster Stars, Active Brand Deals & Scheduled Shoots across Pan-India Studios.
             </p>
 
             <div className="hero-banner-actions">

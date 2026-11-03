@@ -65,7 +65,7 @@ export default function Sidebar({ collapsed, mobileOpen, closeMobileSidebar }) {
           <Link to="/" className="brand-wrapper" onClick={handleNavClick} title="Loop Stream X">
             <img src={logoImg} alt="Loop Stream X" className="brand-logo-img" />
             <div className="brand-title">
-              <h1>Loop Stream X</h1>
+              <h1>Celebrity CRM</h1>
               <span>Talent Portal</span>
             </div>
           </Link>
